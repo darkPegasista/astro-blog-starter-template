@@ -1,1 +1,144 @@
+---
+interface Props {
+  title?: string;
+  glow?: string;
+  href?: string;
+}
 
+const {
+  title,
+  glow = "168 85 247", // purple RGB
+  href
+} = Astro.props;
+
+const Tag = href ? "a" : "div";
+---
+
+<Tag
+  class="glow-card"
+  href={href}
+  style={`--glow: ${glow};`}
+>
+  <div class="card-content">
+    {title && <h2>{title}</h2>}
+    <slot />
+  </div>
+</Tag>
+
+<style>
+  .glow-card {
+    --mouse-x: 50%;
+    --mouse-y: 50%;
+
+    position: relative;
+    display: block;
+
+    padding: 2rem;
+    border-radius: 24px;
+
+    color: white;
+    text-decoration: none;
+
+    background:
+      linear-gradient(
+        145deg,
+        rgba(255,255,255,0.07),
+        rgba(255,255,255,0.025)
+      );
+
+    border: 1px solid rgba(var(--glow), 0.35);
+
+    box-shadow:
+      0 15px 40px rgba(0,0,0,0.45),
+      0 0 20px rgba(var(--glow), 0.10),
+      inset 0 1px 0 rgba(255,255,255,0.08);
+
+    backdrop-filter: blur(14px);
+
+    overflow: hidden;
+
+    transition:
+      transform 0.25s ease,
+      border-color 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+
+  /* moving glow */
+  .glow-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background:
+      radial-gradient(
+        450px circle at var(--mouse-x) var(--mouse-y),
+        rgba(var(--glow), 0.25),
+        transparent 45%
+      );
+
+    opacity: 0;
+    transition: opacity 0.3s ease;
+
+    pointer-events: none;
+  }
+
+  /* outer glow */
+  .glow-card::after {
+    content: "";
+    position: absolute;
+
+    width: 160px;
+    height: 160px;
+
+    left: -60px;
+    top: -60px;
+
+    background: rgb(var(--glow));
+    filter: blur(90px);
+
+    opacity: 0.16;
+    pointer-events: none;
+  }
+
+  .glow-card:hover {
+    transform: translateY(-6px);
+
+    border-color: rgba(var(--glow), 0.8);
+
+    box-shadow:
+      0 25px 60px rgba(0,0,0,0.55),
+      0 0 35px rgba(var(--glow), 0.22),
+      0 0 80px rgba(var(--glow), 0.08);
+  }
+
+  .glow-card:hover::before {
+    opacity: 1;
+  }
+
+  .card-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  h2 {
+    margin-top: 0;
+    margin-bottom: 0.7rem;
+
+    font-size: 1.6rem;
+    font-weight: 700;
+  }
+</style>
+
+<script>
+  document.querySelectorAll(".glow-card").forEach((card) => {
+    card.addEventListener("pointermove", (event) => {
+      const rect = card.getBoundingClientRect();
+
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+
+      card.style.setProperty("--mouse-x", `${x}px`);
+      card.style.setProperty("--mouse-y", `${y}px`);
+    });
+  });
+</script>
