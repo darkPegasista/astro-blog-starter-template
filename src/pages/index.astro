@@ -10,60 +10,6 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
 	</head>
-<section class="cards">
-
-  <GlowCard
-    title="Commissions"
-    glow="168 85 247"
-    href="/commissions"
-  >
-    <p>Custom artwork, character illustrations and more.</p>
-    <strong>Commissions open →</strong>
-  </GlowCard>
-
-
-  <GlowCard
-    title="Gallery"
-    glow="59 130 246"
-    href="/gallery"
-  >
-    <p>Take a look at some of my recent artwork.</p>
-    <strong>View gallery →</strong>
-  </GlowCard>
-
-
-  <GlowCard
-    title="Merch"
-    glow="236 72 153"
-    href="/shop"
-  >
-    <p>Prints, stickers, clothing and other merch.</p>
-    <strong>Visit shop →</strong>
-  </GlowCard>
-
-</section>
-
-<style>
-
-.cards {
-  max-width: 1200px;
-  margin: 4rem auto;
-
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-
-  gap: 1.5rem;
-}
-
-@media (max-width: 800px) {
-
-  .cards {
-    grid-template-columns: 1fr;
-  }
-
-}
-
-</style>
 	<body>
 		<Header />
 		<main>
