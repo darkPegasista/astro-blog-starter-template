@@ -1,0 +1,13 @@
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+	<rect width="800" height="600" fill="#24152b"/>
+	<circle cx="600" cy="170" r="70" fill="#39213f"/>
+	<path d="M0 500 L230 270 L370 420 L500 300 L800 600 L0 600 Z"
+		fill="#39213f"/>
+	<text x="400" y="560"
+		text-anchor="middle"
+		fill="#9c7ca5"
+		font-family="Arial"
+		font-size="28">
+		IMAGE
+	</text>
+</svg>
