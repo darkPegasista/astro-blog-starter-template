@@ -86,14 +86,59 @@ const { product, category } = Astro.props;
 
 				<!-- IMAGE -->
 
-				<div class="product-image">
+				<div class="product-gallery">
 
-					<img
-						src={product.image}
-						alt={product.name}
-					/>
+	<!-- MAIN IMAGE -->
 
-				</div>
+	<button
+		type="button"
+		class="main-product-image"
+		id="main-image-button"
+		aria-label={`View ${product.name} image`}
+	>
+
+		<img
+			id="main-product-image"
+			src={product.images[0]}
+			alt={product.name}
+		/>
+
+		<span class="zoom-indicator">
+			↗
+		</span>
+
+	</button>
+
+
+	<!-- THUMBNAILS -->
+
+	<div
+		class="product-thumbnails"
+		role="list"
+	>
+
+		{product.images.map((image, index) => (
+
+			<button
+				type="button"
+				class:list={{ active: index === 0 }}
+				class="product-thumbnail"
+				data-index={index}
+				aria-label={`View image ${index + 1}`}
+			>
+
+				<img
+					src={image}
+					alt={`${product.name} image ${index + 1}`}
+				/>
+
+			</button>
+
+		))}
+
+	</div>
+
+</div>
 
 
 
