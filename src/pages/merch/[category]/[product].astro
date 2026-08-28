@@ -303,7 +303,65 @@ const { product, category } = Astro.props;
 		</main>
 
 
-		<Footer />
+<!-- LIGHTBOX -->
+
+<div
+	id="image-lightbox"
+	class="image-lightbox"
+	aria-hidden="true"
+>
+
+	<button
+		type="button"
+		class="lightbox-close"
+		id="lightbox-close"
+		aria-label="Close image viewer"
+	>
+		×
+	</button>
+
+
+	<button
+		type="button"
+		class="lightbox-arrow lightbox-previous"
+		id="lightbox-previous"
+		aria-label="Previous image"
+	>
+		←
+	</button>
+
+
+	<div class="lightbox-content">
+
+		<img
+			id="lightbox-image"
+			src={product.images[0]}
+			alt={product.name}
+		/>
+
+		<div
+			id="lightbox-counter"
+			class="lightbox-counter"
+		>
+			1 / {product.images.length}
+		</div>
+
+	</div>
+
+
+	<button
+		type="button"
+		class="lightbox-arrow lightbox-next"
+		id="lightbox-next"
+		aria-label="Next image"
+	>
+		→
+	</button>
+
+</div>
+
+
+<Footer />
 
 
 		<!-- QUANTITY SCRIPT -->
