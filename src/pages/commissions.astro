@@ -1,0 +1,647 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+const commissionItems = [
+	{
+		title: 'Simple Character',
+		subtitle: 'fullbody',
+		price: '30€',
+		image: '/images/placeholder-portrait.svg',
+		glow: '#ff61c6',
+	},
+
+	{
+		title: 'Portrait or Icon',
+		subtitle: '',
+		price: '50€',
+		image: '/images/placeholder-portrait.svg',
+		glow: '#a855f7',
+	},
+
+	{
+		title: 'Pony fullbody with',
+		subtitle: 'simple background',
+		price: '70€',
+		image: '/images/placeholder-portrait.svg',
+		glow: '#ff61c6',
+	},
+
+	{
+		title: 'Anthro fullbody with',
+		subtitle: 'simple background',
+		price: '80€',
+		image: '/images/placeholder-portrait.svg',
+		glow: '#a855f7',
+	},
+
+	{
+		title: 'Ref Sheets',
+		subtitle: '',
+		price: '',
+		simplePrice: 'simple: 50€',
+		elaboratePrice: 'elaborate: 150€',
+		image: '/images/placeholder-portrait.svg',
+		glow: '#ff61c6',
+	},
+
+	{
+		title: 'Add-Ons',
+		subtitle: '',
+		price: '',
+		simplePrice: '+10–30€',
+		elaboratePrice: '+50% to base price',
+		image: '/images/placeholder-portrait.svg',
+		glow: '#a855f7',
+	},
+];
+---
+
+<!doctype html>
+
+<html lang="en">
+
+	<head>
+		<BaseHead
+			title="Commissions & Prices"
+			description="Commission prices and options"
+		/>
+	</head>
+
+	<body>
+
+		<Header />
+
+		<main class="commissions-page">
+
+			<!-- PAGE TITLE -->
+
+			<section class="page-heading">
+
+				<span class="heading-decoration">✦</span>
+
+				<h1>
+					Commissions
+					<span>&amp;</span>
+					Prices
+				</h1>
+
+			</section>
+
+
+			<!-- TELEGRAM STICKERS -->
+
+			<section
+				class="sticker-card"
+				style="--glow: #ff61c6;"
+			>
+
+				<div class="sticker-image">
+
+					<img
+						src="/images/placeholder-landscape.svg"
+						alt="Telegram sticker commission example"
+					/>
+
+				</div>
+
+
+				<div class="sticker-content">
+
+					<h2>
+						Telegram Stickers
+					</h2>
+
+					<p>
+						pack of 5: <strong>40€</strong>
+					</p>
+
+					<p>
+						pack of 10: <strong>90€</strong>
+					</p>
+
+					<p class="small-note">
+						I do more, just ask :3
+					</p>
+
+				</div>
+
+			</section>
+
+
+			<!-- COMMISSION GRID -->
+
+			<section class="commission-grid">
+
+				{commissionItems.map((item) => (
+
+					<article
+						class="commission-card"
+						style={`--glow: ${item.glow};`}
+					>
+
+						<div class="commission-image">
+
+							<img
+								src={item.image}
+								alt={`${item.title} commission example`}
+							/>
+
+						</div>
+
+
+						<div class="commission-info">
+
+							<h2>
+								{item.title}
+
+								{item.subtitle && (
+									<span>{item.subtitle}</span>
+								)}
+							</h2>
+
+
+							{item.price && (
+								<p class="price">
+									{item.price}
+								</p>
+							)}
+
+
+							{item.simplePrice && (
+								<p class="option-price">
+									{item.simplePrice}
+								</p>
+							)}
+
+							{item.elaboratePrice && (
+								<p class="option-price">
+									{item.elaboratePrice}
+								</p>
+							)}
+
+						</div>
+
+					</article>
+
+				))}
+
+			</section>
+
+
+			<!-- FLEXIBLE PRICE NOTE -->
+
+			<section class="price-note">
+
+				<div class="info-icon">
+					i
+				</div>
+
+				<p>
+					My prices are flexible and depend heavily on
+					your character design and wishes. Contact me
+					with what you have in mind and I will create
+					an offer that suits us both.
+				</p>
+
+			</section>
+
+		</main>
+
+		<Footer />
+
+	</body>
+
+</html>
+
+
+<style>
+
+	/* =========================
+	   PAGE
+	   ========================= */
+
+	.commissions-page {
+		max-width: 1000px;
+		margin: 0 auto;
+
+		padding:
+			4rem 1.5rem
+			6rem;
+	}
+
+
+	/* =========================
+	   HEADING
+	   ========================= */
+
+	.page-heading {
+		position: relative;
+
+		margin-bottom: 3rem;
+
+		text-align: center;
+	}
+
+	.heading-decoration {
+		display: block;
+
+		margin-bottom: 0.8rem;
+
+		color: var(--pink-light);
+
+		font-size: 1rem;
+
+		text-shadow:
+			0 0 12px var(--pink-light);
+	}
+
+	.page-heading h1 {
+		margin: 0;
+
+		font-size: clamp(3rem, 8vw, 5.5rem);
+
+		line-height: 0.95;
+
+		font-weight: 700;
+
+		letter-spacing: -0.03em;
+	}
+
+	.page-heading h1 span {
+		color: var(--pink-light);
+
+		text-shadow:
+			0 0 20px rgba(255, 97, 198, 0.5);
+	}
+
+
+	/* =========================
+	   STICKER CARD
+	   ========================= */
+
+	.sticker-card {
+		--glow: #ff61c6;
+
+		display: grid;
+
+		grid-template-columns:
+			260px 1fr;
+
+		gap: 2rem;
+
+		align-items: center;
+
+		padding: 1.5rem;
+
+		margin-bottom: 2rem;
+
+		border-radius: 24px;
+
+		border: 1px solid color-mix(
+			in srgb,
+			var(--glow) 55%,
+			transparent
+		);
+
+		background:
+			linear-gradient(
+				145deg,
+				rgba(180, 20, 150, 0.18),
+				rgba(40, 10, 50, 0.25)
+			);
+
+		box-shadow:
+			0 0 18px color-mix(
+				in srgb,
+				var(--glow) 15%,
+				transparent
+			),
+
+			inset 0 0 20px
+				rgba(255, 255, 255, 0.025);
+
+		transition:
+			transform 0.25s ease,
+			box-shadow 0.25s ease,
+			border-color 0.25s ease;
+	}
+
+	.sticker-card:hover {
+		transform: translateY(-4px);
+
+		border-color: var(--glow);
+
+		box-shadow:
+			0 0 25px color-mix(
+				in srgb,
+				var(--glow) 30%,
+				transparent
+			),
+
+			0 0 60px color-mix(
+				in srgb,
+				var(--glow) 10%,
+				transparent
+			);
+	}
+
+
+	/* =========================
+	   STICKER IMAGE
+	   ========================= */
+
+	.sticker-image {
+		width: 100%;
+
+		aspect-ratio: 1 / 1;
+
+		overflow: hidden;
+
+		border-radius: 18px;
+
+		background: rgba(255, 255, 255, 0.04);
+	}
+
+	.sticker-image img {
+		width: 100%;
+		height: 100%;
+
+		object-fit: cover;
+	}
+
+
+	.sticker-content h2 {
+		margin:
+			0 0
+			1.2rem;
+
+		font-size: 2rem;
+	}
+
+	.sticker-content p {
+		margin: 0.4rem 0;
+
+		font-size: 1.1rem;
+
+		color: var(--text-muted);
+	}
+
+	.sticker-content strong {
+		color: white;
+	}
+
+	.small-note {
+		margin-top: 1rem !important;
+
+		font-size: 0.95rem !important;
+
+		font-style: italic;
+	}
+
+
+	/* =========================
+	   COMMISSION GRID
+	   ========================= */
+
+	.commission-grid {
+		display: grid;
+
+		grid-template-columns:
+			repeat(3, 1fr);
+
+		gap: 1.5rem;
+	}
+
+
+	/* =========================
+	   COMMISSION CARD
+	   ========================= */
+
+	.commission-card {
+		--glow: #ff61c6;
+
+		overflow: hidden;
+
+		border-radius: 22px;
+
+		border: 1px solid color-mix(
+			in srgb,
+			var(--glow) 50%,
+			transparent
+		);
+
+		background:
+			linear-gradient(
+				145deg,
+				rgba(180, 20, 150, 0.16),
+				rgba(40, 10, 50, 0.24)
+			);
+
+		box-shadow:
+			0 0 15px color-mix(
+				in srgb,
+				var(--glow) 10%,
+				transparent
+			);
+
+		transition:
+			transform 0.25s ease,
+			box-shadow 0.25s ease,
+			border-color 0.25s ease;
+	}
+
+	.commission-card:hover {
+		transform: translateY(-5px);
+
+		border-color: var(--glow);
+
+		box-shadow:
+			0 0 25px color-mix(
+				in srgb,
+				var(--glow) 30%,
+				transparent
+			),
+
+			0 0 50px color-mix(
+				in srgb,
+				var(--glow) 10%,
+				transparent
+			);
+	}
+
+
+	/* =========================
+	   CARD IMAGE
+	   ========================= */
+
+	.commission-image {
+		width: 100%;
+
+		aspect-ratio: 4 / 3;
+
+		overflow: hidden;
+
+		background:
+			rgba(255, 255, 255, 0.04);
+	}
+
+	.commission-image img {
+		width: 100%;
+		height: 100%;
+
+		object-fit: cover;
+	}
+
+
+	/* =========================
+	   CARD TEXT
+	   ========================= */
+
+	.commission-info {
+		padding: 1.3rem 1.4rem 1.5rem;
+	}
+
+	.commission-info h2 {
+		margin: 0;
+
+		font-size: 1.15rem;
+
+		line-height: 1.25;
+	}
+
+	.commission-info h2 span {
+		display: block;
+	}
+
+	.price {
+		margin: 0.8rem 0 0;
+
+		color: var(--pink-light);
+
+		font-size: 1.5rem;
+
+		font-weight: 700;
+
+		text-shadow:
+			0 0 10px rgba(255, 97, 198, 0.35);
+	}
+
+	.option-price {
+		margin: 0.5rem 0 0;
+
+		color: var(--pink-light);
+
+		font-size: 1rem;
+
+		font-weight: 600;
+	}
+
+
+	/* =========================
+	   PRICE NOTE
+	   ========================= */
+
+	.price-note {
+		display: flex;
+
+		align-items: center;
+
+		gap: 1.2rem;
+
+		margin-top: 2rem;
+
+		padding: 1.3rem 1.5rem;
+
+		border-radius: 18px;
+
+		border: 1px solid rgba(255, 255, 255, 0.12);
+
+		background:
+			rgba(255, 255, 255, 0.035);
+	}
+
+	.info-icon {
+		flex-shrink: 0;
+
+		width: 34px;
+		height: 34px;
+
+		display: grid;
+		place-items: center;
+
+		border-radius: 50%;
+
+		border: 1px solid var(--pink-light);
+
+		color: var(--pink-light);
+
+		font-weight: 700;
+
+		box-shadow:
+			0 0 12px rgba(255, 97, 198, 0.3);
+	}
+
+	.price-note p {
+		margin: 0;
+
+		color: var(--text-muted);
+
+		font-size: 0.95rem;
+
+		line-height: 1.5;
+	}
+
+
+	/* =========================
+	   MOBILE
+	   ========================= */
+
+	@media (max-width: 750px) {
+
+		.commissions-page {
+			padding:
+				2.5rem 0.8rem
+				4rem;
+		}
+
+
+		.sticker-card {
+			grid-template-columns: 1fr;
+
+			gap: 1.2rem;
+
+			padding: 1rem;
+		}
+
+
+		.sticker-content {
+			padding: 0.5rem;
+		}
+
+		.sticker-content h2 {
+			font-size: 1.6rem;
+		}
+
+
+		.commission-grid {
+			grid-template-columns: 1fr;
+		}
+
+
+		.commission-info {
+			padding: 1.1rem 1.2rem 1.3rem;
+		}
+
+
+		.price-note {
+			align-items: flex-start;
+
+			padding: 1.1rem;
+		}
+
+	}
+
+</style>
