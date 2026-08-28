@@ -1,0 +1,1400 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const gallery = [
+	{
+		image: '/placeholder-product.svg',
+		title: 'Artwork 01',
+		category: 'Illustration',
+	},
+
+	{
+		image: '/placeholder-product.svg',
+		title: 'Artwork 02',
+		category: 'Illustration',
+	},
+
+	{
+		image: '/placeholder-product.svg',
+		title: 'Artwork 03',
+		category: 'Character Art',
+	},
+
+	{
+		image: '/placeholder-product.svg',
+		title: 'Artwork 04',
+		category: 'Character Art',
+	},
+
+	{
+		image: '/placeholder-product.svg',
+		title: 'Artwork 05',
+		category: 'Illustration',
+	},
+
+	{
+		image: '/placeholder-product.svg',
+		title: 'Artwork 06',
+		category: 'Personal Work',
+	},
+];
+---
+
+<!doctype html>
+
+<html lang="en">
+
+	<head>
+
+		<BaseHead
+			title="Gallery"
+			description="A collection of my artwork and illustrations."
+		/>
+
+	</head>
+
+
+	<body>
+
+		<Header />
+
+
+		<main class="gallery-page">
+
+
+			<!-- =========================
+			     PAGE HEADING
+			     ========================= -->
+
+			<section class="page-heading">
+
+				<p class="eyebrow">
+					✦ MY ARTWORK ✦
+				</p>
+
+				<h1>
+					Gallery
+				</h1>
+
+				<p class="page-description">
+					A collection of illustrations,
+					character art and other things
+					I have created.
+				</p>
+
+			</section>
+
+
+
+			<!-- =========================
+			     GALLERY
+			     ========================= -->
+
+			<section class="gallery-grid">
+
+				{gallery.map((artwork, index) => (
+
+					<button
+						type="button"
+						class="gallery-item"
+						data-index={index}
+						aria-label={`View ${artwork.title}`}
+					>
+
+						<div class="image-wrapper">
+
+							<img
+								src={artwork.image}
+								alt={artwork.title}
+								loading="lazy"
+							/>
+
+						</div>
+
+
+						<div class="artwork-info">
+
+							<span>
+								{artwork.category}
+							</span>
+
+							<h2>
+								{artwork.title}
+							</h2>
+
+						</div>
+
+					</button>
+
+				))}
+
+			</section>
+
+
+		</main>
+
+
+
+		<!-- =========================
+		     LIGHTBOX
+		     ========================= -->
+
+		<div
+			id="gallery-lightbox"
+			class="lightbox"
+			aria-hidden="true"
+		>
+
+			<button
+				type="button"
+				id="lightbox-close"
+				class="lightbox-close"
+				aria-label="Close image"
+			>
+				×
+			</button>
+
+
+			<button
+				type="button"
+				id="lightbox-previous"
+				class="lightbox-navigation previous"
+				aria-label="Previous image"
+			>
+				‹
+			</button>
+
+
+			<div class="lightbox-content">
+
+				<img
+					id="lightbox-image"
+					src=""
+					alt=""
+				/>
+
+				<div
+					id="lightbox-caption"
+					class="lightbox-caption"
+				>
+				</div>
+
+			</div>
+
+
+			<button
+				type="button"
+				id="lightbox-next"
+				class="lightbox-navigation next"
+				aria-label="Next image"
+			>
+				›
+			</button>
+
+		</div>
+
+
+
+		<Footer />
+
+
+
+		<script define:vars={{ gallery }}>
+
+			// =========================
+			// ELEMENTS
+			// =========================
+
+			const lightbox =
+				document.querySelector(
+					'#gallery-lightbox'
+				);
+
+
+			const lightboxImage =
+				document.querySelector(
+					'#lightbox-image'
+				);
+
+
+			const lightboxCaption =
+				document.querySelector(
+					'#lightbox-caption'
+				);
+
+
+			const lightboxClose =
+				document.querySelector(
+					'#lightbox-close'
+				);
+
+
+			const lightboxPrevious =
+				document.querySelector(
+					'#lightbox-previous'
+				);
+
+
+			const lightboxNext =
+				document.querySelector(
+					'#lightbox-next'
+				);
+
+
+			const galleryItems =
+				document.querySelectorAll(
+					'.gallery-item'
+				);
+
+
+
+			let currentIndex = 0;
+
+
+
+			// =========================
+			// SHOW IMAGE
+			// =========================
+
+			function showImage(index) {
+
+				currentIndex =
+					(
+						index +
+						gallery.length
+					) %
+					gallery.length;
+
+
+				const artwork =
+					gallery[currentIndex];
+
+
+				if (lightboxImage) {
+
+					lightboxImage.src =
+						artwork.image;
+
+					lightboxImage.alt =
+						artwork.title;
+
+				}
+
+
+				if (lightboxCaption) {
+
+					lightboxCaption.innerHTML = `
+
+						<strong>
+							${artwork.title}
+						</strong>
+
+						<span>
+							${artwork.category}
+						</span>
+
+					`;
+
+				}
+
+			}
+
+
+
+			// =========================
+			// OPEN
+			// =========================
+
+			function openLightbox(index) {
+
+				showImage(index);
+
+
+				lightbox?.classList.add(
+					'open'
+				);
+
+
+				lightbox?.setAttribute(
+					'aria-hidden',
+					'false'
+				);
+
+
+				document.body.style.overflow =
+					'hidden';
+
+			}
+
+
+
+			// =========================
+			// CLOSE
+			// =========================
+
+			function closeLightbox() {
+
+				lightbox?.classList.remove(
+					'open'
+				);
+
+
+				lightbox?.setAttribute(
+					'aria-hidden',
+					'true'
+				);
+
+
+				document.body.style.overflow =
+					'';
+
+			}
+
+
+
+			// =========================
+			// GALLERY ITEMS
+			// =========================
+
+			galleryItems.forEach(
+				(item) => {
+
+					item.addEventListener(
+						'click',
+						() => {
+
+							const index =
+								Number(
+									item.dataset.index
+								);
+
+
+							openLightbox(
+								index
+							);
+
+						}
+					);
+
+				}
+			);
+
+
+
+			// =========================
+			// CONTROLS
+			// =========================
+
+			lightboxClose?.addEventListener(
+				'click',
+				closeLightbox
+			);
+
+
+			lightboxPrevious?.addEventListener(
+				'click',
+				() => {
+
+					showImage(
+						currentIndex - 1
+					);
+
+				}
+			);
+
+
+			lightboxNext?.addEventListener(
+				'click',
+				() => {
+
+					showImage(
+						currentIndex + 1
+					);
+
+				}
+			);
+
+
+
+			// =========================
+			// BACKGROUND CLICK
+			// =========================
+
+			lightbox?.addEventListener(
+				'click',
+				(event) => {
+
+					if (
+						event.target ===
+						lightbox
+					) {
+
+						closeLightbox();
+
+					}
+
+				}
+			);
+
+
+
+			// =========================
+			// KEYBOARD
+			// =========================
+
+			document.addEventListener(
+				'keydown',
+				(event) => {
+
+					if (
+						!lightbox?.classList.contains(
+							'open'
+						)
+					) {
+
+						return;
+
+					}
+
+
+					if (
+						event.key ===
+						'Escape'
+					) {
+
+						closeLightbox();
+
+					}
+
+
+					if (
+						event.key ===
+						'ArrowLeft'
+					) {
+
+						showImage(
+							currentIndex - 1
+						);
+
+					}
+
+
+					if (
+						event.key ===
+						'ArrowRight'
+					) {
+
+						showImage(
+							currentIndex + 1
+						);
+
+					}
+
+				}
+			);
+
+		</script>
+
+	</body>
+
+</html>
+
+
+
+<style is:global>
+
+	/* ========================================
+	   PAGE
+	   ======================================== */
+
+	.gallery-page {
+
+		width:
+			100%;
+
+		max-width:
+			1100px;
+
+		margin:
+			0 auto;
+
+		padding:
+			4rem 1.5rem 7rem;
+
+		box-sizing:
+			border-box;
+
+	}
+
+
+
+	/* ========================================
+	   HEADING
+	   ======================================== */
+
+	.page-heading {
+
+		text-align:
+			center;
+
+		margin-bottom:
+			3.5rem;
+
+	}
+
+
+	.eyebrow {
+
+		margin:
+			0 0 0.8rem;
+
+		color:
+			var(--pink-light);
+
+		font-size:
+			0.72rem;
+
+		font-weight:
+			700;
+
+		letter-spacing:
+			0.16em;
+
+		text-shadow:
+			0 0 12px
+			rgba(255, 100, 220, 0.7);
+
+	}
+
+
+	.page-heading h1 {
+
+		margin:
+			0;
+
+		font-size:
+			clamp(
+				3rem,
+				8vw,
+				5rem
+			);
+
+		line-height:
+			1;
+
+	}
+
+
+	.page-description {
+
+		max-width:
+			550px;
+
+		margin:
+			1.2rem auto 0;
+
+		color:
+			var(--text-muted);
+
+		font-size:
+			0.95rem;
+
+		line-height:
+			1.6;
+
+	}
+
+
+
+	/* ========================================
+	   GALLERY GRID
+	   ======================================== */
+
+	.gallery-grid {
+
+		display:
+			grid;
+
+		grid-template-columns:
+			repeat(
+				3,
+				1fr
+			);
+
+		gap:
+			1.2rem;
+
+	}
+
+
+
+	/* ========================================
+	   GALLERY ITEM
+	   ======================================== */
+
+	.gallery-item {
+
+		position:
+			relative;
+
+		display:
+			block;
+
+		width:
+			100%;
+
+		padding:
+			0;
+
+		overflow:
+			hidden;
+
+		border:
+			1px solid
+			rgba(
+				255,
+				130,
+				225,
+				0.3
+			);
+
+		border-radius:
+			20px;
+
+		background:
+			linear-gradient(
+				145deg,
+				rgba(
+					180,
+					20,
+					150,
+					0.13
+				),
+				rgba(
+					40,
+					10,
+					50,
+					0.25
+				)
+			);
+
+		color:
+			white;
+
+		font-family:
+			inherit;
+
+		text-align:
+			left;
+
+		cursor:
+			pointer;
+
+		box-shadow:
+			0 0 15px
+			rgba(
+				255,
+				80,
+				200,
+				0.06
+			);
+
+		transition:
+			transform 0.25s ease,
+			border-color 0.25s ease,
+			box-shadow 0.25s ease;
+
+	}
+
+
+	.gallery-item:hover {
+
+		transform:
+			translateY(-5px);
+
+		border-color:
+			rgba(
+				255,
+				130,
+				225,
+				0.85
+			);
+
+		box-shadow:
+			0 0 25px
+			rgba(
+				255,
+				80,
+				200,
+				0.3
+			),
+			0 0 55px
+			rgba(
+				255,
+				80,
+				200,
+				0.1
+			);
+
+	}
+
+
+
+	/* ========================================
+	   IMAGE
+	   ======================================== */
+
+	.image-wrapper {
+
+		width:
+			100%;
+
+		aspect-ratio:
+			4 / 5;
+
+		overflow:
+			hidden;
+
+		background:
+			rgba(
+				255,
+				255,
+				255,
+				0.025
+			);
+
+	}
+
+
+	.image-wrapper img {
+
+		display:
+			block;
+
+		width:
+			100%;
+
+		height:
+			100%;
+
+		object-fit:
+			cover;
+
+		transition:
+			transform 0.4s ease;
+
+	}
+
+
+	.gallery-item:hover
+	.image-wrapper img {
+
+		transform:
+			scale(1.035);
+
+	}
+
+
+
+	/* ========================================
+	   ARTWORK INFO
+	   ======================================== */
+
+	.artwork-info {
+
+		padding:
+			0.9rem
+			1rem
+			1rem;
+
+	}
+
+
+	.artwork-info span {
+
+		display:
+			block;
+
+		margin-bottom:
+			0.25rem;
+
+		color:
+			var(--pink-light);
+
+		font-size:
+			0.65rem;
+
+		font-weight:
+			700;
+
+		letter-spacing:
+			0.1em;
+
+		text-transform:
+			uppercase;
+
+	}
+
+
+	.artwork-info h2 {
+
+		margin:
+			0;
+
+		font-size:
+			0.95rem;
+
+		font-weight:
+			600;
+
+	}
+
+
+
+	/* ========================================
+	   LIGHTBOX
+	   ======================================== */
+
+	.lightbox {
+
+		position:
+			fixed;
+
+		inset:
+			0;
+
+		z-index:
+			9999;
+
+		display:
+			flex;
+
+		align-items:
+			center;
+
+		justify-content:
+			center;
+
+		padding:
+			2rem;
+
+		background:
+			rgba(
+				10,
+				3,
+				12,
+				0.92
+			);
+
+		backdrop-filter:
+			blur(12px);
+
+		opacity:
+			0;
+
+		visibility:
+			hidden;
+
+		pointer-events:
+			none;
+
+		transition:
+			opacity 0.2s ease,
+			visibility 0.2s ease;
+
+	}
+
+
+	.lightbox.open {
+
+		opacity:
+			1;
+
+		visibility:
+			visible;
+
+		pointer-events:
+			auto;
+
+	}
+
+
+
+	/* ========================================
+	   LIGHTBOX CONTENT
+	   ======================================== */
+
+	.lightbox-content {
+
+		position:
+			relative;
+
+		max-width:
+			min(
+				900px,
+				85vw
+			);
+
+		max-height:
+			90vh;
+
+		display:
+			flex;
+
+		flex-direction:
+			column;
+
+		align-items:
+			center;
+
+	}
+
+
+	.lightbox-content img {
+
+		display:
+			block;
+
+		max-width:
+			100%;
+
+		max-height:
+			80vh;
+
+		width:
+			auto;
+
+		height:
+			auto;
+
+		object-fit:
+			contain;
+
+		border-radius:
+			10px;
+
+		box-shadow:
+			0 0 35px
+			rgba(
+				255,
+				80,
+				200,
+				0.2
+			);
+
+	}
+
+
+
+	/* ========================================
+	   CAPTION
+	   ======================================== */
+
+	.lightbox-caption {
+
+		display:
+			flex;
+
+		align-items:
+			center;
+
+		gap:
+			0.7rem;
+
+		margin-top:
+			0.8rem;
+
+		color:
+			white;
+
+		font-size:
+			0.8rem;
+
+	}
+
+
+	.lightbox-caption span {
+
+		color:
+			var(--pink-light);
+
+		font-size:
+			0.7rem;
+
+	}
+
+
+
+	/* ========================================
+	   LIGHTBOX CLOSE
+	   ======================================== */
+
+	.lightbox-close {
+
+		position:
+			absolute;
+
+		top:
+			1.2rem;
+
+		right:
+			1.5rem;
+
+		z-index:
+			2;
+
+		width:
+			42px;
+
+		height:
+			42px;
+
+		border:
+			1px solid
+			rgba(
+				255,
+				130,
+				225,
+				0.4
+			);
+
+		border-radius:
+			50%;
+
+		background:
+			rgba(
+				255,
+				255,
+				255,
+				0.05
+			);
+
+		color:
+			white;
+
+		font-family:
+			inherit;
+
+		font-size:
+			1.7rem;
+
+		line-height:
+			1;
+
+		cursor:
+			pointer;
+
+		transition:
+			background 0.2s ease,
+			box-shadow 0.2s ease;
+
+	}
+
+
+	.lightbox-close:hover {
+
+		background:
+			rgba(
+				255,
+				70,
+				200,
+				0.15
+			);
+
+		box-shadow:
+			0 0 20px
+			rgba(
+				255,
+				80,
+				200,
+				0.25
+			);
+
+	}
+
+
+
+	/* ========================================
+	   LIGHTBOX NAVIGATION
+	   ======================================== */
+
+	.lightbox-navigation {
+
+		position:
+			absolute;
+
+		top:
+			50%;
+
+		transform:
+			translateY(-50%);
+
+		z-index:
+			2;
+
+		width:
+			48px;
+
+		height:
+			48px;
+
+		border:
+			1px solid
+			rgba(
+				255,
+				130,
+				225,
+				0.4
+			);
+
+		border-radius:
+			50%;
+
+		background:
+			rgba(
+				255,
+				255,
+				255,
+				0.05
+			);
+
+		color:
+			white;
+
+		font-family:
+			inherit;
+
+		font-size:
+			2rem;
+
+		line-height:
+			1;
+
+		cursor:
+			pointer;
+
+		transition:
+			background 0.2s ease,
+			box-shadow 0.2s ease;
+
+	}
+
+
+	.lightbox-navigation:hover {
+
+		background:
+			rgba(
+				255,
+				70,
+				200,
+				0.15
+			);
+
+		box-shadow:
+			0 0 20px
+			rgba(
+				255,
+				80,
+				200,
+				0.25
+			);
+
+	}
+
+
+	.lightbox-navigation.previous {
+
+		left:
+			1.5rem;
+
+	}
+
+
+	.lightbox-navigation.next {
+
+		right:
+			1.5rem;
+
+	}
+
+
+
+	/* ========================================
+	   TABLET
+	   ======================================== */
+
+	@media (max-width: 850px) {
+
+		.gallery-grid {
+
+			grid-template-columns:
+				repeat(
+					2,
+					1fr
+				);
+
+		}
+
+	}
+
+
+
+	/* ========================================
+	   MOBILE
+	   ======================================== */
+
+	@media (max-width: 600px) {
+
+		.gallery-page {
+
+			padding:
+				2.5rem 0.8rem
+				4rem;
+
+		}
+
+
+		.page-heading {
+
+			margin-bottom:
+				2.5rem;
+
+		}
+
+
+		.page-heading h1 {
+
+			font-size:
+				2.8rem;
+
+		}
+
+
+		.gallery-grid {
+
+			grid-template-columns:
+				repeat(
+					2,
+					minmax(
+						0,
+						1fr
+					)
+				);
+
+			gap:
+				0.7rem;
+
+		}
+
+
+		.gallery-item {
+
+			border-radius:
+				14px;
+
+		}
+
+
+		.image-wrapper {
+
+			aspect-ratio:
+				3 / 4;
+
+		}
+
+
+		.artwork-info {
+
+			padding:
+				0.65rem
+				0.7rem
+				0.75rem;
+
+		}
+
+
+		.artwork-info span {
+
+			font-size:
+				0.55rem;
+
+		}
+
+
+		.artwork-info h2 {
+
+			font-size:
+				0.72rem;
+
+		}
+
+
+		.lightbox {
+
+			padding:
+				1rem;
+
+		}
+
+
+		.lightbox-content {
+
+			max-width:
+				92vw;
+
+		}
+
+
+		.lightbox-content img {
+
+			max-height:
+				78vh;
+
+		}
+
+
+		.lightbox-navigation {
+
+			width:
+				38px;
+
+			height:
+				38px;
+
+			font-size:
+				1.5rem;
+
+		}
+
+
+		.lightbox-navigation.previous {
+
+			left:
+				0.5rem;
+
+		}
+
+
+		.lightbox-navigation.next {
+
+			right:
+				0.5rem;
+
+		}
+
+
+		.lightbox-close {
+
+			top:
+				0.7rem;
+
+			right:
+				0.7rem;
+
+		}
+
+	}
+
+</style>
