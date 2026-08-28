@@ -1,9 +1,10 @@
 export const products = [
+
 	{
 		slug: 'wine-pony-cheers',
 		name: 'Wine Pony Cheers',
-		category: 'Bottle Opener',
-		price: 10,
+		category: 'bottle-openers',
+		price: 12,
 		stock: 1,
 		image: '/placeholder-product.svg',
 	},
@@ -11,16 +12,17 @@ export const products = [
 	{
 		slug: 'dont-drink-and-fly',
 		name: "Don't Drink and Fly",
-		category: 'Bottle Opener',
-		price: 10,
+		category: 'bottle-openers',
+		price: 12,
 		stock: 1,
 		image: '/placeholder-product.svg',
 	},
 
+
 	{
 		slug: 'pony-princesses',
 		name: 'Pony Princesses',
-		category: 'Bucket Hat',
+		category: 'bucket-hats',
 		price: 35,
 		stock: 1,
 		image: '/placeholder-product.svg',
@@ -29,7 +31,7 @@ export const products = [
 	{
 		slug: 'six-best-friends',
 		name: 'Six Best Friends',
-		category: 'Bucket Hat',
+		category: 'bucket-hats',
 		price: 35,
 		stock: 1,
 		image: '/placeholder-product.svg',
@@ -38,7 +40,7 @@ export const products = [
 	{
 		slug: 'musician-ponies',
 		name: 'Musician Ponies',
-		category: 'Bucket Hat',
+		category: 'bucket-hats',
 		price: 35,
 		stock: 1,
 		image: '/placeholder-product.svg',
@@ -47,26 +49,28 @@ export const products = [
 	{
 		slug: 'villains-of-harmony',
 		name: 'Villains of Harmony',
-		category: 'Bucket Hat',
+		category: 'bucket-hats',
 		price: 35,
 		stock: 1,
 		image: '/placeholder-product.svg',
 	},
 
+
 	{
 		slug: 'socialist-pony-propaganda',
 		name: 'Socialist Pony Propaganda',
-		category: 'Outdoor Poster',
-		price: 20,
+		category: 'posters',
+		price: 15,
 		stock: 1,
 		image: '/placeholder-product.svg',
 	},
 
+
 	{
 		slug: 'drama-unicorn',
 		name: 'Drama Unicorn',
-		category: 'Sticker',
-		price: 3,
+		category: 'stickers',
+		price: 5,
 		stock: 1,
 		image: '/placeholder-product.svg',
 	},
@@ -74,9 +78,10 @@ export const products = [
 	{
 		slug: 'cider-dash',
 		name: 'Cider Dash',
-		category: 'Sticker',
-		price: 3,
+		category: 'stickers',
+		price: 5,
 		stock: 1,
 		image: '/placeholder-product.svg',
 	},
+
 ];
