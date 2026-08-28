@@ -84,61 +84,61 @@ const { product, category } = Astro.props;
 			<section class="product-layout">
 
 
-				<!-- IMAGE -->
+				<!-- PRODUCT IMAGE GALLERY -->
 
 				<div class="product-gallery">
 
-	<!-- MAIN IMAGE -->
+					<!-- MAIN IMAGE -->
 
-	<button
-		type="button"
-		class="main-product-image"
-		id="main-image-button"
-		aria-label={`View ${product.name} image`}
-	>
+					<button
+						type="button"
+						class="main-product-image"
+						id="main-image-button"
+						aria-label={`View ${product.name} image`}
+					>
 
-		<img
-			id="main-product-image"
-			src={product.images[0]}
-			alt={product.name}
-		/>
+						<img
+							id="main-product-image"
+							src={product.images[0]}
+							alt={product.name}
+						/>
 
-		<span class="zoom-indicator">
-			↗
-		</span>
+						<span class="zoom-indicator">
+							↗
+						</span>
 
-	</button>
+					</button>
 
 
-	<!-- THUMBNAILS -->
+					<!-- THUMBNAILS -->
 
-	<div
-		class="product-thumbnails"
-		role="list"
-	>
+					<div
+						class="product-thumbnails"
+						role="list"
+					>
 
-		{product.images.map((image, index) => (
+						{product.images.map((image, index) => (
 
-			<button
-				type="button"
-				class:list={{ active: index === 0 }}
-				class="product-thumbnail"
-				data-index={index}
-				aria-label={`View image ${index + 1}`}
-			>
+							<button
+								type="button"
+								class:list={{ active: index === 0 }}
+								class="product-thumbnail"
+								data-index={index}
+								aria-label={`View image ${index + 1}`}
+							>
 
-				<img
-					src={image}
-					alt={`${product.name} image ${index + 1}`}
-				/>
+								<img
+									src={image}
+									alt={`${product.name} image ${index + 1}`}
+								/>
 
-			</button>
+							</button>
 
-		))}
+						))}
 
-	</div>
+					</div>
 
-</div>
+				</div>
 
 
 
@@ -303,70 +303,77 @@ const { product, category } = Astro.props;
 		</main>
 
 
-<!-- LIGHTBOX -->
 
-<div
-	id="image-lightbox"
-	class="image-lightbox"
-	aria-hidden="true"
->
-
-	<button
-		type="button"
-		class="lightbox-close"
-		id="lightbox-close"
-		aria-label="Close image viewer"
-	>
-		×
-	</button>
-
-
-	<button
-		type="button"
-		class="lightbox-arrow lightbox-previous"
-		id="lightbox-previous"
-		aria-label="Previous image"
-	>
-		←
-	</button>
-
-
-	<div class="lightbox-content">
-
-		<img
-			id="lightbox-image"
-			src={product.images[0]}
-			alt={product.name}
-		/>
+		<!-- IMAGE LIGHTBOX -->
 
 		<div
-			id="lightbox-counter"
-			class="lightbox-counter"
+			id="image-lightbox"
+			class="image-lightbox"
+			aria-hidden="true"
 		>
-			1 / {product.images.length}
+
+			<button
+				type="button"
+				class="lightbox-close"
+				id="lightbox-close"
+				aria-label="Close image viewer"
+			>
+				×
+			</button>
+
+
+			<button
+				type="button"
+				class="lightbox-arrow lightbox-previous"
+				id="lightbox-previous"
+				aria-label="Previous image"
+			>
+				←
+			</button>
+
+
+			<div class="lightbox-content">
+
+				<img
+					id="lightbox-image"
+					src={product.images[0]}
+					alt={product.name}
+				/>
+
+				<div
+					id="lightbox-counter"
+					class="lightbox-counter"
+				>
+					1 / {product.images.length}
+				</div>
+
+			</div>
+
+
+			<button
+				type="button"
+				class="lightbox-arrow lightbox-next"
+				id="lightbox-next"
+				aria-label="Next image"
+			>
+				→
+			</button>
+
 		</div>
 
-	</div>
 
 
-	<button
-		type="button"
-		class="lightbox-arrow lightbox-next"
-		id="lightbox-next"
-		aria-label="Next image"
-	>
-		→
-	</button>
-
-</div>
+		<Footer />
 
 
-<Footer />
 
+		<!-- SCRIPTS -->
 
-		<!-- QUANTITY SCRIPT -->
+		<script define:vars={{ productImages: product.images }}>
 
-		<script>
+			// =========================
+			// QUANTITY
+			// =========================
 
 			const minus =
 				document.querySelector('#quantity-minus');
@@ -393,8 +400,10 @@ const { product, category } = Astro.props;
 						currentQuantity--;
 
 						if (quantity) {
+
 							quantity.textContent =
 								String(currentQuantity);
+
 						}
 
 					}
@@ -410,8 +419,10 @@ const { product, category } = Astro.props;
 					currentQuantity++;
 
 					if (quantity) {
+
 						quantity.textContent =
 							String(currentQuantity);
+
 					}
 
 				}
@@ -428,225 +439,254 @@ const { product, category } = Astro.props;
 
 				}
 			);
-// =========================
-// PRODUCT IMAGE GALLERY
-// =========================
-
-const productImages = [
-	{product.images.map((image) => `'${image}'`).join(',\n\t\t\t')}
-];
-
-const mainImage =
-	document.querySelector('#main-product-image');
-
-const mainImageButton =
-	document.querySelector('#main-image-button');
-
-const thumbnails =
-	document.querySelectorAll('.product-thumbnail');
-
-const lightbox =
-	document.querySelector('#image-lightbox');
-
-const lightboxImage =
-	document.querySelector('#lightbox-image');
-
-const lightboxCounter =
-	document.querySelector('#lightbox-counter');
-
-const lightboxClose =
-	document.querySelector('#lightbox-close');
-
-const lightboxPrevious =
-	document.querySelector('#lightbox-previous');
-
-const lightboxNext =
-	document.querySelector('#lightbox-next');
-
-
-let currentImage = 0;
 
 
 
-function showImage(index) {
+			// =========================
+			// PRODUCT IMAGE GALLERY
+			// =========================
 
-	currentImage =
-		(index + productImages.length)
-		% productImages.length;
+			const mainImage =
+				document.querySelector('#main-product-image');
+
+			const mainImageButton =
+				document.querySelector('#main-image-button');
+
+			const thumbnails =
+				document.querySelectorAll('.product-thumbnail');
+
+			const lightbox =
+				document.querySelector('#image-lightbox');
+
+			const lightboxImage =
+				document.querySelector('#lightbox-image');
+
+			const lightboxCounter =
+				document.querySelector('#lightbox-counter');
+
+			const lightboxClose =
+				document.querySelector('#lightbox-close');
+
+			const lightboxPrevious =
+				document.querySelector('#lightbox-previous');
+
+			const lightboxNext =
+				document.querySelector('#lightbox-next');
 
 
-	if (mainImage) {
-
-		mainImage.src =
-			productImages[currentImage];
-
-	}
-
-
-	if (lightboxImage) {
-
-		lightboxImage.src =
-			productImages[currentImage];
-
-	}
-
-
-	if (lightboxCounter) {
-
-		lightboxCounter.textContent =
-			`${currentImage + 1} / ${productImages.length}`;
-
-	}
-
-
-	thumbnails.forEach((thumbnail, index) => {
-
-		thumbnail.classList.toggle(
-			'active',
-			index === currentImage
-		);
-
-	});
-
-}
+			let currentImage = 0;
 
 
 
-thumbnails.forEach((thumbnail) => {
+			function showImage(index) {
 
-	thumbnail.addEventListener(
-		'click',
-		() => {
+				currentImage =
+					(index + productImages.length)
+					% productImages.length;
 
-			const index =
-				Number(
-					thumbnail.getAttribute(
-						'data-index'
-					)
+
+				if (mainImage) {
+
+					mainImage.src =
+						productImages[currentImage];
+
+				}
+
+
+				if (lightboxImage) {
+
+					lightboxImage.src =
+						productImages[currentImage];
+
+				}
+
+
+				if (lightboxCounter) {
+
+					lightboxCounter.textContent =
+						`${currentImage + 1} / ${productImages.length}`;
+
+				}
+
+
+				thumbnails.forEach(
+					(thumbnail, index) => {
+
+						thumbnail.classList.toggle(
+							'active',
+							index === currentImage
+						);
+
+					}
 				);
 
-			showImage(index);
-
-		}
-	);
-
-});
+			}
 
 
 
-function openLightbox() {
+			// =========================
+			// THUMBNAILS
+			// =========================
 
-	showImage(currentImage);
+			thumbnails.forEach(
+				(thumbnail) => {
 
-	lightbox?.classList.add('open');
+					thumbnail.addEventListener(
+						'click',
+						() => {
 
-	lightbox?.setAttribute(
-		'aria-hidden',
-		'false'
-	);
+							const index =
+								Number(
+									thumbnail.getAttribute(
+										'data-index'
+									)
+								);
 
-	document.body.style.overflow =
-		'hidden';
+							showImage(index);
 
-}
+						}
+					);
 
-
-
-function closeLightbox() {
-
-	lightbox?.classList.remove('open');
-
-	lightbox?.setAttribute(
-		'aria-hidden',
-		'true'
-	);
-
-	document.body.style.overflow =
-		'';
-
-}
+				}
+			);
 
 
 
-mainImageButton?.addEventListener(
-	'click',
-	openLightbox
-);
+			// =========================
+			// LIGHTBOX
+			// =========================
 
+			function openLightbox() {
 
-lightboxClose?.addEventListener(
-	'click',
-	closeLightbox
-);
+				showImage(currentImage);
 
+				lightbox?.classList.add('open');
 
-lightboxPrevious?.addEventListener(
-	'click',
-	() => {
+				lightbox?.setAttribute(
+					'aria-hidden',
+					'false'
+				);
 
-		showImage(currentImage - 1);
+				document.body.style.overflow =
+					'hidden';
 
-	}
-);
-
-
-lightboxNext?.addEventListener(
-	'click',
-	() => {
-
-		showImage(currentImage + 1);
-
-	}
-);
+			}
 
 
 
-lightbox?.addEventListener(
-	'click',
-	(event) => {
+			function closeLightbox() {
 
-		if (event.target === lightbox) {
+				lightbox?.classList.remove('open');
 
-			closeLightbox();
+				lightbox?.setAttribute(
+					'aria-hidden',
+					'true'
+				);
 
-		}
+				document.body.style.overflow =
+					'';
 
-	}
-);
-
-
-
-document.addEventListener(
-	'keydown',
-	(event) => {
-
-		if (!lightbox?.classList.contains('open')) {
-			return;
-		}
+			}
 
 
-		if (event.key === 'Escape') {
 
-			closeLightbox();
-
-		}
-
-
-		if (event.key === 'ArrowLeft') {
-
-			showImage(currentImage - 1);
-
-		}
+			mainImageButton?.addEventListener(
+				'click',
+				openLightbox
+			);
 
 
-		if (event.key === 'ArrowRight') {
+			lightboxClose?.addEventListener(
+				'click',
+				closeLightbox
+			);
 
-			showImage(currentImage + 1);
 
-		}
+			lightboxPrevious?.addEventListener(
+				'click',
+				() => {
 
-	}
-);
+					showImage(
+						currentImage - 1
+					);
+
+				}
+			);
+
+
+			lightboxNext?.addEventListener(
+				'click',
+				() => {
+
+					showImage(
+						currentImage + 1
+					);
+
+				}
+			);
+
+
+
+			// Close by clicking the background
+
+			lightbox?.addEventListener(
+				'click',
+				(event) => {
+
+					if (event.target === lightbox) {
+
+						closeLightbox();
+
+					}
+
+				}
+			);
+
+
+
+			// =========================
+			// KEYBOARD CONTROLS
+			// =========================
+
+			document.addEventListener(
+				'keydown',
+				(event) => {
+
+					if (
+						!lightbox?.classList.contains('open')
+					) {
+
+						return;
+
+					}
+
+
+					if (event.key === 'Escape') {
+
+						closeLightbox();
+
+					}
+
+
+					if (event.key === 'ArrowLeft') {
+
+						showImage(
+							currentImage - 1
+						);
+
+					}
+
+
+					if (event.key === 'ArrowRight') {
+
+						showImage(
+							currentImage + 1
+						);
+
+					}
+
+				}
+			);
 
 		</script>
 
@@ -744,16 +784,35 @@ document.addEventListener(
 
 
 	/* =========================
-	   PRODUCT IMAGE
+	   PRODUCT GALLERY
 	   ========================= */
 
-	.product-image {
+	.product-gallery {
+
+		width:
+			100%;
+
+	}
+
+
+
+	/* =========================
+	   MAIN PRODUCT IMAGE
+	   ========================= */
+
+	.main-product-image {
+
+		position:
+			relative;
 
 		width:
 			100%;
 
 		aspect-ratio:
 			4 / 3;
+
+		padding:
+			0;
 
 		overflow:
 			hidden;
@@ -772,10 +831,190 @@ document.addEventListener(
 			0 0 25px
 			rgba(255, 80, 200, 0.1);
 
+		cursor:
+			zoom-in;
+
 	}
 
 
-	.product-image img {
+	.main-product-image img {
+
+		width:
+			100%;
+
+		height:
+			100%;
+
+		display:
+			block;
+
+		object-fit:
+			cover;
+
+		transition:
+			transform 0.3s ease;
+
+	}
+
+
+	.main-product-image:hover img {
+
+		transform:
+			scale(1.03);
+
+	}
+
+
+
+	/* =========================
+	   ZOOM INDICATOR
+	   ========================= */
+
+	.zoom-indicator {
+
+		position:
+			absolute;
+
+		right:
+			1rem;
+
+		top:
+			1rem;
+
+		width:
+			38px;
+
+		height:
+			38px;
+
+		display:
+			flex;
+
+		align-items:
+			center;
+
+		justify-content:
+			center;
+
+		border-radius:
+			50%;
+
+		border:
+			1px solid
+			rgba(255, 130, 225, 0.5);
+
+		background:
+			rgba(20, 5, 25, 0.75);
+
+		color:
+			white;
+
+		font-size:
+			1.1rem;
+
+		backdrop-filter:
+			blur(8px);
+
+	}
+
+
+
+	/* =========================
+	   THUMBNAILS
+	   ========================= */
+
+	.product-thumbnails {
+
+		display:
+			flex;
+
+		gap:
+			0.8rem;
+
+		margin-top:
+			0.8rem;
+
+		overflow-x:
+			auto;
+
+		padding-bottom:
+			0.3rem;
+
+		scrollbar-width:
+			thin;
+
+	}
+
+
+	.product-thumbnail {
+
+		flex:
+			0 0 80px;
+
+		width:
+			80px;
+
+		height:
+			80px;
+
+		padding:
+			0;
+
+		overflow:
+			hidden;
+
+		border-radius:
+			12px;
+
+		border:
+			1px solid
+			rgba(255, 130, 225, 0.25);
+
+		background:
+			rgba(255, 255, 255, 0.03);
+
+		cursor:
+			pointer;
+
+		opacity:
+			0.65;
+
+		transition:
+			opacity 0.2s ease,
+			border-color 0.2s ease,
+			box-shadow 0.2s ease,
+			transform 0.2s ease;
+
+	}
+
+
+	.product-thumbnail:hover {
+
+		opacity:
+			1;
+
+		transform:
+			translateY(-2px);
+
+	}
+
+
+	.product-thumbnail.active {
+
+		opacity:
+			1;
+
+		border-color:
+			rgba(255, 100, 220, 0.9);
+
+		box-shadow:
+			0 0 15px
+			rgba(255, 80, 200, 0.3);
+
+	}
+
+
+	.product-thumbnail img {
 
 		width:
 			100%;
@@ -1117,6 +1356,261 @@ document.addEventListener(
 
 
 	/* =========================
+	   LIGHTBOX
+	   ========================= */
+
+	.image-lightbox {
+
+		position:
+			fixed;
+
+		inset:
+			0;
+
+		z-index:
+			1000;
+
+		display:
+			flex;
+
+		align-items:
+			center;
+
+		justify-content:
+			center;
+
+		padding:
+			2rem;
+
+		background:
+			rgba(5, 2, 8, 0.92);
+
+		backdrop-filter:
+			blur(12px);
+
+		opacity:
+			0;
+
+		pointer-events:
+			none;
+
+		transition:
+			opacity 0.2s ease;
+
+	}
+
+
+	.image-lightbox.open {
+
+		opacity:
+			1;
+
+		pointer-events:
+			auto;
+
+	}
+
+
+	.lightbox-content {
+
+		position:
+			relative;
+
+		max-width:
+			min(1100px, 90vw);
+
+		max-height:
+			90vh;
+
+		display:
+			flex;
+
+		flex-direction:
+			column;
+
+		align-items:
+			center;
+
+	}
+
+
+	.lightbox-content img {
+
+		max-width:
+			100%;
+
+		max-height:
+			82vh;
+
+		display:
+			block;
+
+		object-fit:
+			contain;
+
+		border-radius:
+			16px;
+
+		box-shadow:
+			0 0 50px
+			rgba(255, 80, 200, 0.15);
+
+	}
+
+
+
+	/* =========================
+	   LIGHTBOX CLOSE
+	   ========================= */
+
+	.lightbox-close {
+
+		position:
+			fixed;
+
+		top:
+			1.5rem;
+
+		right:
+			1.5rem;
+
+		width:
+			48px;
+
+		height:
+			48px;
+
+		border-radius:
+			50%;
+
+		border:
+			1px solid
+			rgba(255, 130, 225, 0.5);
+
+		background:
+			rgba(30, 5, 35, 0.8);
+
+		color:
+			white;
+
+		font-size:
+			1.8rem;
+
+		cursor:
+			pointer;
+
+		z-index:
+			1002;
+
+	}
+
+
+	.lightbox-close:hover {
+
+		background:
+			rgba(255, 70, 200, 0.15);
+
+		border-color:
+			rgba(255, 130, 225, 0.9);
+
+	}
+
+
+
+	/* =========================
+	   LIGHTBOX ARROWS
+	   ========================= */
+
+	.lightbox-arrow {
+
+		position:
+			fixed;
+
+		top:
+			50%;
+
+		transform:
+			translateY(-50%);
+
+		width:
+			50px;
+
+		height:
+			50px;
+
+		border-radius:
+			50%;
+
+		border:
+			1px solid
+			rgba(255, 130, 225, 0.5);
+
+		background:
+			rgba(30, 5, 35, 0.8);
+
+		color:
+			white;
+
+		font-size:
+			1.4rem;
+
+		cursor:
+			pointer;
+
+		z-index:
+			1002;
+
+	}
+
+
+	.lightbox-arrow:hover {
+
+		background:
+			rgba(255, 70, 200, 0.15);
+
+		border-color:
+			rgba(255, 130, 225, 0.9);
+
+	}
+
+
+	.lightbox-previous {
+
+		left:
+			1.5rem;
+
+	}
+
+
+	.lightbox-next {
+
+		right:
+			1.5rem;
+
+	}
+
+
+
+	/* =========================
+	   LIGHTBOX COUNTER
+	   ========================= */
+
+	.lightbox-counter {
+
+		margin-top:
+			0.8rem;
+
+		color:
+			rgba(255, 255, 255, 0.7);
+
+		font-size:
+			0.85rem;
+
+	}
+
+
+
+	/* =========================
 	   MOBILE
 	   ========================= */
 
@@ -1162,6 +1656,66 @@ document.addEventListener(
 
 			margin-top:
 				3rem;
+
+		}
+
+
+		.product-thumbnail {
+
+			flex-basis:
+				68px;
+
+			width:
+				68px;
+
+			height:
+				68px;
+
+		}
+
+
+		.image-lightbox {
+
+			padding:
+				1rem;
+
+		}
+
+
+		.lightbox-arrow {
+
+			width:
+				42px;
+
+			height:
+				42px;
+
+		}
+
+
+		.lightbox-previous {
+
+			left:
+				0.7rem;
+
+		}
+
+
+		.lightbox-next {
+
+			right:
+				0.7rem;
+
+		}
+
+
+		.lightbox-close {
+
+			top:
+				0.7rem;
+
+			right:
+				0.7rem;
 
 		}
 
