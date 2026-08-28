@@ -1,20 +1,21 @@
 export const products = [
 
 	{
-	slug: 'wine-pony-cheers',
-	name: 'Wine Pony Cheers',
-	category: 'bottle-openers',
-	price: 12,
-	stock: 1,
-	images: [
-		'/placeholder-product.svg',
-		'/placeholder-product.svg',
-		'/placeholder-product.svg',
-		'/placeholder-product.svg',
-	],
-	description: 'A bottle opener featuring the Wine Pony Cheers design.',
-	material: 'Stainless steel',
-},
+		slug: 'wine-pony-cheers',
+		name: 'Wine Pony Cheers',
+		category: 'bottle-openers',
+		price: 12,
+		stock: 1,
+		images: [
+			'/placeholder-product.svg',
+			'/placeholder-product.svg',
+			'/placeholder-product.svg',
+			'/placeholder-product.svg',
+		],
+		description: 'A bottle opener featuring the Wine Pony Cheers design.',
+		material: 'Stainless steel',
+	},
+
 
 	{
 		slug: 'dont-drink-and-fly',
@@ -23,11 +24,11 @@ export const products = [
 		price: 12,
 		stock: 1,
 		images: [
-		'/placeholder-product.svg',
-		'/placeholder-product.svg',
-		'/placeholder-product.svg',
-		'/placeholder-product.svg',
-	],
+			'/placeholder-product.svg',
+			'/placeholder-product.svg',
+			'/placeholder-product.svg',
+			'/placeholder-product.svg',
+		],
 	},
 
 
@@ -38,12 +39,13 @@ export const products = [
 		price: 35,
 		stock: 1,
 		images: [
-		'/placeholder-product.svg',
-		'/placeholder-product.svg',
-		'/placeholder-product.svg',
-		'/placeholder-product.svg',
-	],
+			'/placeholder-product.svg',
+			'/placeholder-product.svg',
+			'/placeholder-product.svg',
+			'/placeholder-product.svg',
+		],
 	},
+
 
 	{
 		slug: 'six-best-friends',
@@ -52,12 +54,13 @@ export const products = [
 		price: 35,
 		stock: 1,
 		images: [
-		'/placeholder-product.svg',
-		'/placeholder-product.svg',
-		'/placeholder-product.svg',
-		'/placeholder-product.svg',
-	],
+			'/placeholder-product.svg',
+			'/placeholder-product.svg',
+			'/placeholder-product.svg',
+			'/placeholder-product.svg',
+		],
 	},
+
 
 	{
 		slug: 'musician-ponies',
@@ -66,12 +69,13 @@ export const products = [
 		price: 35,
 		stock: 1,
 		images: [
-		'/placeholder-product.svg',
-		'/placeholder-product.svg',
-		'/placeholder-product.svg',
-		'/placeholder-product.svg',
-	],
+			'/placeholder-product.svg',
+			'/placeholder-product.svg',
+			'/placeholder-product.svg',
+			'/placeholder-product.svg',
+		],
 	},
+
 
 	{
 		slug: 'villains-of-harmony',
@@ -80,11 +84,11 @@ export const products = [
 		price: 35,
 		stock: 1,
 		images: [
-		'/placeholder-product.svg',
-		'/placeholder-product.svg',
-		'/placeholder-product.svg',
-		'/placeholder-product.svg',
-	],
+			'/placeholder-product.svg',
+			'/placeholder-product.svg',
+			'/placeholder-product.svg',
+			'/placeholder-product.svg',
+		],
 	},
 
 
@@ -95,11 +99,11 @@ export const products = [
 		price: 15,
 		stock: 1,
 		images: [
-		'/placeholder-product.svg',
-		'/placeholder-product.svg',
-		'/placeholder-product.svg',
-		'/placeholder-product.svg',
-	],
+			'/placeholder-product.svg',
+			'/placeholder-product.svg',
+			'/placeholder-product.svg',
+			'/placeholder-product.svg',
+		],
 	},
 
 
@@ -110,12 +114,13 @@ export const products = [
 		price: 5,
 		stock: 1,
 		images: [
-		'/placeholder-product.svg',
-		'/placeholder-product.svg',
-		'/placeholder-product.svg',
-		'/placeholder-product.svg',
-	],
+			'/placeholder-product.svg',
+			'/placeholder-product.svg',
+			'/placeholder-product.svg',
+			'/placeholder-product.svg',
+		],
 	},
+
 
 	{
 		slug: 'cider-dash',
@@ -124,11 +129,40 @@ export const products = [
 		price: 5,
 		stock: 1,
 		images: [
-		'/placeholder-product.svg',
-		'/placeholder-product.svg',
-		'/placeholder-product.svg',
-		'/placeholder-product.svg',
-	],
+			'/placeholder-product.svg',
+			'/placeholder-product.svg',
+			'/placeholder-product.svg',
+			'/placeholder-product.svg',
+		],
+	},
+
+
+	/* ========================================
+	   PRINTIFY / PRINT-ON-DEMAND
+	   ======================================== */
+
+	{
+		slug: 'test-printify-shirt',
+		name: 'Test Printify T-Shirt',
+		category: 'print-on-demand',
+		price: 29.90,
+		stock: 999,
+
+		images: [
+			'/placeholder-product.svg',
+			'/placeholder-product.svg',
+			'/placeholder-product.svg',
+			'/placeholder-product.svg',
+		],
+
+		description:
+			'A made-to-order T-shirt featuring my artwork.',
+
+		material:
+			'100% cotton',
+
+		fulfillment:
+			'printify',
 	},
 
 ];
