@@ -1,12 +1,10 @@
 <script define:vars={{
 	productImages: product.images,
-	productData: {
-		slug: product.slug,
-		name: product.name,
-		price: product.price,
-		stock: product.stock,
-		image: product.images[0],
-	}
+	productSlug: product.slug,
+	productName: product.name,
+	productPrice: product.price,
+	productStock: product.stock,
+	productImage: product.images[0]
 }}>
 
 	// =========================
@@ -56,7 +54,7 @@
 
 			if (
 				currentQuantity <
-				productData.stock
+				productStock
 			) {
 
 				currentQuantity++;
@@ -76,6 +74,54 @@
 
 
 	// =========================
+	// CART COUNT
+	// =========================
+
+	function updateCartCount() {
+
+		let cart = [];
+
+		try {
+
+			cart =
+				JSON.parse(
+					localStorage.getItem('cart') || '[]'
+				);
+
+		} catch {
+
+			cart = [];
+
+		}
+
+
+		const totalItems =
+			cart.reduce(
+				(total, item) =>
+					total + item.quantity,
+				0
+			);
+
+
+		const cartCount =
+			document.querySelector('#cart-count');
+
+
+		if (cartCount) {
+
+			cartCount.textContent =
+				String(totalItems);
+
+		}
+
+	}
+
+
+	updateCartCount();
+
+
+
+	// =========================
 	// ADD TO CART
 	// =========================
 
@@ -89,8 +135,7 @@
 
 				cart =
 					JSON.parse(
-						localStorage.getItem('cart') ||
-						'[]'
+						localStorage.getItem('cart') || '[]'
 					);
 
 			} catch {
@@ -100,29 +145,20 @@
 			}
 
 
-			// Find existing product
-
 			const existingItem =
 				cart.find(
 					(item) =>
-						item.slug ===
-						productData.slug
+						item.slug === productSlug
 				);
 
 
 			if (existingItem) {
 
-				const newQuantity =
-					existingItem.quantity +
-					currentQuantity;
-
-
-				// Don't exceed available stock
-
 				existingItem.quantity =
 					Math.min(
-						newQuantity,
-						productData.stock
+						existingItem.quantity +
+						currentQuantity,
+						productStock
 					);
 
 			} else {
@@ -130,29 +166,27 @@
 				cart.push({
 
 					slug:
-						productData.slug,
+						productSlug,
 
 					name:
-						productData.name,
+						productName,
 
 					price:
-						productData.price,
+						productPrice,
 
 					image:
-						productData.image,
+						productImage,
 
 					quantity:
 						Math.min(
 							currentQuantity,
-							productData.stock
-						),
+							productStock
+						)
 
 				});
 
 			}
 
-
-			// Save cart
 
 			localStorage.setItem(
 				'cart',
@@ -160,12 +194,10 @@
 			);
 
 
-			// Update header cart count
-
 			updateCartCount();
 
 
-			// Visual feedback
+			// Button feedback
 
 			const originalText =
 				addToCart.textContent;
@@ -196,48 +228,6 @@
 
 		}
 	);
-
-
-
-	// =========================
-	// CART COUNT
-	// =========================
-
-	function updateCartCount() {
-
-		const cart =
-			JSON.parse(
-				localStorage.getItem('cart') ||
-				'[]'
-			);
-
-
-		const totalItems =
-			cart.reduce(
-				(total, item) =>
-					total + item.quantity,
-				0
-			);
-
-
-		const cartCount =
-			document.querySelector(
-				'#cart-count'
-			);
-
-
-		if (cartCount) {
-
-			cartCount.textContent =
-				String(totalItems);
-
-		}
-
-	}
-
-
-
-	updateCartCount();
 
 
 
@@ -294,6 +284,10 @@
 	let currentImage = 0;
 
 
+
+	// =========================
+	// SHOW IMAGE
+	// =========================
 
 	function showImage(index) {
 
@@ -377,7 +371,9 @@
 
 		showImage(currentImage);
 
-		lightbox?.classList.add('open');
+		lightbox?.classList.add(
+			'open'
+		);
 
 		lightbox?.setAttribute(
 			'aria-hidden',
@@ -446,7 +442,9 @@
 
 
 
-	// Close by clicking background
+	// =========================
+	// CLOSE ON BACKGROUND CLICK
+	// =========================
 
 	lightbox?.addEventListener(
 		'click',
