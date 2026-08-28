@@ -1,0 +1,32 @@
+<svg
+	width="800"
+	height="600"
+	viewBox="0 0 800 600"
+	xmlns="http://www.w3.org/2000/svg"
+>
+	<rect
+		width="800"
+		height="600"
+		fill="#24152b"
+	/>
+
+	<rect
+		x="100"
+		y="80"
+		width="600"
+		height="440"
+		rx="30"
+		fill="#39213f"
+	/>
+
+	<text
+		x="400"
+		y="315"
+		text-anchor="middle"
+		fill="#9c7ca5"
+		font-family="Arial, sans-serif"
+		font-size="32"
+	>
+		PRODUCT IMAGE
+	</text>
+</svg>
