@@ -1,90 +1,222 @@
 <footer class="site-footer">
 
-	<p class="copyright">
-		© 2026 lunar visuals. All rights reserved.
-	</p>
+	<div class="footer-content">
 
-	<a href="/legal" class="legal-link">
-		Impressum &amp; Datenschutz
-	</a>
 
-	<p class="built-with">
-		Built on and using Astro
-	</p>
+		<p class="copyright">
+			© 2026 lunar visuals. All rights reserved.
+		</p>
+
+
+		<div class="legal-section">
+
+			<p class="legal-heading">
+				Looking for the formal legal information?
+			</p>
+
+
+			<nav class="legal-links">
+
+				<a href="/imprint">
+					Imprint
+				</a>
+
+				<a href="/privacy">
+					Privacy Policy
+				</a>
+
+				<a href="/withdrawal">
+					Withdrawal Information
+				</a>
+
+			</nav>
+
+		</div>
+
+
+		<p class="astro-credit">
+			Built on and using Astro
+		</p>
+
+
+	</div>
 
 </footer>
+
 
 
 <style>
 
 	.site-footer {
-		width: 100%;
+
+		width:
+			100%;
 
 		padding:
-			2rem 1rem
-			2.5rem;
+			4rem 1.5rem 2rem;
 
-		text-align: center;
 	}
 
+
+	.footer-content {
+
+		max-width:
+			900px;
+
+		margin:
+			0 auto;
+
+		text-align:
+			center;
+
+	}
+
+
+	/* =========================
+	   COPYRIGHT
+	   ========================= */
 
 	.copyright {
-		margin: 0;
 
-		color: rgba(255, 255, 255, 0.85);
+		margin:
+			0;
 
-		font-size: 0.85rem;
-		font-weight: 500;
+		color:
+			white;
+
+		font-size:
+			0.9rem;
+
+		font-weight:
+			600;
+
 	}
 
 
-	.legal-link {
-		display: inline-block;
+	/* =========================
+	   LEGAL SECTION
+	   ========================= */
 
-		margin-top: 0.6rem;
+	.legal-section {
 
-		color: var(--pink-light);
+		margin-top:
+			1.2rem;
 
-		font-size: 0.85rem;
-		font-weight: 500;
+	}
 
-		text-shadow:
-			0 0 8px rgba(255, 100, 220, 0.3);
+
+	.legal-heading {
+
+		margin:
+			0 0 0.8rem;
+
+		color:
+			var(--text-muted);
+
+		font-size:
+			0.8rem;
+
+	}
+
+
+	.legal-links {
+
+		display:
+			flex;
+
+		justify-content:
+			center;
+
+		align-items:
+			center;
+
+		flex-wrap:
+			wrap;
+
+		gap:
+			1.5rem;
+
+	}
+
+
+	.legal-links a {
+
+		color:
+			var(--pink-light);
+
+		font-size:
+			0.85rem;
+
+		text-decoration:
+			none;
 
 		transition:
 			color 0.2s ease,
 			text-shadow 0.2s ease;
+
 	}
 
 
-	.legal-link:hover {
-		color: white;
+	.legal-links a:hover {
+
+		color:
+			white;
 
 		text-shadow:
-			0 0 12px rgba(255, 100, 220, 0.8);
+			0 0 10px
+			rgba(255, 100, 220, 0.7);
+
 	}
 
 
-	.built-with {
-		margin: 1rem 0 0;
+	/* =========================
+	   ASTRO CREDIT
+	   ========================= */
 
-		color: rgba(255, 255, 255, 0.35);
+	.astro-credit {
 
-		font-size: 0.7rem;
+		margin:
+			2rem 0 0;
+
+		color:
+			var(--text-muted);
+
+		font-size:
+			0.75rem;
+
+		opacity:
+			0.7;
+
 	}
 
+
+	/* =========================
+	   MOBILE
+	   ========================= */
 
 	@media (max-width: 600px) {
 
 		.site-footer {
+
 			padding:
-				1.5rem 0.8rem
-				2rem;
+				3rem 1rem 1.5rem;
+
 		}
 
-		.copyright,
-		.legal-link {
-			font-size: 0.8rem;
+
+		.legal-links {
+
+			gap:
+				0.8rem 1.2rem;
+
+		}
+
+
+		.legal-links a {
+
+			font-size:
+				0.8rem;
+
 		}
 
 	}
