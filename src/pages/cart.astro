@@ -25,10 +25,28 @@ import Footer from '../components/Footer.astro';
 
 		<main class="cart-page">
 
-			<h1>
-				✦ Shopping Cart ✦
-			</h1>
 
+			<!-- =========================
+			     TITLE
+			     ========================= -->
+
+			<div class="cart-header">
+
+				<p class="eyebrow">
+					✦ YOUR SELECTION ✦
+				</p>
+
+				<h1>
+					Shopping Cart
+				</h1>
+
+			</div>
+
+
+
+			<!-- =========================
+			     CART
+			     ========================= -->
 
 			<div id="cart-container">
 
@@ -37,6 +55,7 @@ import Footer from '../components/Footer.astro';
 				</p>
 
 			</div>
+
 
 		</main>
 
@@ -48,28 +67,110 @@ import Footer from '../components/Footer.astro';
 		<script>
 
 			const container =
-				document.querySelector('#cart-container');
+				document.querySelector(
+					'#cart-container'
+				);
 
+
+
+			// =========================
+			// GET CART
+			// =========================
 
 			function getCart() {
 
-				return JSON.parse(
-					localStorage.getItem('cart') || '[]'
+				try {
+
+					return JSON.parse(
+						localStorage.getItem(
+							'cart'
+						) || '[]'
+					);
+
+				} catch {
+
+					return [];
+
+				}
+
+			}
+
+
+
+			// =========================
+			// SAVE CART
+			// =========================
+
+			function saveCart(cart) {
+
+				localStorage.setItem(
+					'cart',
+					JSON.stringify(cart)
 				);
 
 			}
 
 
-			function renderCart() {
+
+			// =========================
+			// UPDATE HEADER COUNT
+			// =========================
+
+			function updateCartCount() {
 
 				const cart =
 					getCart();
 
 
-				if (!container) {
-					return;
+				const totalItems =
+					cart.reduce(
+						(total, item) =>
+							total + item.quantity,
+						0
+					);
+
+
+				const cartCount =
+					document.querySelector(
+						'#cart-count'
+					);
+
+
+				if (cartCount) {
+
+					cartCount.textContent =
+						String(totalItems);
+
 				}
 
+			}
+
+
+
+			// =========================
+			// RENDER CART
+			// =========================
+
+			function renderCart() {
+
+				if (!container) {
+
+					return;
+
+				}
+
+
+				const cart =
+					getCart();
+
+
+				updateCartCount();
+
+
+
+				// =========================
+				// EMPTY CART
+				// =========================
 
 				if (cart.length === 0) {
 
@@ -77,11 +178,23 @@ import Footer from '../components/Footer.astro';
 
 						<div class="empty-cart">
 
+							<div class="empty-icon">
+								🛒
+							</div>
+
+							<h2>
+								Your cart is empty
+							</h2>
+
 							<p>
-								Your cart is empty.
+								Looks like you haven't
+								added anything yet.
 							</p>
 
-							<a href="/merch">
+							<a
+								href="/merch"
+								class="continue-button"
+							>
 								Browse Merch
 							</a>
 
@@ -94,123 +207,247 @@ import Footer from '../components/Footer.astro';
 				}
 
 
+
+				// =========================
+				// CALCULATE SUBTOTAL
+				// =========================
+
 				let subtotal = 0;
 
 
 				const items =
-					cart.map((item) => {
+					cart.map(
+						(item) => {
 
-						const itemTotal =
-							item.price *
-							item.quantity;
-
-						subtotal += itemTotal;
-
-
-						return `
-
-							<div
-								class="cart-item"
-								data-slug="${item.slug}"
-							>
-
-								<div class="item-image">
-
-									<img
-										src="${item.image}"
-										alt="${item.name}"
-									/>
-
-								</div>
+							const itemTotal =
+								item.price *
+								item.quantity;
 
 
-								<div class="item-details">
-
-									<h2>
-										${item.name}
-									</h2>
-
-									<p>
-										€${item.price.toFixed(2)}
-									</p>
+							subtotal +=
+								itemTotal;
 
 
-									<div class="item-controls">
+							return `
 
-										<button
-											class="quantity-minus"
-											data-slug="${item.slug}"
-										>
-											−
-										</button>
-
-										<span>
-											${item.quantity}
-										</span>
-
-										<button
-											class="quantity-plus"
-											data-slug="${item.slug}"
-										>
-											+
-										</button>
+								<article
+									class="cart-item"
+									data-slug="${item.slug}"
+								>
 
 
-										<button
-											class="remove-item"
-											data-slug="${item.slug}"
-										>
-											Remove
-										</button>
+									<!-- IMAGE -->
+
+									<a
+										class="item-image"
+										href="/merch/${item.category ?? ''}/${item.slug}"
+									>
+
+										<img
+											src="${item.image}"
+											alt="${item.name}"
+										/>
+
+									</a>
+
+
+
+									<!-- DETAILS -->
+
+									<div class="item-details">
+
+										<h2>
+											${item.name}
+										</h2>
+
+
+										<p class="item-price">
+											€${item.price.toFixed(2)}
+											<span>
+												each
+											</span>
+										</p>
+
+
+
+										<div class="item-bottom">
+
+
+											<!-- QUANTITY -->
+
+											<div class="quantity-control">
+
+												<button
+													type="button"
+													class="quantity-minus"
+													data-slug="${item.slug}"
+													aria-label="Decrease quantity"
+												>
+													−
+												</button>
+
+
+												<span>
+													${item.quantity}
+												</span>
+
+
+												<button
+													type="button"
+													class="quantity-plus"
+													data-slug="${item.slug}"
+													aria-label="Increase quantity"
+												>
+													+
+												</button>
+
+											</div>
+
+
+
+											<!-- REMOVE -->
+
+											<button
+												type="button"
+												class="remove-item"
+												data-slug="${item.slug}"
+											>
+												Remove
+											</button>
+
+										</div>
 
 									</div>
 
-								</div>
 
-							</div>
 
-						`;
+									<!-- ITEM TOTAL -->
 
-					}).join('');
+									<div class="item-total">
 
+										€${itemTotal.toFixed(2)}
+
+									</div>
+
+
+								</article>
+
+							`;
+
+						}
+					).join('');
+
+
+
+				// =========================
+				// FULL CART
+				// =========================
 
 				container.innerHTML = `
 
-					<div class="cart-items">
-
-						${items}
-
-					</div>
+					<div class="cart-layout">
 
 
-					<div class="cart-summary">
+						<!-- ITEMS -->
 
-						<div>
+						<div class="cart-items">
 
-							<span>
-								Subtotal
-							</span>
+							${items}
 
-							<strong>
-								€${subtotal.toFixed(2)}
-							</strong>
+
+							<a
+								href="/merch"
+								class="continue-shopping"
+							>
+								← Continue shopping
+							</a>
 
 						</div>
 
 
-						<p>
-							Shipping and taxes are calculated
-							at checkout.
-						</p>
+
+						<!-- SUMMARY -->
+
+						<aside class="cart-summary">
 
 
-						<button
-							type="button"
-							class="checkout-button"
-							disabled
-						>
-							Checkout coming soon
-						</button>
+							<h2>
+								Order Summary
+							</h2>
+
+
+							<div class="summary-line">
+
+								<span>
+									Subtotal
+								</span>
+
+								<strong>
+									€${subtotal.toFixed(2)}
+								</strong>
+
+							</div>
+
+
+							<div class="summary-line muted">
+
+								<span>
+									Shipping
+								</span>
+
+								<span>
+									Calculated at checkout
+								</span>
+
+							</div>
+
+
+							<div class="summary-line muted">
+
+								<span>
+									Taxes
+								</span>
+
+								<span>
+									Calculated at checkout
+								</span>
+
+							</div>
+
+
+							<div class="summary-divider">
+							</div>
+
+
+							<div class="summary-total">
+
+								<span>
+									Total
+								</span>
+
+								<strong>
+									€${subtotal.toFixed(2)}
+								</strong>
+
+							</div>
+
+
+							<button
+								type="button"
+								class="checkout-button"
+								disabled
+							>
+								Checkout coming soon
+							</button>
+
+
+							<p class="checkout-note">
+								Checkout and secure payment
+								will be available soon.
+							</p>
+
+
+						</aside>
 
 					</div>
 
@@ -223,66 +460,95 @@ import Footer from '../components/Footer.astro';
 
 
 
+			// =========================
+			// EVENT LISTENERS
+			// =========================
+
 			function addListeners() {
 
-				document
-					.querySelectorAll('.quantity-minus')
-					.forEach((button) => {
 
-						button.addEventListener(
-							'click',
-							() => {
-
-								changeQuantity(
-									button.dataset.slug,
-									-1
-								);
-
-							}
-						);
-
-					});
-
+				// Minus
 
 				document
-					.querySelectorAll('.quantity-plus')
-					.forEach((button) => {
+					.querySelectorAll(
+						'.quantity-minus'
+					)
+					.forEach(
+						(button) => {
 
-						button.addEventListener(
-							'click',
-							() => {
+							button.addEventListener(
+								'click',
+								() => {
 
-								changeQuantity(
-									button.dataset.slug,
-									1
-								);
+									changeQuantity(
+										button.dataset.slug,
+										-1
+									);
 
-							}
-						);
+								}
+							);
 
-					});
+						}
+					);
 
+
+
+				// Plus
 
 				document
-					.querySelectorAll('.remove-item')
-					.forEach((button) => {
+					.querySelectorAll(
+						'.quantity-plus'
+					)
+					.forEach(
+						(button) => {
 
-						button.addEventListener(
-							'click',
-							() => {
+							button.addEventListener(
+								'click',
+								() => {
 
-								removeItem(
-									button.dataset.slug
-								);
+									changeQuantity(
+										button.dataset.slug,
+										1
+									);
 
-							}
-						);
+								}
+							);
 
-					});
+						}
+					);
+
+
+
+				// Remove
+
+				document
+					.querySelectorAll(
+						'.remove-item'
+					)
+					.forEach(
+						(button) => {
+
+							button.addEventListener(
+								'click',
+								() => {
+
+									removeItem(
+										button.dataset.slug
+									);
+
+								}
+							);
+
+						}
+					);
 
 			}
 
 
+
+			// =========================
+			// CHANGE QUANTITY
+			// =========================
 
 			function changeQuantity(
 				slug,
@@ -301,11 +567,15 @@ import Footer from '../components/Footer.astro';
 
 
 				if (!item) {
+
 					return;
+
 				}
 
 
-				item.quantity += change;
+				item.quantity +=
+					change;
+
 
 
 				if (item.quantity <= 0) {
@@ -317,38 +587,38 @@ import Footer from '../components/Footer.astro';
 				}
 
 
-				localStorage.setItem(
-					'cart',
-					JSON.stringify(cart)
-				);
-
+				saveCart(cart);
 
 				renderCart();
 
 			}
 
 
+
+			// =========================
+			// REMOVE ITEM
+			// =========================
 
 			function removeItem(slug) {
 
 				const cart =
-					getCart()
-						.filter(
-							(item) =>
-								item.slug !== slug
-						);
+					getCart().filter(
+						(item) =>
+							item.slug !== slug
+					);
 
 
-				localStorage.setItem(
-					'cart',
-					JSON.stringify(cart)
-				);
-
+				saveCart(cart);
 
 				renderCart();
 
 			}
 
+
+
+			// =========================
+			// INITIAL RENDER
+			// =========================
 
 			renderCart();
 
@@ -362,10 +632,15 @@ import Footer from '../components/Footer.astro';
 
 <style>
 
+
+	/* =========================
+	   PAGE
+	   ========================= */
+
 	.cart-page {
 
 		max-width:
-			900px;
+			1100px;
 
 		margin:
 			0 auto;
@@ -376,7 +651,12 @@ import Footer from '../components/Footer.astro';
 	}
 
 
-	.cart-page h1 {
+
+	/* =========================
+	   HEADER
+	   ========================= */
+
+	.cart-header {
 
 		text-align:
 			center;
@@ -384,11 +664,73 @@ import Footer from '../components/Footer.astro';
 		margin-bottom:
 			3rem;
 
+	}
+
+
+	.eyebrow {
+
+		margin:
+			0 0 0.8rem;
+
+		color:
+			var(--pink-light);
+
 		font-size:
-			clamp(2rem, 6vw, 3.5rem);
+			0.75rem;
+
+		font-weight:
+			700;
+
+		letter-spacing:
+			0.15em;
 
 	}
 
+
+	.cart-header h1 {
+
+		margin:
+			0;
+
+		font-size:
+			clamp(
+				2.5rem,
+				7vw,
+				4rem
+			);
+
+		line-height:
+			1;
+
+	}
+
+
+
+	/* =========================
+	   CART LAYOUT
+	   ========================= */
+
+	.cart-layout {
+
+		display:
+			grid;
+
+		grid-template-columns:
+			1fr 320px;
+
+		gap:
+			2rem;
+
+		align-items:
+			start;
+
+	}
+
+
+
+	/* =========================
+	   ITEMS
+	   ========================= */
 
 	.cart-items {
 
@@ -407,26 +749,61 @@ import Footer from '../components/Footer.astro';
 	.cart-item {
 
 		display:
-			flex;
+			grid;
+
+		grid-template-columns:
+			120px 1fr auto;
 
 		gap:
 			1.5rem;
+
+		align-items:
+			center;
 
 		padding:
 			1rem;
 
 		border:
 			1px solid
-			rgba(255, 130, 225, 0.35);
+			rgba(255, 130, 225, 0.3);
 
 		border-radius:
-			18px;
+			20px;
 
 		background:
-			rgba(180, 20, 150, 0.12);
+			linear-gradient(
+				145deg,
+				rgba(180, 20, 150, 0.15),
+				rgba(80, 10, 80, 0.12)
+			);
+
+		box-shadow:
+			0 0 20px
+			rgba(255, 80, 200, 0.06);
+
+		transition:
+			border-color 0.2s ease,
+			box-shadow 0.2s ease;
 
 	}
 
+
+	.cart-item:hover {
+
+		border-color:
+			rgba(255, 130, 225, 0.6);
+
+		box-shadow:
+			0 0 25px
+			rgba(255, 80, 200, 0.12);
+
+	}
+
+
+
+	/* =========================
+	   ITEM IMAGE
+	   ========================= */
 
 	.item-image {
 
@@ -436,14 +813,15 @@ import Footer from '../components/Footer.astro';
 		height:
 			120px;
 
-		flex:
-			0 0 120px;
-
 		overflow:
 			hidden;
 
 		border-radius:
-			12px;
+			14px;
+
+		border:
+			1px solid
+			rgba(255, 130, 225, 0.2);
 
 	}
 
@@ -456,16 +834,35 @@ import Footer from '../components/Footer.astro';
 		height:
 			100%;
 
+		display:
+			block;
+
 		object-fit:
 			cover;
+
+		transition:
+			transform 0.3s ease;
 
 	}
 
 
+	.item-image:hover img {
+
+		transform:
+			scale(1.04);
+
+	}
+
+
+
+	/* =========================
+	   ITEM DETAILS
+	   ========================= */
+
 	.item-details {
 
-		flex:
-			1;
+		min-width:
+			0;
 
 	}
 
@@ -473,15 +870,15 @@ import Footer from '../components/Footer.astro';
 	.item-details h2 {
 
 		margin:
-			0 0 0.5rem;
+			0 0 0.4rem;
 
 		font-size:
-			1.2rem;
+			1.15rem;
 
 	}
 
 
-	.item-details p {
+	.item-price {
 
 		margin:
 			0;
@@ -489,10 +886,26 @@ import Footer from '../components/Footer.astro';
 		color:
 			var(--text-muted);
 
+		font-size:
+			0.9rem;
+
 	}
 
 
-	.item-controls {
+	.item-price span {
+
+		opacity:
+			0.6;
+
+	}
+
+
+
+	/* =========================
+	   ITEM BOTTOM
+	   ========================= */
+
+	.item-bottom {
 
 		display:
 			flex;
@@ -501,7 +914,7 @@ import Footer from '../components/Footer.astro';
 			center;
 
 		gap:
-			0.7rem;
+			1rem;
 
 		margin-top:
 			1.2rem;
@@ -509,29 +922,33 @@ import Footer from '../components/Footer.astro';
 	}
 
 
-	.item-controls button {
+
+	/* =========================
+	   QUANTITY
+	   ========================= */
+
+	.quantity-control {
+
+		display:
+			flex;
+
+		align-items:
+			center;
 
 		border:
 			1px solid
 			rgba(255, 130, 225, 0.4);
 
 		border-radius:
-			8px;
+			10px;
 
-		background:
-			rgba(255, 255, 255, 0.04);
-
-		color:
-			white;
-
-		cursor:
-			pointer;
+		overflow:
+			hidden;
 
 	}
 
 
-	.quantity-minus,
-	.quantity-plus {
+	.quantity-control button {
 
 		width:
 			32px;
@@ -539,27 +956,158 @@ import Footer from '../components/Footer.astro';
 		height:
 			32px;
 
+		border:
+			none;
+
+		background:
+			rgba(255, 255, 255, 0.04);
+
+		color:
+			white;
+
+		font-family:
+			inherit;
+
 		font-size:
-			1.1rem;
+			1rem;
+
+		cursor:
+			pointer;
+
+		transition:
+			background 0.2s ease;
 
 	}
 
+
+	.quantity-control button:hover {
+
+		background:
+			rgba(255, 70, 200, 0.18);
+
+	}
+
+
+	.quantity-control span {
+
+		width:
+			35px;
+
+		text-align:
+			center;
+
+		font-size:
+			0.9rem;
+
+		font-weight:
+			600;
+
+	}
+
+
+
+	/* =========================
+	   REMOVE
+	   ========================= */
 
 	.remove-item {
 
 		padding:
-			0.45rem 0.7rem;
+			0;
 
-		margin-left:
-			0.5rem;
+		border:
+			none;
+
+		background:
+			transparent;
+
+		color:
+			rgba(255, 255, 255, 0.45);
+
+		font-family:
+			inherit;
+
+		font-size:
+			0.8rem;
+
+		cursor:
+			pointer;
+
+		transition:
+			color 0.2s ease;
 
 	}
 
 
-	.cart-summary {
+	.remove-item:hover {
+
+		color:
+			var(--pink-light);
+
+	}
+
+
+
+	/* =========================
+	   ITEM TOTAL
+	   ========================= */
+
+	.item-total {
+
+		font-size:
+			1rem;
+
+		font-weight:
+			700;
+
+		white-space:
+			nowrap;
+
+	}
+
+
+
+	/* =========================
+	   CONTINUE SHOPPING
+	   ========================= */
+
+	.continue-shopping {
 
 		margin-top:
-			2rem;
+			0.5rem;
+
+		color:
+			var(--pink-light);
+
+		font-size:
+			0.85rem;
+
+		text-decoration:
+			none;
+
+	}
+
+
+	.continue-shopping:hover {
+
+		color:
+			white;
+
+	}
+
+
+
+	/* =========================
+	   SUMMARY
+	   ========================= */
+
+	.cart-summary {
+
+		position:
+			sticky;
+
+		top:
+			1.5rem;
 
 		padding:
 			1.5rem;
@@ -569,15 +1117,102 @@ import Footer from '../components/Footer.astro';
 			rgba(255, 130, 225, 0.4);
 
 		border-radius:
-			18px;
+			20px;
 
 		background:
-			rgba(180, 20, 150, 0.12);
+			linear-gradient(
+				145deg,
+				rgba(180, 20, 150, 0.17),
+				rgba(80, 10, 80, 0.14)
+			);
+
+		box-shadow:
+			0 0 25px
+			rgba(255, 80, 200, 0.08);
 
 	}
 
 
-	.cart-summary > div {
+	.cart-summary h2 {
+
+		margin:
+			0 0 1.5rem;
+
+		font-size:
+			1.2rem;
+
+	}
+
+
+
+	/* =========================
+	   SUMMARY LINES
+	   ========================= */
+
+	.summary-line {
+
+		display:
+			flex;
+
+		justify-content:
+			space-between;
+
+		gap:
+			1rem;
+
+		margin-bottom:
+			1rem;
+
+		font-size:
+			0.9rem;
+
+	}
+
+
+	.summary-line.muted {
+
+		color:
+			var(--text-muted);
+
+		font-size:
+			0.78rem;
+
+	}
+
+
+	.summary-line.muted span:last-child {
+
+		text-align:
+			right;
+
+	}
+
+
+
+	/* =========================
+	   DIVIDER
+	   ========================= */
+
+	.summary-divider {
+
+		height:
+			1px;
+
+		margin:
+			1.2rem 0;
+
+		background:
+			rgba(255, 130, 225, 0.2);
+
+	}
+
+
+
+	/* =========================
+	   TOTAL
+	   ========================= */
+
+	.summary-total {
 
 		display:
 			flex;
@@ -588,22 +1223,27 @@ import Footer from '../components/Footer.astro';
 		align-items:
 			center;
 
+		margin-bottom:
+			1.5rem;
+
 		font-size:
-			1.2rem;
+			1.1rem;
 
 	}
 
 
-	.cart-summary p {
-
-		color:
-			var(--text-muted);
+	.summary-total strong {
 
 		font-size:
-			0.85rem;
+			1.3rem;
 
 	}
 
+
+
+	/* =========================
+	   CHECKOUT
+	   ========================= */
 
 	.checkout-button {
 
@@ -615,19 +1255,22 @@ import Footer from '../components/Footer.astro';
 
 		border:
 			1px solid
-			rgba(255, 130, 225, 0.7);
+			rgba(255, 130, 225, 0.6);
 
 		border-radius:
 			12px;
 
 		background:
-			rgba(255, 70, 200, 0.15);
+			rgba(255, 70, 200, 0.12);
 
 		color:
 			white;
 
 		font-family:
 			inherit;
+
+		font-size:
+			0.95rem;
 
 		font-weight:
 			700;
@@ -636,34 +1279,91 @@ import Footer from '../components/Footer.astro';
 			not-allowed;
 
 		opacity:
-			0.5;
+			0.55;
 
 	}
 
 
-	.empty-cart {
+	.checkout-note {
+
+		margin:
+			0.8rem 0 0;
+
+		color:
+			var(--text-muted);
+
+		font-size:
+			0.7rem;
+
+		line-height:
+			1.5;
 
 		text-align:
 			center;
 
+	}
+
+
+
+	/* =========================
+	   EMPTY CART
+	   ========================= */
+
+	.empty-cart {
+
 		padding:
-			4rem 1rem;
+			5rem 1rem;
+
+		text-align:
+			center;
+
+		border:
+			1px solid
+			rgba(255, 130, 225, 0.25);
+
+		border-radius:
+			24px;
+
+		background:
+			rgba(180, 20, 150, 0.08);
+
+	}
+
+
+	.empty-icon {
+
+		font-size:
+			2.5rem;
+
+		margin-bottom:
+			1rem;
+
+	}
+
+
+	.empty-cart h2 {
+
+		margin:
+			0 0 0.5rem;
+
+		font-size:
+			1.4rem;
 
 	}
 
 
 	.empty-cart p {
 
+		margin:
+			0 0 1.5rem;
+
 		color:
 			var(--text-muted);
-
-		margin-bottom:
-			1.5rem;
 
 	}
 
 
-	.empty-cart a {
+	.continue-button {
 
 		display:
 			inline-block;
@@ -671,12 +1371,15 @@ import Footer from '../components/Footer.astro';
 		padding:
 			0.8rem 1.5rem;
 
-		border-radius:
-			10px;
-
 		border:
 			1px solid
 			rgba(255, 130, 225, 0.6);
+
+		border-radius:
+			10px;
+
+		background:
+			rgba(255, 70, 200, 0.1);
 
 		color:
 			white;
@@ -684,12 +1387,73 @@ import Footer from '../components/Footer.astro';
 		text-decoration:
 			none;
 
+		font-weight:
+			600;
+
+		transition:
+			transform 0.2s ease,
+			box-shadow 0.2s ease,
+			background 0.2s ease;
+
 	}
+
+
+	.continue-button:hover {
+
+		transform:
+			translateY(-2px);
+
+		background:
+			rgba(255, 70, 200, 0.18);
+
+		box-shadow:
+			0 0 20px
+			rgba(255, 80, 200, 0.25);
+
+	}
+
+
+
+	/* =========================
+	   MOBILE
+	   ========================= */
+
+	@media (max-width: 800px) {
+
+		.cart-page {
+
+			padding:
+				2rem 0.8rem
+				4rem;
+
+		}
+
+
+		.cart-layout {
+
+			grid-template-columns:
+				1fr;
+
+		}
+
+
+		.cart-summary {
+
+			position:
+				static;
+
+		}
+
+	}
+
 
 
 	@media (max-width: 600px) {
 
 		.cart-item {
+
+			grid-template-columns:
+				85px 1fr;
 
 			gap:
 				1rem;
@@ -705,13 +1469,38 @@ import Footer from '../components/Footer.astro';
 			height:
 				85px;
 
-			flex-basis:
-				85px;
+		}
+
+
+		.item-total {
+
+			grid-column:
+				2;
+
+			grid-row:
+				1;
+
+			justify-self:
+				end;
+
+			align-self:
+				start;
+
+			margin-top:
+				0.1rem;
 
 		}
 
 
-		.item-controls {
+		.item-details {
+
+			grid-column:
+				2;
+
+		}
+
+
+		.item-bottom {
 
 			flex-wrap:
 				wrap;
