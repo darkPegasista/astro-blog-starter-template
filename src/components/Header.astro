@@ -1,18 +1,57 @@
+---
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+
+const navigation = [
+	{
+		name: 'Home',
+		href: '/',
+	},
+	{
+		name: 'Commissions',
+		href: '/commissions',
+	},
+	{
+		name: 'Merch',
+		href: '/merch',
+	},
+	{
+		name: 'Gallery',
+		href: '/gallery',
+	},
+	{
+		name: 'Terms',
+		href: '/terms',
+	},
+];
+---
+
 <header class="site-header">
+
 	<nav>
-		<a href="/" class="active">Home</a>
-		<a href="/commissions">Commissions</a>
-		<a href="/merch">Merch</a>
-		<a href="/gallery">Gallery</a>
-		<a href="/terms">Terms</a>
+
+		{navigation.map((item) => (
+
+			<a
+				href={item.href}
+				class:list={{ active: currentPath === item.href }}
+			>
+				{item.name}
+			</a>
+
+		))}
+
 	</nav>
+
 </header>
 
+
 <style>
+
 	.site-header {
 		width: 100%;
 		padding: 2rem 1.5rem 0;
 	}
+
 
 	nav {
 		max-width: 900px;
@@ -38,6 +77,7 @@
 		backdrop-filter: blur(10px);
 	}
 
+
 	nav a {
 		position: relative;
 
@@ -51,6 +91,7 @@
 			text-shadow 0.2s ease;
 	}
 
+
 	nav a:hover,
 	nav a.active {
 		color: white;
@@ -58,6 +99,7 @@
 		text-shadow:
 			0 0 10px rgba(255, 100, 220, 0.8);
 	}
+
 
 	nav a.active::after {
 		content: "";
@@ -80,7 +122,9 @@
 			0 0 8px var(--pink-light);
 	}
 
+
 	@media (max-width: 700px) {
+
 		.site-header {
 			padding: 1rem 0.75rem 0;
 		}
@@ -94,9 +138,12 @@
 		nav a {
 			font-size: 0.8rem;
 		}
+
 	}
 
+
 	@media (max-width: 480px) {
+
 		nav {
 			gap: 0.65rem;
 		}
@@ -104,5 +151,7 @@
 		nav a {
 			font-size: 0.72rem;
 		}
+
 	}
+
 </style>
