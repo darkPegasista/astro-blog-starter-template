@@ -5,7 +5,7 @@ export const products = [
 		category: 'Bottle Opener',
 		price: 10,
 		stock: 1,
-		image: '/images/merch/placeholder-product.svg',
+		image: '/placeholder-product.svg',
 	},
 
 	{
@@ -14,7 +14,7 @@ export const products = [
 		category: 'Bottle Opener',
 		price: 10,
 		stock: 1,
-		image: '/images/merch/placeholder-product.svg',
+		image: '/placeholder-product.svg',
 	},
 
 	{
@@ -23,7 +23,7 @@ export const products = [
 		category: 'Bucket Hat',
 		price: 35,
 		stock: 1,
-		image: '/images/merch/placeholder-product.svg',
+		image: '/placeholder-product.svg',
 	},
 
 	{
@@ -32,7 +32,7 @@ export const products = [
 		category: 'Bucket Hat',
 		price: 35,
 		stock: 1,
-		image: '/images/merch/placeholder-product.svg',
+		image: '/placeholder-product.svg',
 	},
 
 	{
@@ -41,7 +41,7 @@ export const products = [
 		category: 'Bucket Hat',
 		price: 35,
 		stock: 1,
-		image: '/images/merch/placeholder-product.svg',
+		image: '/placeholder-product.svg',
 	},
 
 	{
@@ -50,7 +50,7 @@ export const products = [
 		category: 'Bucket Hat',
 		price: 35,
 		stock: 1,
-		image: '/images/merch/placeholder-product.svg',
+		image: '/placeholder-product.svg',
 	},
 
 	{
@@ -59,7 +59,7 @@ export const products = [
 		category: 'Outdoor Poster',
 		price: 20,
 		stock: 1,
-		image: '/images/merch/placeholder-product.svg',
+		image: '/placeholder-product.svg',
 	},
 
 	{
@@ -68,7 +68,7 @@ export const products = [
 		category: 'Sticker',
 		price: 3,
 		stock: 1,
-		image: '/images/merch/placeholder-product.svg',
+		image: '/placeholder-product.svg',
 	},
 
 	{
@@ -77,6 +77,6 @@ export const products = [
 		category: 'Sticker',
 		price: 3,
 		stock: 1,
-		image: '/images/merch/placeholder-product.svg',
+		image: '/placeholder-product.svg',
 	},
 ];
