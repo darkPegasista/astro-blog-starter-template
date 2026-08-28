@@ -6,7 +6,12 @@ export const products = [
 	category: 'bottle-openers',
 	price: 12,
 	stock: 1,
-	image: '/placeholder-product.svg',
+	images: [
+		'/placeholder-product.svg',
+		'/placeholder-product.svg',
+		'/placeholder-product.svg',
+		'/placeholder-product.svg',
+	],
 	description: 'A bottle opener featuring the Wine Pony Cheers design.',
 	material: 'Stainless steel',
 },
@@ -17,7 +22,12 @@ export const products = [
 		category: 'bottle-openers',
 		price: 12,
 		stock: 1,
-		image: '/placeholder-product.svg',
+		images: [
+		'/placeholder-product.svg',
+		'/placeholder-product.svg',
+		'/placeholder-product.svg',
+		'/placeholder-product.svg',
+	],
 	},
 
 
@@ -27,7 +37,12 @@ export const products = [
 		category: 'bucket-hats',
 		price: 35,
 		stock: 1,
-		image: '/placeholder-product.svg',
+		images: [
+		'/placeholder-product.svg',
+		'/placeholder-product.svg',
+		'/placeholder-product.svg',
+		'/placeholder-product.svg',
+	],
 	},
 
 	{
@@ -36,7 +51,12 @@ export const products = [
 		category: 'bucket-hats',
 		price: 35,
 		stock: 1,
-		image: '/placeholder-product.svg',
+		images: [
+		'/placeholder-product.svg',
+		'/placeholder-product.svg',
+		'/placeholder-product.svg',
+		'/placeholder-product.svg',
+	],
 	},
 
 	{
@@ -45,7 +65,12 @@ export const products = [
 		category: 'bucket-hats',
 		price: 35,
 		stock: 1,
-		image: '/placeholder-product.svg',
+		images: [
+		'/placeholder-product.svg',
+		'/placeholder-product.svg',
+		'/placeholder-product.svg',
+		'/placeholder-product.svg',
+	],
 	},
 
 	{
@@ -54,7 +79,12 @@ export const products = [
 		category: 'bucket-hats',
 		price: 35,
 		stock: 1,
-		image: '/placeholder-product.svg',
+		images: [
+		'/placeholder-product.svg',
+		'/placeholder-product.svg',
+		'/placeholder-product.svg',
+		'/placeholder-product.svg',
+	],
 	},
 
 
@@ -64,7 +94,12 @@ export const products = [
 		category: 'posters',
 		price: 15,
 		stock: 1,
-		image: '/placeholder-product.svg',
+		images: [
+		'/placeholder-product.svg',
+		'/placeholder-product.svg',
+		'/placeholder-product.svg',
+		'/placeholder-product.svg',
+	],
 	},
 
 
@@ -74,7 +109,12 @@ export const products = [
 		category: 'stickers',
 		price: 5,
 		stock: 1,
-		image: '/placeholder-product.svg',
+		images: [
+		'/placeholder-product.svg',
+		'/placeholder-product.svg',
+		'/placeholder-product.svg',
+		'/placeholder-product.svg',
+	],
 	},
 
 	{
@@ -83,7 +123,12 @@ export const products = [
 		category: 'stickers',
 		price: 5,
 		stock: 1,
-		image: '/placeholder-product.svg',
+		images: [
+		'/placeholder-product.svg',
+		'/placeholder-product.svg',
+		'/placeholder-product.svg',
+		'/placeholder-product.svg',
+	],
 	},
 
 ];
