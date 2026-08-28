@@ -2,7 +2,6 @@
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import GlowCard from '../components/GlowCard.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import '../styles/global.css';
 ---
@@ -12,392 +11,560 @@ import '../styles/global.css';
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
 	</head>
+
 	<body>
+
 		<Header />
+
 		<main>
 
-	<!-- HERO / ABOUT CARD -->
+			<!-- HERO / ABOUT CARD -->
 
-	<section class="main-card">
+			<section class="main-card">
 
-		<div class="logo-placeholder">
-			YOUR LOGO
-		</div>
+				<div class="logo-placeholder">
+					YOUR LOGO
+				</div>
 
 
-		<div class="commission-status">
+				<div class="commission-status">
 
-			<div class="status-title">
-				✦ commission status: ✦
-			</div>
+					<div class="status-title">
+						✦ commission status: ✦
+					</div>
 
-			<div class="status">
-				OPEN
-			</div>
+					<div class="status">
+						OPEN
+					</div>
 
-		</div>
+				</div>
 
 
-		<h2>
-			✦ Who am I and what can I do? ✦
-		</h2>
+				<h2>
+					✦ Who am I and what can I do? ✦
+				</h2>
 
 
-		<p class="about-text">
-			Hi! My name is darkPegasista and I am a passionate
-			digital artist. I have been drawing for many years
-			and love creating illustrations and character art.
-			My work focuses on bringing characters and ideas
-			to life through colorful digital artwork.
-			<br /><br />
-			I also enjoy graphic design, creating websites,
-			and exploring new creative projects. In my free
-			time I enjoy meeting new people, visiting
-			conventions and discovering new ways to express
-			my creativity.
-		</p>
+				<p class="about-text">
+					Hi! My name is darkPegasista and I am a passionate
+					digital artist. I have been drawing for many years
+					and love creating illustrations and character art.
+					My work focuses on bringing characters and ideas
+					to life through colorful digital artwork.
+					<br /><br />
+					I also enjoy graphic design, creating websites,
+					and exploring new creative projects. In my free
+					time I enjoy meeting new people, visiting
+					conventions and discovering new ways to express
+					my creativity.
+				</p>
 
-	</section>
+			</section>
 
 
-	<section class="social-card">
+			<!-- SOCIALS -->
 
-	<h2>✦ Socials ✦</h2>
+			<section class="social-card">
 
-	<div class="social-links">
+				<h2>✦ Socials ✦</h2>
 
-		<a
-			href="https://www.instagram.com/YOURUSERNAME/"
-			class="social-link"
-			target="_blank"
-			rel="noopener noreferrer"
-		>
-			Instagram
-		</a>
+				<div class="social-links">
 
+					<!-- Opens Instagram -->
 
-		<a
-			href="https://www.tiktok.com/@YOURUSERNAME"
-			class="social-link"
-			target="_blank"
-			rel="noopener noreferrer"
-		>
-			TikTok
-		</a>
+					<a
+						href="https://www.instagram.com/YOURUSERNAME/"
+						class="social-link"
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						Instagram
+					</a>
 
 
-		<a
-			href="https://derpibooru.org/profiles/YOURUSERNAME"
-			class="social-link"
-			target="_blank"
-			rel="noopener noreferrer"
-		>
-			Derpibooru
-		</a>
+					<!-- Opens TikTok -->
 
+					<a
+						href="https://www.tiktok.com/@YOURUSERNAME"
+						class="social-link"
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						TikTok
+					</a>
 
-		<button
-			type="button"
-			class="social-link copy-social"
-			data-username="@YOURTELEGRAMUSERNAME"
-		>
-			Telegram
-		</button>
 
+					<!-- Opens Derpibooru -->
 
-		<button
-			type="button"
-			class="social-link copy-social"
-			data-username="@YOURBARQUSERNAME"
-		>
-			Barq
-		</button>
+					<a
+						href="https://derpibooru.org/profiles/YOURUSERNAME"
+						class="social-link"
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						Derpibooru
+					</a>
 
-	</div>
 
-</section>
+					<!-- Copies Telegram username -->
 
+					<button
+						type="button"
+						class="social-link copy-social"
+						data-username="@YOURTELEGRAMUSERNAME"
+					>
+						Telegram
+					</button>
 
-<div
-	id="copy-toast"
-	class="copy-toast"
-	role="status"
-	aria-live="polite"
-></div>
-	/* =========================
-	   MAIN LAYOUT
-	   ========================= */
 
-	main {
-		max-width: 900px;
-		margin: 0 auto;
-		padding: 3rem 1.5rem 5rem;
-	}
+					<!-- Copies Barq username -->
 
+					<button
+						type="button"
+						class="social-link copy-social"
+						data-username="@YOURBARQUSERNAME"
+					>
+						Barq
+					</button>
 
-	/* =========================
-	   MAIN ABOUT CARD
-	   ========================= */
+				</div>
 
-	.main-card {
-		padding: 3rem;
+			</section>
 
-		border-radius: 30px;
 
-		border: 1px solid var(--card-border);
+			<!-- COPY NOTIFICATION -->
 
-		background:
-			linear-gradient(
-				145deg,
-				rgba(180, 20, 150, 0.22),
-				rgba(80, 10, 80, 0.18)
-			);
+			<div
+				id="copy-toast"
+				class="copy-toast"
+				role="status"
+				aria-live="polite"
+			></div>
 
-		box-shadow:
-			0 0 25px rgba(255, 80, 200, 0.12),
-			inset 0 0 30px rgba(255, 80, 200, 0.04);
+		</main>
 
-		backdrop-filter: blur(12px);
 
-		text-align: center;
-	}
+		<style>
 
+			/* =========================
+			   MAIN LAYOUT
+			   ========================= */
 
-	/* =========================
-	   LOGO PLACEHOLDER
-	   ========================= */
+			main {
+				max-width: 900px;
+				margin: 0 auto;
+				padding: 3rem 1.5rem 5rem;
+			}
 
-	.logo-placeholder {
-		width: min(80%, 500px);
 
-		aspect-ratio: 3 / 1;
+			/* =========================
+			   MAIN ABOUT CARD
+			   ========================= */
 
-		margin: 0 auto 2rem;
+			.main-card {
+				padding: 3rem;
 
-		display: flex;
-		align-items: center;
-		justify-content: center;
+				border-radius: 30px;
 
-		border-radius: 20px;
+				border: 1px solid var(--card-border);
 
-		border: 1px dashed rgba(255, 255, 255, 0.25);
+				background:
+					linear-gradient(
+						145deg,
+						rgba(180, 20, 150, 0.22),
+						rgba(80, 10, 80, 0.18)
+					);
 
-		color: rgba(255, 255, 255, 0.45);
+				box-shadow:
+					0 0 25px rgba(255, 80, 200, 0.12),
+					inset 0 0 30px rgba(255, 80, 200, 0.04);
 
-		font-size: 2rem;
-		font-weight: 600;
+				backdrop-filter: blur(12px);
 
-		letter-spacing: 0.15em;
-	}
+				text-align: center;
+			}
 
 
-	/* =========================
-	   COMMISSION STATUS
-	   ========================= */
+			/* =========================
+			   LOGO PLACEHOLDER
+			   ========================= */
 
-	.commission-status {
-		max-width: 500px;
+			.logo-placeholder {
+				width: min(80%, 500px);
 
-		margin: 0 auto 2.5rem;
+				aspect-ratio: 3 / 1;
 
-		padding: 1rem 1.5rem;
+				margin: 0 auto 2rem;
 
-		border-radius: 15px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
 
-		border: 1px solid rgba(255, 100, 220, 0.8);
+				border-radius: 20px;
 
-		background: rgba(200, 20, 150, 0.15);
+				border: 1px dashed rgba(255, 255, 255, 0.25);
 
-		box-shadow:
-			0 0 15px rgba(255, 70, 200, 0.3),
-			inset 0 0 15px rgba(255, 70, 200, 0.08);
-	}
+				color: rgba(255, 255, 255, 0.45);
 
+				font-size: 2rem;
+				font-weight: 600;
 
-	.status-title {
-		font-size: 0.95rem;
-		font-weight: 600;
+				letter-spacing: 0.15em;
+			}
 
-		letter-spacing: 0.08em;
-	}
 
+			/* =========================
+			   COMMISSION STATUS
+			   ========================= */
 
-	.status {
-		margin-top: 0.2rem;
+			.commission-status {
+				max-width: 500px;
 
-		font-size: 2rem;
-		font-weight: 700;
+				margin: 0 auto 2.5rem;
 
-		letter-spacing: 0.12em;
+				padding: 1rem 1.5rem;
 
-		color: white;
+				border-radius: 15px;
 
-		text-shadow:
-			0 0 10px rgba(255, 100, 220, 0.8);
-	}
+				border: 1px solid rgba(255, 100, 220, 0.8);
 
+				background: rgba(200, 20, 150, 0.15);
 
-	/* =========================
-	   ABOUT TEXT
-	   ========================= */
+				box-shadow:
+					0 0 15px rgba(255, 70, 200, 0.3),
+					inset 0 0 15px rgba(255, 70, 200, 0.08);
+			}
 
-	.main-card h2 {
-		margin-bottom: 1.5rem;
 
-		font-size: 1.25rem;
-	}
+			.status-title {
+				font-size: 0.95rem;
+				font-weight: 600;
 
+				letter-spacing: 0.08em;
+			}
 
-	.about-text {
-		max-width: 650px;
 
-		margin: 0 auto;
+			.status {
+				margin-top: 0.2rem;
 
-		color: var(--text-muted);
+				font-size: 2rem;
+				font-weight: 700;
 
-		font-size: 1rem;
+				letter-spacing: 0.12em;
 
-		line-height: 1.65;
-	}
+				color: white;
 
+				text-shadow:
+					0 0 10px rgba(255, 100, 220, 0.8);
+			}
 
-	/* =========================
-	   SOCIALS
-	   ========================= */
 
-	.social-card {
-		margin-top: 2rem;
+			/* =========================
+			   ABOUT TEXT
+			   ========================= */
 
-		padding: 2.5rem;
+			.main-card h2 {
+				margin-bottom: 1.5rem;
 
-		border-radius: 30px;
+				font-size: 1.25rem;
+			}
 
-		border: 1px solid var(--card-border);
 
-		background:
-			linear-gradient(
-				145deg,
-				rgba(180, 20, 150, 0.18),
-				rgba(80, 10, 80, 0.14)
-			);
+			.about-text {
+				max-width: 650px;
 
-		box-shadow:
-			0 0 20px rgba(255, 80, 200, 0.08);
+				margin: 0 auto;
 
-		text-align: center;
-	}
+				color: var(--text-muted);
 
+				font-size: 1rem;
 
-	.social-card h2 {
-		margin-top: 0;
-		margin-bottom: 1.5rem;
+				line-height: 1.65;
+			}
 
-		font-size: 1.3rem;
-	}
 
+			/* =========================
+			   SOCIALS
+			   ========================= */
 
-	.social-links {
-		max-width: 600px;
+			.social-card {
+				margin-top: 2rem;
 
-		margin: 0 auto;
+				padding: 2.5rem;
 
-		display: flex;
-		flex-direction: column;
+				border-radius: 30px;
 
-		gap: 0.8rem;
-	}
+				border: 1px solid var(--card-border);
 
+				background:
+					linear-gradient(
+						145deg,
+						rgba(180, 20, 150, 0.18),
+						rgba(80, 10, 80, 0.14)
+					);
 
-	/* =========================
-	   SOCIAL BUTTONS
-	   ========================= */
+				box-shadow:
+					0 0 20px rgba(255, 80, 200, 0.08);
 
-	.social-link {
-		padding: 0.8rem 1.5rem;
+				text-align: center;
+			}
 
-		border-radius: 12px;
 
-		border: 1px solid rgba(255, 130, 225, 0.5);
+			.social-card h2 {
+				margin-top: 0;
+				margin-bottom: 1.5rem;
 
-		background: rgba(255, 255, 255, 0.04);
+				font-size: 1.3rem;
+			}
 
-		color: white;
 
-		font-weight: 500;
+			.social-links {
+				max-width: 600px;
 
-		box-shadow:
-			0 0 8px rgba(255, 80, 200, 0.08);
+				margin: 0 auto;
 
-		transition:
-			transform 0.2s ease,
-			box-shadow 0.2s ease,
-			border-color 0.2s ease,
-			background 0.2s ease;
-	}
+				display: flex;
+				flex-direction: column;
 
+				gap: 0.8rem;
+			}
 
-	.social-link:hover {
-		transform: translateY(-2px);
 
-		border-color: rgba(255, 130, 225, 0.9);
+			/* =========================
+			   SOCIAL BUTTONS
+			   ========================= */
 
-		background: rgba(255, 70, 200, 0.08);
+			.social-link {
+				width: 100%;
 
-		box-shadow:
-			0 0 15px rgba(255, 80, 200, 0.35),
-			0 0 35px rgba(255, 80, 200, 0.12);
-	}
+				display: flex;
+				align-items: center;
+				justify-content: center;
 
+				min-height: 44px;
 
-	/* =========================
-	   MOBILE
-	   ========================= */
+				padding: 0.8rem 1.5rem;
 
-	@media (max-width: 700px) {
+				margin: 0;
 
-		main {
-			padding:
-				2rem 0.8rem
-				3rem;
-		}
+				border-radius: 12px;
 
-		.main-card {
-			padding: 2rem 1.2rem;
+				border: 1px solid rgba(255, 130, 225, 0.5);
 
-			border-radius: 22px;
-		}
+				background: rgba(255, 255, 255, 0.04);
 
-		.logo-placeholder {
-			width: 90%;
+				color: white;
 
-			font-size: 1.2rem;
-		}
+				font-family: inherit;
+				font-size: 1rem;
+				font-weight: 500;
 
-		.commission-status {
-			padding: 0.8rem 1rem;
-		}
+				line-height: 1.2;
 
-		.status {
-			font-size: 1.6rem;
-		}
+				text-align: center;
+				text-decoration: none;
 
-		.main-card h2 {
-			font-size: 1.1rem;
-		}
+				cursor: pointer;
 
-		.about-text {
-			font-size: 0.95rem;
-		}
+				box-shadow:
+					0 0 8px rgba(255, 80, 200, 0.08);
 
-		.social-card {
-			padding: 2rem 1.2rem;
+				transition:
+					transform 0.2s ease,
+					box-shadow 0.2s ease,
+					border-color 0.2s ease,
+					background 0.2s ease;
 
-			border-radius: 22px;
-		}
+				appearance: none;
+				-webkit-appearance: none;
+			}
 
-	}
 
-</style>
+			.social-link:hover {
+				transform: translateY(-2px);
+
+				border-color: rgba(255, 130, 225, 0.9);
+
+				background: rgba(255, 70, 200, 0.08);
+
+				box-shadow:
+					0 0 15px rgba(255, 80, 200, 0.35),
+					0 0 35px rgba(255, 80, 200, 0.12);
+			}
+
+
+			/* =========================
+			   COPY TOAST
+			   ========================= */
+
+			.copy-toast {
+				position: fixed;
+
+				left: 50%;
+				bottom: 2rem;
+
+				transform: translate(-50%, 20px);
+
+				padding: 0.8rem 1.4rem;
+
+				border-radius: 999px;
+
+				border: 1px solid
+					rgba(255, 130, 225, 0.7);
+
+				background:
+					rgba(35, 10, 35, 0.92);
+
+				color: white;
+
+				font-size: 0.9rem;
+				font-weight: 600;
+
+				box-shadow:
+					0 0 20px
+					rgba(255, 80, 200, 0.3);
+
+				backdrop-filter: blur(10px);
+
+				opacity: 0;
+
+				pointer-events: none;
+
+				transition:
+					opacity 0.25s ease,
+					transform 0.25s ease;
+
+				z-index: 1000;
+			}
+
+
+			.copy-toast.show {
+				opacity: 1;
+
+				transform:
+					translate(-50%, 0);
+			}
+
+
+			/* =========================
+			   MOBILE
+			   ========================= */
+
+			@media (max-width: 700px) {
+
+				main {
+					padding:
+						2rem 0.8rem
+						3rem;
+				}
+
+				.main-card {
+					padding: 2rem 1.2rem;
+
+					border-radius: 22px;
+				}
+
+				.logo-placeholder {
+					width: 90%;
+
+					font-size: 1.2rem;
+				}
+
+				.commission-status {
+					padding: 0.8rem 1rem;
+				}
+
+				.status {
+					font-size: 1.6rem;
+				}
+
+				.main-card h2 {
+					font-size: 1.1rem;
+				}
+
+				.about-text {
+					font-size: 0.95rem;
+				}
+
+				.social-card {
+					padding: 2rem 1.2rem;
+
+					border-radius: 22px;
+				}
+
+			}
+
+		</style>
+
+
+		<script>
+
+			const copyButtons =
+				document.querySelectorAll('.copy-social');
+
+			const toast =
+				document.querySelector('#copy-toast');
+
+			let toastTimeout;
+
+
+			copyButtons.forEach((button) => {
+
+				button.addEventListener('click', async () => {
+
+					const username =
+						button.getAttribute('data-username');
+
+					if (!username || !toast) return;
+
+
+					try {
+
+						await navigator.clipboard.writeText(username);
+
+						toast.textContent =
+							`${username} copied!`;
+
+						toast.classList.add('show');
+
+
+						clearTimeout(toastTimeout);
+
+
+						toastTimeout = setTimeout(() => {
+
+							toast.classList.remove('show');
+
+						}, 2500);
+
+
+					} catch (error) {
+
+						toast.textContent =
+							'Could not copy username';
+
+						toast.classList.add('show');
+
+
+						clearTimeout(toastTimeout);
+
+
+						toastTimeout = setTimeout(() => {
+
+							toast.classList.remove('show');
+
+						}, 2500);
+
+					}
+
+				});
+
+			});
+
+		</script>
+
+
 		<Footer />
+
 	</body>
 </html>
