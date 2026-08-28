@@ -5,39 +5,87 @@ import Footer from '../components/Footer.astro';
 
 const gallery = [
 	{
-		image: '/placeholder-product.svg',
+		image: '/gallery-01.webp',
 		title: 'Artwork 01',
-		category: 'Illustration',
+		category: 'Digital Illustration',
+		original: 'https://derpibooru.org/images/3480053',
 	},
 
 	{
-		image: '/placeholder-product.svg',
+		image: '/gallery-02.webp',
 		title: 'Artwork 02',
-		category: 'Illustration',
+		category: 'Digital Illustration',
+		original: 'https://derpibooru.org/images/3764948',
 	},
 
 	{
-		image: '/placeholder-product.svg',
+		image: '/gallery-03.webp',
 		title: 'Artwork 03',
-		category: 'Character Art',
+		category: 'Digital Illustration',
+		original: 'https://derpibooru.org/images/3296271',
 	},
 
 	{
-		image: '/placeholder-product.svg',
+		image: '/gallery-04.webp',
 		title: 'Artwork 04',
-		category: 'Character Art',
+		category: 'Digital Illustration',
+		original: 'https://derpibooru.org/images/3134028',
 	},
 
 	{
-		image: '/placeholder-product.svg',
+		image: '/gallery-05.webp',
 		title: 'Artwork 05',
-		category: 'Illustration',
+		category: 'Digital Illustration',
+		original: 'https://derpibooru.org/images/3107362',
 	},
 
 	{
-		image: '/placeholder-product.svg',
+		image: '/gallery-06.webp',
 		title: 'Artwork 06',
-		category: 'Personal Work',
+		category: 'Digital Illustration',
+		original: 'https://derpibooru.org/images/3070682',
+	},
+
+	{
+		image: '/gallery-07.webp',
+		title: 'Artwork 07',
+		category: 'Digital Illustration',
+		original: 'https://derpibooru.org/images/3068056',
+	},
+
+	{
+		image: '/gallery-08.webp',
+		title: 'Artwork 08',
+		category: 'Digital Illustration',
+		original: 'https://derpibooru.org/images/2971994',
+	},
+
+	{
+		image: '/gallery-09.webp',
+		title: 'Artwork 09',
+		category: 'Digital Illustration',
+		original: 'https://derpibooru.org/images/2083238',
+	},
+
+	{
+		image: '/gallery-10.webp',
+		title: 'Artwork 10',
+		category: 'Digital Illustration',
+		original: 'https://www.instagram.com/p/B6n-R8FHGED/',
+	},
+
+	{
+		image: '/gallery-11.webp',
+		title: 'Artwork 11',
+		category: 'Digital Illustration',
+		original: 'https://www.instagram.com/p/B1v43vYHq-5/',
+	},
+
+	{
+		image: '/gallery-12.webp',
+		title: 'Artwork 12',
+		category: 'Digital Illustration',
+		original: 'https://www.instagram.com/p/ByJ8tFjnETh/',
 	},
 ];
 ---
@@ -50,7 +98,7 @@ const gallery = [
 
 		<BaseHead
 			title="Gallery"
-			description="A collection of my artwork and illustrations."
+			description="A collection of artwork and illustrations by darkPegasista."
 		/>
 
 	</head>
@@ -63,75 +111,89 @@ const gallery = [
 
 		<main class="gallery-page">
 
-
 			<!-- =========================
 			     PAGE HEADING
 			     ========================= -->
 
 			<section class="page-heading">
 
-				<p class="eyebrow">
-					✦ MY ARTWORK ✦
-				</p>
-
 				<h1>
 					Gallery
 				</h1>
 
-				<p class="page-description">
-					A collection of illustrations,
-					character art and other things
-					I have created.
+				<p>
+					A selection of my artwork and illustrations.
 				</p>
 
 			</section>
 
 
-
 			<!-- =========================
-			     GALLERY
+			     GALLERY GRID
 			     ========================= -->
 
 			<section class="gallery-grid">
 
-				{gallery.map((artwork, index) => (
+				{gallery.map((item, index) => (
 
-					<button
-						type="button"
-						class="gallery-item"
+					<article
+						class="gallery-card"
 						data-index={index}
-						aria-label={`View ${artwork.title}`}
 					>
 
-						<div class="image-wrapper">
+						<button
+							type="button"
+							class="gallery-image-button"
+							aria-label={`View ${item.title}`}
+							data-image={item.image}
+							data-title={item.title}
+							data-original={item.original}
+						>
 
-							<img
-								src={artwork.image}
-								alt={artwork.title}
-								loading="lazy"
-							/>
+							<div class="gallery-image">
+
+								<img
+									src={item.image}
+									alt={item.title}
+									loading="lazy"
+								/>
+
+							</div>
+
+						</button>
+
+
+						<div class="gallery-info">
+
+							<div>
+
+								<h2>
+									{item.title}
+								</h2>
+
+								<p>
+									{item.category}
+								</p>
+
+							</div>
+
+
+							<a
+								href={item.original}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="original-link"
+							>
+								Original ↗
+							</a>
 
 						</div>
 
-
-						<div class="artwork-info">
-
-							<span>
-								{artwork.category}
-							</span>
-
-							<h2>
-								{artwork.title}
-							</h2>
-
-						</div>
-
-					</button>
+					</article>
 
 				))}
 
 			</section>
-
 
 		</main>
 
@@ -175,10 +237,16 @@ const gallery = [
 					alt=""
 				/>
 
-				<div
-					id="lightbox-caption"
-					class="lightbox-caption"
-				>
+
+				<div class="lightbox-caption">
+
+					<span id="lightbox-title">
+					</span>
+
+
+					<span id="lightbox-counter">
+					</span>
+
 				</div>
 
 			</div>
@@ -201,11 +269,15 @@ const gallery = [
 
 
 
-		<script define:vars={{ gallery }}>
+		<script>
 
-			// =========================
-			// ELEMENTS
-			// =========================
+			const galleryItems =
+				Array.from(
+					document.querySelectorAll(
+						'.gallery-image-button'
+					)
+				);
+
 
 			const lightbox =
 				document.querySelector(
@@ -219,9 +291,15 @@ const gallery = [
 				);
 
 
-			const lightboxCaption =
+			const lightboxTitle =
 				document.querySelector(
-					'#lightbox-caption'
+					'#lightbox-title'
+				);
+
+
+			const lightboxCounter =
+				document.querySelector(
+					'#lightbox-counter'
 				);
 
 
@@ -243,69 +321,70 @@ const gallery = [
 				);
 
 
-			const galleryItems =
-				document.querySelectorAll(
-					'.gallery-item'
-				);
-
-
-
 			let currentIndex = 0;
 
 
 
-			// =========================
-			// SHOW IMAGE
-			// =========================
-
 			function showImage(index) {
+
+				if (
+					galleryItems.length === 0
+				) {
+
+					return;
+
+				}
+
 
 				currentIndex =
 					(
 						index +
-						gallery.length
+						galleryItems.length
 					) %
-					gallery.length;
+					galleryItems.length;
 
 
-				const artwork =
-					gallery[currentIndex];
+				const item =
+					galleryItems[currentIndex];
+
+
+				const image =
+					item.dataset.image;
+
+
+				const title =
+					item.dataset.title;
 
 
 				if (lightboxImage) {
 
 					lightboxImage.src =
-						artwork.image;
+						image;
 
 					lightboxImage.alt =
-						artwork.title;
+						title || '';
 
 				}
 
 
-				if (lightboxCaption) {
+				if (lightboxTitle) {
 
-					lightboxCaption.innerHTML = `
+					lightboxTitle.textContent =
+						title || '';
 
-						<strong>
-							${artwork.title}
-						</strong>
+				}
 
-						<span>
-							${artwork.category}
-						</span>
 
-					`;
+				if (lightboxCounter) {
+
+					lightboxCounter.textContent =
+						`${currentIndex + 1} / ${galleryItems.length}`;
 
 				}
 
 			}
 
 
-
-			// =========================
-			// OPEN
-			// =========================
 
 			function openLightbox(index) {
 
@@ -330,10 +409,6 @@ const gallery = [
 
 
 
-			// =========================
-			// CLOSE
-			// =========================
-
 			function closeLightbox() {
 
 				lightbox?.classList.remove(
@@ -354,26 +429,14 @@ const gallery = [
 
 
 
-			// =========================
-			// GALLERY ITEMS
-			// =========================
-
 			galleryItems.forEach(
-				(item) => {
+				(item, index) => {
 
 					item.addEventListener(
 						'click',
 						() => {
 
-							const index =
-								Number(
-									item.dataset.index
-								);
-
-
-							openLightbox(
-								index
-							);
+							openLightbox(index);
 
 						}
 					);
@@ -383,14 +446,11 @@ const gallery = [
 
 
 
-			// =========================
-			// CONTROLS
-			// =========================
-
 			lightboxClose?.addEventListener(
 				'click',
 				closeLightbox
 			);
+
 
 
 			lightboxPrevious?.addEventListener(
@@ -403,6 +463,7 @@ const gallery = [
 
 				}
 			);
+
 
 
 			lightboxNext?.addEventListener(
@@ -418,17 +479,12 @@ const gallery = [
 
 
 
-			// =========================
-			// BACKGROUND CLICK
-			// =========================
-
 			lightbox?.addEventListener(
 				'click',
 				(event) => {
 
 					if (
-						event.target ===
-						lightbox
+						event.target === lightbox
 					) {
 
 						closeLightbox();
@@ -439,10 +495,6 @@ const gallery = [
 			);
 
 
-
-			// =========================
-			// KEYBOARD
-			// =========================
 
 			document.addEventListener(
 				'keydown',
@@ -460,8 +512,7 @@ const gallery = [
 
 
 					if (
-						event.key ===
-						'Escape'
+						event.key === 'Escape'
 					) {
 
 						closeLightbox();
@@ -470,8 +521,7 @@ const gallery = [
 
 
 					if (
-						event.key ===
-						'ArrowLeft'
+						event.key === 'ArrowLeft'
 					) {
 
 						showImage(
@@ -482,8 +532,7 @@ const gallery = [
 
 
 					if (
-						event.key ===
-						'ArrowRight'
+						event.key === 'ArrowRight'
 					) {
 
 						showImage(
@@ -503,703 +552,597 @@ const gallery = [
 
 
 
-<style is:global>
+<style>
 
-	/* ========================================
-	   PAGE
-	   ======================================== */
+/* =========================
+   PAGE
+   ========================= */
 
-	.gallery-page {
+.gallery-page {
 
-		width:
-			100%;
+	max-width: 1100px;
 
-		max-width:
-			1100px;
+	margin: 0 auto;
 
-		margin:
-			0 auto;
+	padding:
+		4rem 1.5rem
+		6rem;
 
-		padding:
-			4rem 1.5rem 7rem;
-
-		box-sizing:
-			border-box;
-
-	}
+}
 
 
 
-	/* ========================================
-	   HEADING
-	   ======================================== */
+/* =========================
+   HEADING
+   ========================= */
 
-	.page-heading {
+.page-heading {
 
-		text-align:
-			center;
+	text-align: center;
 
-		margin-bottom:
-			3.5rem;
+	margin-bottom:
+		3rem;
 
-	}
-
-
-	.eyebrow {
-
-		margin:
-			0 0 0.8rem;
-
-		color:
-			var(--pink-light);
-
-		font-size:
-			0.72rem;
-
-		font-weight:
-			700;
-
-		letter-spacing:
-			0.16em;
-
-		text-shadow:
-			0 0 12px
-			rgba(255, 100, 220, 0.7);
-
-	}
+}
 
 
-	.page-heading h1 {
+.page-heading h1 {
 
-		margin:
-			0;
+	margin: 0;
 
-		font-size:
-			clamp(
-				3rem,
-				8vw,
-				5rem
-			);
+	font-size:
+		clamp(3rem, 8vw, 5rem);
 
-		line-height:
-			1;
+	line-height: 1;
 
-	}
+	letter-spacing:
+		-0.03em;
+
+}
 
 
-	.page-description {
+.page-heading p {
 
-		max-width:
-			550px;
+	margin:
+		1rem 0 0;
 
-		margin:
-			1.2rem auto 0;
+	color:
+		var(--text-muted);
 
-		color:
-			var(--text-muted);
+	font-size:
+		1rem;
 
-		font-size:
-			0.95rem;
-
-		line-height:
-			1.6;
-
-	}
+}
 
 
 
-	/* ========================================
-	   GALLERY GRID
-	   ======================================== */
+/* =========================
+   GALLERY GRID
+   ========================= */
+
+.gallery-grid {
+
+	display: grid;
+
+	grid-template-columns:
+		repeat(3, 1fr);
+
+	gap:
+		1.5rem;
+
+}
+
+
+
+/* =========================
+   GALLERY CARD
+   ========================= */
+
+.gallery-card {
+
+	overflow: hidden;
+
+	border-radius:
+		22px;
+
+	border:
+		1px solid
+		rgba(255, 130, 225, 0.3);
+
+	background:
+		linear-gradient(
+			145deg,
+			rgba(180, 20, 150, 0.15),
+			rgba(40, 10, 50, 0.25)
+		);
+
+	box-shadow:
+		0 0 15px
+		rgba(255, 80, 200, 0.06);
+
+	transition:
+		transform 0.25s ease,
+		border-color 0.25s ease,
+		box-shadow 0.25s ease;
+
+}
+
+
+.gallery-card:hover {
+
+	transform:
+		translateY(-5px);
+
+	border-color:
+		rgba(255, 130, 225, 0.8);
+
+	box-shadow:
+
+		0 0 25px
+		rgba(255, 80, 200, 0.3),
+
+		0 0 50px
+		rgba(255, 80, 200, 0.1);
+
+}
+
+
+
+/* =========================
+   IMAGE
+   ========================= */
+
+.gallery-image-button {
+
+	display: block;
+
+	width: 100%;
+
+	padding: 0;
+
+	border: 0;
+
+	background: transparent;
+
+	cursor: pointer;
+
+}
+
+
+.gallery-image {
+
+	display: flex;
+
+	align-items: center;
+
+	justify-content: center;
+
+	min-height:
+		320px;
+
+	padding:
+		0.7rem;
+
+	background:
+		rgba(0, 0, 0, 0.12);
+
+}
+
+
+.gallery-image img {
+
+	display: block;
+
+	width: 100%;
+
+	height: auto;
+
+	max-height:
+		500px;
+
+	object-fit: contain;
+
+	transition:
+		transform 0.35s ease;
+
+}
+
+
+.gallery-card:hover
+.gallery-image img {
+
+	transform:
+		scale(1.025);
+
+}
+
+
+
+/* =========================
+   INFO
+   ========================= */
+
+.gallery-info {
+
+	display: flex;
+
+	align-items: center;
+
+	justify-content: space-between;
+
+	gap: 1rem;
+
+	padding:
+		1rem 1.1rem
+		1.1rem;
+
+}
+
+
+.gallery-info h2 {
+
+	margin: 0;
+
+	font-size:
+		1rem;
+
+	line-height: 1.2;
+
+}
+
+
+.gallery-info p {
+
+	margin:
+		0.3rem 0 0;
+
+	color:
+		var(--text-muted);
+
+	font-size:
+		0.75rem;
+
+}
+
+
+.original-link {
+
+	flex-shrink: 0;
+
+	color:
+		var(--pink-light);
+
+	font-size:
+		0.72rem;
+
+	text-decoration:
+		none;
+
+	white-space:
+		nowrap;
+
+}
+
+
+.original-link:hover {
+
+	text-decoration:
+		underline;
+
+}
+
+
+
+/* =========================
+   LIGHTBOX
+   ========================= */
+
+.lightbox {
+
+	position: fixed;
+
+	inset: 0;
+
+	z-index: 1000;
+
+	display: flex;
+
+	align-items: center;
+
+	justify-content: center;
+
+	padding:
+		3rem;
+
+	background:
+		rgba(10, 3, 15, 0.92);
+
+	backdrop-filter:
+		blur(12px);
+
+	opacity: 0;
+
+	visibility: hidden;
+
+	transition:
+		opacity 0.2s ease,
+		visibility 0.2s ease;
+
+}
+
+
+.lightbox.open {
+
+	opacity: 1;
+
+	visibility: visible;
+
+}
+
+
+.lightbox-content {
+
+	position: relative;
+
+	display: flex;
+
+	flex-direction: column;
+
+	align-items: center;
+
+	max-width:
+		90vw;
+
+	max-height:
+		90vh;
+
+}
+
+
+.lightbox-content img {
+
+	display: block;
+
+	max-width:
+		90vw;
+
+	max-height:
+		82vh;
+
+	width: auto;
+
+	height: auto;
+
+	object-fit: contain;
+
+	border-radius:
+		10px;
+
+	box-shadow:
+		0 0 40px
+		rgba(255, 80, 200, 0.2);
+
+}
+
+
+.lightbox-caption {
+
+	display: flex;
+
+	justify-content: space-between;
+
+	width: 100%;
+
+	margin-top:
+		0.8rem;
+
+	color:
+		rgba(255, 255, 255, 0.85);
+
+	font-size:
+		0.8rem;
+
+}
+
+
+#lightbox-counter {
+
+	color:
+		var(--text-muted);
+
+}
+
+
+
+/* =========================
+   LIGHTBOX CONTROLS
+   ========================= */
+
+.lightbox-close {
+
+	position: absolute;
+
+	top:
+		1.2rem;
+
+	right:
+		1.5rem;
+
+	z-index: 2;
+
+	width:
+		45px;
+
+	height:
+		45px;
+
+	border:
+		1px solid
+		rgba(255, 130, 225, 0.5);
+
+	border-radius:
+		50%;
+
+	background:
+		rgba(80, 10, 80, 0.5);
+
+	color:
+		white;
+
+	font-size:
+		2rem;
+
+	line-height: 1;
+
+	cursor:
+		pointer;
+
+}
+
+
+.lightbox-navigation {
+
+	position: absolute;
+
+	top: 50%;
+
+	z-index: 2;
+
+	width:
+		50px;
+
+	height:
+		50px;
+
+	transform:
+		translateY(-50%);
+
+	border:
+		1px solid
+		rgba(255, 130, 225, 0.5);
+
+	border-radius:
+		50%;
+
+	background:
+		rgba(80, 10, 80, 0.5);
+
+	color:
+		white;
+
+	font-size:
+		2.2rem;
+
+	line-height: 1;
+
+	cursor:
+		pointer;
+
+}
+
+
+.lightbox-navigation:hover,
+.lightbox-close:hover {
+
+	border-color:
+		rgba(255, 130, 225, 0.9);
+
+	background:
+		rgba(180, 20, 150, 0.35);
+
+	box-shadow:
+		0 0 15px
+		rgba(255, 80, 200, 0.3);
+
+}
+
+
+.lightbox-navigation.previous {
+
+	left:
+		1.5rem;
+
+}
+
+
+.lightbox-navigation.next {
+
+	right:
+		1.5rem;
+
+}
+
+
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 850px) {
 
 	.gallery-grid {
 
-		display:
-			grid;
+		grid-template-columns:
+			repeat(2, 1fr);
+
+	}
+
+}
+
+
+@media (max-width: 600px) {
+
+	.gallery-page {
+
+		padding:
+			2.5rem 0.8rem
+			4rem;
+
+	}
+
+
+	.gallery-grid {
 
 		grid-template-columns:
-			repeat(
-				3,
-				1fr
-			);
+			1fr;
 
 		gap:
-			1.2rem;
-
-	}
-
-
-
-	/* ========================================
-	   GALLERY ITEM
-	   ======================================== */
-
-	.gallery-item {
-
-		position:
-			relative;
-
-		display:
-			block;
-
-		width:
-			100%;
-
-		padding:
-			0;
-
-		overflow:
-			hidden;
-
-		border:
-			1px solid
-			rgba(
-				255,
-				130,
-				225,
-				0.3
-			);
-
-		border-radius:
-			20px;
-
-		background:
-			linear-gradient(
-				145deg,
-				rgba(
-					180,
-					20,
-					150,
-					0.13
-				),
-				rgba(
-					40,
-					10,
-					50,
-					0.25
-				)
-			);
-
-		color:
-			white;
-
-		font-family:
-			inherit;
-
-		text-align:
-			left;
-
-		cursor:
-			pointer;
-
-		box-shadow:
-			0 0 15px
-			rgba(
-				255,
-				80,
-				200,
-				0.06
-			);
-
-		transition:
-			transform 0.25s ease,
-			border-color 0.25s ease,
-			box-shadow 0.25s ease;
-
-	}
-
-
-	.gallery-item:hover {
-
-		transform:
-			translateY(-5px);
-
-		border-color:
-			rgba(
-				255,
-				130,
-				225,
-				0.85
-			);
-
-		box-shadow:
-			0 0 25px
-			rgba(
-				255,
-				80,
-				200,
-				0.3
-			),
-			0 0 55px
-			rgba(
-				255,
-				80,
-				200,
-				0.1
-			);
-
-	}
-
-
-
-	/* ========================================
-	   IMAGE
-	   ======================================== */
-
-	.image-wrapper {
-
-		width:
-			100%;
-
-		aspect-ratio:
-			4 / 5;
-
-		overflow:
-			hidden;
-
-		background:
-			rgba(
-				255,
-				255,
-				255,
-				0.025
-			);
-
-	}
-
-
-	.image-wrapper img {
-
-		display:
-			block;
-
-		width:
-			100%;
-
-		height:
-			100%;
-
-		object-fit:
-			cover;
-
-		transition:
-			transform 0.4s ease;
-
-	}
-
-
-	.gallery-item:hover
-	.image-wrapper img {
-
-		transform:
-			scale(1.035);
-
-	}
-
-
-
-	/* ========================================
-	   ARTWORK INFO
-	   ======================================== */
-
-	.artwork-info {
-
-		padding:
-			0.9rem
-			1rem
 			1rem;
 
 	}
 
 
-	.artwork-info span {
+	.gallery-image {
 
-		display:
-			block;
-
-		margin-bottom:
-			0.25rem;
-
-		color:
-			var(--pink-light);
-
-		font-size:
-			0.65rem;
-
-		font-weight:
-			700;
-
-		letter-spacing:
-			0.1em;
-
-		text-transform:
-			uppercase;
+		min-height:
+			250px;
 
 	}
 
 
-	.artwork-info h2 {
+	.gallery-info {
 
-		margin:
-			0;
-
-		font-size:
-			0.95rem;
-
-		font-weight:
-			600;
+		padding:
+			0.9rem;
 
 	}
 
-
-
-	/* ========================================
-	   LIGHTBOX
-	   ======================================== */
 
 	.lightbox {
 
-		position:
-			fixed;
-
-		inset:
-			0;
-
-		z-index:
-			9999;
-
-		display:
-			flex;
-
-		align-items:
-			center;
-
-		justify-content:
-			center;
-
 		padding:
-			2rem;
-
-		background:
-			rgba(
-				10,
-				3,
-				12,
-				0.92
-			);
-
-		backdrop-filter:
-			blur(12px);
-
-		opacity:
-			0;
-
-		visibility:
-			hidden;
-
-		pointer-events:
-			none;
-
-		transition:
-			opacity 0.2s ease,
-			visibility 0.2s ease;
+			1rem;
 
 	}
 
-
-	.lightbox.open {
-
-		opacity:
-			1;
-
-		visibility:
-			visible;
-
-		pointer-events:
-			auto;
-
-	}
-
-
-
-	/* ========================================
-	   LIGHTBOX CONTENT
-	   ======================================== */
-
-	.lightbox-content {
-
-		position:
-			relative;
-
-		max-width:
-			min(
-				900px,
-				85vw
-			);
-
-		max-height:
-			90vh;
-
-		display:
-			flex;
-
-		flex-direction:
-			column;
-
-		align-items:
-			center;
-
-	}
-
-
-	.lightbox-content img {
-
-		display:
-			block;
-
-		max-width:
-			100%;
-
-		max-height:
-			80vh;
-
-		width:
-			auto;
-
-		height:
-			auto;
-
-		object-fit:
-			contain;
-
-		border-radius:
-			10px;
-
-		box-shadow:
-			0 0 35px
-			rgba(
-				255,
-				80,
-				200,
-				0.2
-			);
-
-	}
-
-
-
-	/* ========================================
-	   CAPTION
-	   ======================================== */
-
-	.lightbox-caption {
-
-		display:
-			flex;
-
-		align-items:
-			center;
-
-		gap:
-			0.7rem;
-
-		margin-top:
-			0.8rem;
-
-		color:
-			white;
-
-		font-size:
-			0.8rem;
-
-	}
-
-
-	.lightbox-caption span {
-
-		color:
-			var(--pink-light);
-
-		font-size:
-			0.7rem;
-
-	}
-
-
-
-	/* ========================================
-	   LIGHTBOX CLOSE
-	   ======================================== */
-
-	.lightbox-close {
-
-		position:
-			absolute;
-
-		top:
-			1.2rem;
-
-		right:
-			1.5rem;
-
-		z-index:
-			2;
-
-		width:
-			42px;
-
-		height:
-			42px;
-
-		border:
-			1px solid
-			rgba(
-				255,
-				130,
-				225,
-				0.4
-			);
-
-		border-radius:
-			50%;
-
-		background:
-			rgba(
-				255,
-				255,
-				255,
-				0.05
-			);
-
-		color:
-			white;
-
-		font-family:
-			inherit;
-
-		font-size:
-			1.7rem;
-
-		line-height:
-			1;
-
-		cursor:
-			pointer;
-
-		transition:
-			background 0.2s ease,
-			box-shadow 0.2s ease;
-
-	}
-
-
-	.lightbox-close:hover {
-
-		background:
-			rgba(
-				255,
-				70,
-				200,
-				0.15
-			);
-
-		box-shadow:
-			0 0 20px
-			rgba(
-				255,
-				80,
-				200,
-				0.25
-			);
-
-	}
-
-
-
-	/* ========================================
-	   LIGHTBOX NAVIGATION
-	   ======================================== */
 
 	.lightbox-navigation {
 
-		position:
-			absolute;
-
-		top:
-			50%;
-
-		transform:
-			translateY(-50%);
-
-		z-index:
-			2;
-
 		width:
-			48px;
+			40px;
 
 		height:
-			48px;
-
-		border:
-			1px solid
-			rgba(
-				255,
-				130,
-				225,
-				0.4
-			);
-
-		border-radius:
-			50%;
-
-		background:
-			rgba(
-				255,
-				255,
-				255,
-				0.05
-			);
-
-		color:
-			white;
-
-		font-family:
-			inherit;
-
-		font-size:
-			2rem;
-
-		line-height:
-			1;
-
-		cursor:
-			pointer;
-
-		transition:
-			background 0.2s ease,
-			box-shadow 0.2s ease;
-
-	}
-
-
-	.lightbox-navigation:hover {
-
-		background:
-			rgba(
-				255,
-				70,
-				200,
-				0.15
-			);
-
-		box-shadow:
-			0 0 20px
-			rgba(
-				255,
-				80,
-				200,
-				0.25
-			);
+			40px;
 
 	}
 
@@ -1207,7 +1150,7 @@ const gallery = [
 	.lightbox-navigation.previous {
 
 		left:
-			1.5rem;
+			0.5rem;
 
 	}
 
@@ -1215,186 +1158,10 @@ const gallery = [
 	.lightbox-navigation.next {
 
 		right:
-			1.5rem;
+			0.5rem;
 
 	}
 
-
-
-	/* ========================================
-	   TABLET
-	   ======================================== */
-
-	@media (max-width: 850px) {
-
-		.gallery-grid {
-
-			grid-template-columns:
-				repeat(
-					2,
-					1fr
-				);
-
-		}
-
-	}
-
-
-
-	/* ========================================
-	   MOBILE
-	   ======================================== */
-
-	@media (max-width: 600px) {
-
-		.gallery-page {
-
-			padding:
-				2.5rem 0.8rem
-				4rem;
-
-		}
-
-
-		.page-heading {
-
-			margin-bottom:
-				2.5rem;
-
-		}
-
-
-		.page-heading h1 {
-
-			font-size:
-				2.8rem;
-
-		}
-
-
-		.gallery-grid {
-
-			grid-template-columns:
-				repeat(
-					2,
-					minmax(
-						0,
-						1fr
-					)
-				);
-
-			gap:
-				0.7rem;
-
-		}
-
-
-		.gallery-item {
-
-			border-radius:
-				14px;
-
-		}
-
-
-		.image-wrapper {
-
-			aspect-ratio:
-				3 / 4;
-
-		}
-
-
-		.artwork-info {
-
-			padding:
-				0.65rem
-				0.7rem
-				0.75rem;
-
-		}
-
-
-		.artwork-info span {
-
-			font-size:
-				0.55rem;
-
-		}
-
-
-		.artwork-info h2 {
-
-			font-size:
-				0.72rem;
-
-		}
-
-
-		.lightbox {
-
-			padding:
-				1rem;
-
-		}
-
-
-		.lightbox-content {
-
-			max-width:
-				92vw;
-
-		}
-
-
-		.lightbox-content img {
-
-			max-height:
-				78vh;
-
-		}
-
-
-		.lightbox-navigation {
-
-			width:
-				38px;
-
-			height:
-				38px;
-
-			font-size:
-				1.5rem;
-
-		}
-
-
-		.lightbox-navigation.previous {
-
-			left:
-				0.5rem;
-
-		}
-
-
-		.lightbox-navigation.next {
-
-			right:
-				0.5rem;
-
-		}
-
-
-		.lightbox-close {
-
-			top:
-				0.7rem;
-
-			right:
-				0.7rem;
-
-		}
-
-	}
+}
 
 </style>
