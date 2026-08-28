@@ -1,13 +1,15 @@
 export const products = [
 
 	{
-		slug: 'wine-pony-cheers',
-		name: 'Wine Pony Cheers',
-		category: 'bottle-openers',
-		price: 12,
-		stock: 1,
-		image: '/placeholder-product.svg',
-	},
+	slug: 'wine-pony-cheers',
+	name: 'Wine Pony Cheers',
+	category: 'bottle-openers',
+	price: 12,
+	stock: 1,
+	image: '/placeholder-product.svg',
+	description: 'A bottle opener featuring the Wine Pony Cheers design.',
+	material: 'Stainless steel',
+},
 
 	{
 		slug: 'dont-drink-and-fly',
