@@ -91,95 +91,279 @@ import '../styles/global.css';
 </main>
 <style>
 
+	/* =========================
+	   MAIN LAYOUT
+	   ========================= */
+
 	main {
-		max-width: 1200px;
+		max-width: 900px;
 		margin: 0 auto;
-		padding: 0 2rem;
+		padding: 3rem 1.5rem 5rem;
 	}
 
-	.hero {
-		min-height: 60vh;
 
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
+	/* =========================
+	   MAIN ABOUT CARD
+	   ========================= */
+
+	.main-card {
+		padding: 3rem;
+
+		border-radius: 30px;
+
+		border: 1px solid var(--card-border);
+
+		background:
+			linear-gradient(
+				145deg,
+				rgba(180, 20, 150, 0.22),
+				rgba(80, 10, 80, 0.18)
+			);
+
+		box-shadow:
+			0 0 25px rgba(255, 80, 200, 0.12),
+			inset 0 0 30px rgba(255, 80, 200, 0.04);
+
+		backdrop-filter: blur(12px);
 
 		text-align: center;
 	}
 
-	.hero h1 {
-		margin: 0;
 
-		font-size: clamp(3rem, 8vw, 6rem);
-		line-height: 1;
-	}
+	/* =========================
+	   LOGO PLACEHOLDER
+	   ========================= */
 
-	.eyebrow {
-		color: rgb(192, 132, 252);
+	.logo-placeholder {
+		width: min(80%, 500px);
 
-		font-size: 0.9rem;
-		font-weight: 700;
+		aspect-ratio: 3 / 1;
+
+		margin: 0 auto 2rem;
+
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		border-radius: 20px;
+
+		border: 1px dashed rgba(255, 255, 255, 0.25);
+
+		color: rgba(255, 255, 255, 0.45);
+
+		font-size: 2rem;
+		font-weight: 600;
+
 		letter-spacing: 0.15em;
-
-		margin-bottom: 1.5rem;
 	}
 
-	.intro {
-		max-width: 600px;
 
-		font-size: 1.25rem;
-		opacity: 0.75;
+	/* =========================
+	   COMMISSION STATUS
+	   ========================= */
 
-		margin: 1.5rem 0 2rem;
-	}
+	.commission-status {
+		max-width: 500px;
 
-	.hero-button {
-		display: inline-block;
+		margin: 0 auto 2.5rem;
 
-		padding: 0.9rem 1.6rem;
+		padding: 1rem 1.5rem;
 
-		border-radius: 999px;
-		border: 1px solid rgba(168, 85, 247, 0.6);
+		border-radius: 15px;
 
-		background: rgba(168, 85, 247, 0.12);
-		color: white;
+		border: 1px solid rgba(255, 100, 220, 0.8);
 
-		text-decoration: none;
-		font-weight: 700;
+		background: rgba(200, 20, 150, 0.15);
 
 		box-shadow:
-			0 0 20px rgba(168, 85, 247, 0.15);
+			0 0 15px rgba(255, 70, 200, 0.3),
+			inset 0 0 15px rgba(255, 70, 200, 0.08);
+	}
+
+
+	.status-title {
+		font-size: 0.95rem;
+		font-weight: 600;
+
+		letter-spacing: 0.08em;
+	}
+
+
+	.status {
+		margin-top: 0.2rem;
+
+		font-size: 2rem;
+		font-weight: 700;
+
+		letter-spacing: 0.12em;
+
+		color: white;
+
+		text-shadow:
+			0 0 10px rgba(255, 100, 220, 0.8);
+	}
+
+
+	/* =========================
+	   ABOUT TEXT
+	   ========================= */
+
+	.main-card h2 {
+		margin-bottom: 1.5rem;
+
+		font-size: 1.25rem;
+	}
+
+
+	.about-text {
+		max-width: 650px;
+
+		margin: 0 auto;
+
+		color: var(--text-muted);
+
+		font-size: 1rem;
+
+		line-height: 1.65;
+	}
+
+
+	/* =========================
+	   SOCIALS
+	   ========================= */
+
+	.social-card {
+		margin-top: 2rem;
+
+		padding: 2.5rem;
+
+		border-radius: 30px;
+
+		border: 1px solid var(--card-border);
+
+		background:
+			linear-gradient(
+				145deg,
+				rgba(180, 20, 150, 0.18),
+				rgba(80, 10, 80, 0.14)
+			);
+
+		box-shadow:
+			0 0 20px rgba(255, 80, 200, 0.08);
+
+		text-align: center;
+	}
+
+
+	.social-card h2 {
+		margin-top: 0;
+		margin-bottom: 1.5rem;
+
+		font-size: 1.3rem;
+	}
+
+
+	.social-links {
+		max-width: 600px;
+
+		margin: 0 auto;
+
+		display: flex;
+		flex-direction: column;
+
+		gap: 0.8rem;
+	}
+
+
+	/* =========================
+	   SOCIAL BUTTONS
+	   ========================= */
+
+	.social-link {
+		padding: 0.8rem 1.5rem;
+
+		border-radius: 12px;
+
+		border: 1px solid rgba(255, 130, 225, 0.5);
+
+		background: rgba(255, 255, 255, 0.04);
+
+		color: white;
+
+		font-weight: 500;
+
+		box-shadow:
+			0 0 8px rgba(255, 80, 200, 0.08);
 
 		transition:
 			transform 0.2s ease,
 			box-shadow 0.2s ease,
+			border-color 0.2s ease,
 			background 0.2s ease;
 	}
 
-	.hero-button:hover {
+
+	.social-link:hover {
 		transform: translateY(-2px);
 
-		background: rgba(168, 85, 247, 0.2);
+		border-color: rgba(255, 130, 225, 0.9);
+
+		background: rgba(255, 70, 200, 0.08);
 
 		box-shadow:
-			0 0 30px rgba(168, 85, 247, 0.3);
+			0 0 15px rgba(255, 80, 200, 0.35),
+			0 0 35px rgba(255, 80, 200, 0.12);
 	}
 
-	.cards {
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
 
-		gap: 1.5rem;
+	/* =========================
+	   MOBILE
+	   ========================= */
 
-		margin: 0 auto 6rem;
-	}
-	@media (max-width: 800px) {
+	@media (max-width: 700px) {
 
-		.cards {
-			grid-template-columns: 1fr;
+		main {
+			padding:
+				2rem 0.8rem
+				3rem;
 		}
+
+		.main-card {
+			padding: 2rem 1.2rem;
+
+			border-radius: 22px;
+		}
+
+		.logo-placeholder {
+			width: 90%;
+
+			font-size: 1.2rem;
+		}
+
+		.commission-status {
+			padding: 0.8rem 1rem;
+		}
+
+		.status {
+			font-size: 1.6rem;
+		}
+
+		.main-card h2 {
+			font-size: 1.1rem;
+		}
+
+		.about-text {
+			font-size: 0.95rem;
+		}
+
+		.social-card {
+			padding: 2rem 1.2rem;
+
+			border-radius: 22px;
+		}
+
 	}
+
 </style>
 		<Footer />
 	</body>
