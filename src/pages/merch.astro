@@ -1,0 +1,469 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { products } from '../data/products';
+---
+
+<!doctype html>
+
+<html lang="en">
+
+	<head>
+
+		<BaseHead
+			title="Merch"
+			description="Artwork, clothing and other merchandise."
+		/>
+
+	</head>
+
+
+	<body>
+
+		<Header />
+
+
+		<main class="merch-page">
+
+
+			<!-- PAGE HEADING -->
+
+			<section class="page-heading">
+
+				<h1>
+					Merch
+				</h1>
+
+				<p>
+					Artwork, clothing and other goodies.
+				</p>
+
+			</section>
+
+
+
+			<!-- PRODUCT GRID -->
+
+			<section class="product-grid">
+
+				{products.map((product) => (
+
+					<a
+						href={`/product/${product.slug}`}
+						class="product-card"
+					>
+
+						<div class="product-image">
+
+							<img
+								src={product.image}
+								alt={product.name}
+							/>
+
+						</div>
+
+
+						<div class="product-info">
+
+							<p class="product-category">
+								{product.category}
+							</p>
+
+							<h2>
+								{product.name}
+							</h2>
+
+
+							<div class="product-bottom">
+
+								<span class="price">
+									€{product.price.toFixed(2)}
+								</span>
+
+
+								{product.stock > 0 ? (
+
+									<span class="stock">
+										✓ In stock
+									</span>
+
+								) : (
+
+									<span class="sold-out">
+										Sold out
+									</span>
+
+								)}
+
+							</div>
+
+						</div>
+
+					</a>
+
+				))}
+
+			</section>
+
+		</main>
+
+
+		<Footer />
+
+	</body>
+
+</html>
+
+
+
+<style>
+
+	/* =========================
+	   PAGE
+	   ========================= */
+
+	.merch-page {
+
+		max-width: 1000px;
+
+		margin: 0 auto;
+
+		padding:
+			4rem 1.5rem
+			6rem;
+
+	}
+
+
+
+	/* =========================
+	   HEADING
+	   ========================= */
+
+	.page-heading {
+
+		text-align: center;
+
+		margin-bottom: 3rem;
+
+	}
+
+
+	.page-heading h1 {
+
+		margin: 0;
+
+		font-size:
+			clamp(3rem, 8vw, 5rem);
+
+		line-height: 1;
+
+		letter-spacing: -0.03em;
+
+	}
+
+
+	.page-heading p {
+
+		margin:
+			1rem 0 0;
+
+		color: var(--text-muted);
+
+		font-size: 1rem;
+
+	}
+
+
+
+	/* =========================
+	   PRODUCT GRID
+	   ========================= */
+
+	.product-grid {
+
+		display: grid;
+
+		grid-template-columns:
+			repeat(3, 1fr);
+
+		gap: 1.5rem;
+
+	}
+
+
+
+	/* =========================
+	   PRODUCT CARD
+	   ========================= */
+
+	.product-card {
+
+		display: block;
+
+		overflow: hidden;
+
+		border-radius: 22px;
+
+		border:
+			1px solid
+			rgba(255, 130, 225, 0.35);
+
+		background:
+			linear-gradient(
+				145deg,
+				rgba(180, 20, 150, 0.16),
+				rgba(40, 10, 50, 0.24)
+			);
+
+		color: white;
+
+		text-decoration: none;
+
+		box-shadow:
+			0 0 15px
+			rgba(255, 80, 200, 0.08);
+
+		transition:
+			transform 0.25s ease,
+			border-color 0.25s ease,
+			box-shadow 0.25s ease;
+
+	}
+
+
+	.product-card:hover {
+
+		transform:
+			translateY(-5px);
+
+		border-color:
+			rgba(255, 130, 225, 0.9);
+
+		box-shadow:
+
+			0 0 25px
+			rgba(255, 80, 200, 0.35),
+
+			0 0 55px
+			rgba(255, 80, 200, 0.12);
+
+	}
+
+
+
+	/* =========================
+	   IMAGE
+	   ========================= */
+
+	.product-image {
+
+		width: 100%;
+
+		aspect-ratio: 4 / 3;
+
+		overflow: hidden;
+
+		background:
+			rgba(255, 255, 255, 0.03);
+
+	}
+
+
+	.product-image img {
+
+		width: 100%;
+
+		height: 100%;
+
+		display: block;
+
+		object-fit: cover;
+
+		transition:
+			transform 0.3s ease;
+
+	}
+
+
+	.product-card:hover
+	.product-image img {
+
+		transform:
+			scale(1.03);
+
+	}
+
+
+
+	/* =========================
+	   PRODUCT INFORMATION
+	   ========================= */
+
+	.product-info {
+
+		padding:
+			1.2rem 1.3rem 1.4rem;
+
+	}
+
+
+	.product-category {
+
+		margin:
+			0 0 0.35rem;
+
+		color:
+			var(--pink-light);
+
+		font-size:
+			0.75rem;
+
+		font-weight:
+			600;
+
+		letter-spacing:
+			0.08em;
+
+		text-transform:
+			uppercase;
+
+	}
+
+
+	.product-info h2 {
+
+		margin: 0;
+
+		font-size:
+			1.15rem;
+
+		line-height:
+			1.3;
+
+	}
+
+
+	.product-bottom {
+
+		display: flex;
+
+		align-items: center;
+
+		justify-content: space-between;
+
+		gap: 1rem;
+
+		margin-top: 1rem;
+
+	}
+
+
+	.price {
+
+		font-size:
+			1.2rem;
+
+		font-weight:
+			700;
+
+	}
+
+
+	.stock {
+
+		color:
+			rgba(255, 255, 255, 0.65);
+
+		font-size:
+			0.8rem;
+
+	}
+
+
+	.sold-out {
+
+		color:
+			rgba(255, 130, 225, 0.8);
+
+		font-size:
+			0.8rem;
+
+		font-weight:
+			600;
+
+	}
+
+
+
+	/* =========================
+	   MOBILE
+	   ========================= */
+
+	@media (max-width: 750px) {
+
+		.merch-page {
+
+			padding:
+				2.5rem 0.8rem
+				4rem;
+
+		}
+
+
+		.product-grid {
+
+			grid-template-columns:
+				repeat(2, 1fr);
+
+			gap: 1rem;
+
+		}
+
+
+		.product-info {
+
+			padding:
+				1rem;
+
+		}
+
+
+		.product-info h2 {
+
+			font-size:
+				1rem;
+
+		}
+
+
+		.product-bottom {
+
+			align-items:
+				flex-start;
+
+			flex-direction:
+				column;
+
+			gap:
+				0.3rem;
+
+		}
+
+	}
+
+
+
+	@media (max-width: 480px) {
+
+		.product-grid {
+
+			grid-template-columns:
+				1fr;
+
+		}
+
+	}
+
+</style>
