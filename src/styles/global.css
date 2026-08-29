@@ -4,78 +4,43 @@
 
 @font-face {
 	font-family: 'Outfit';
-
-	src:
-		url('/fonts/Outfit-Regular.ttf')
-		format('truetype');
-
+	src: url('/fonts/Outfit-Regular.ttf') format('truetype');
 	font-weight: 400;
-
 	font-style: normal;
-
 	font-display: swap;
 }
 
-
 @font-face {
 	font-family: 'Outfit';
-
-	src:
-		url('/fonts/Outfit-Medium.ttf')
-		format('truetype');
-
+	src: url('/fonts/Outfit-Medium.ttf') format('truetype');
 	font-weight: 500;
-
 	font-style: normal;
-
 	font-display: swap;
 }
 
-
 @font-face {
 	font-family: 'Outfit';
-
-	src:
-		url('/fonts/Outfit-SemiBold.ttf')
-		format('truetype');
-
+	src: url('/fonts/Outfit-SemiBold.ttf') format('truetype');
 	font-weight: 600;
-
 	font-style: normal;
-
 	font-display: swap;
 }
-
 
 @font-face {
 	font-family: 'Outfit';
-
-	src:
-		url('/fonts/Outfit-Bold.ttf')
-		format('truetype');
-
+	src: url('/fonts/Outfit-Bold.ttf') format('truetype');
 	font-weight: 700;
-
 	font-style: normal;
-
 	font-display: swap;
 }
-
 
 @font-face {
 	font-family: 'Elsie Swash Caps';
-
-	src:
-		url('/fonts/ElsieSwashCaps-Regular.ttf')
-		format('truetype');
-
+	src: url('/fonts/ElsieSwashCaps-Regular.ttf') format('truetype');
 	font-weight: 400;
-
 	font-style: normal;
-
 	font-display: swap;
 }
-
 
 
 /* =========================
@@ -83,7 +48,6 @@
    ========================= */
 
 :root {
-
 	--font-main:
 		'Outfit',
 		sans-serif;
@@ -122,9 +86,7 @@
 
 	--card-border:
 		rgba(255, 130, 225, 0.55);
-
 }
-
 
 
 /* =========================
@@ -132,15 +94,12 @@
    ========================= */
 
 * {
-
 	box-sizing:
 		border-box;
-
 }
 
 
 html {
-
 	margin:
 		0;
 
@@ -152,12 +111,10 @@ html {
 
 	scroll-behavior:
 		smooth;
-
 }
 
 
 body {
-
 	margin:
 		0;
 
@@ -173,9 +130,6 @@ body {
 	color:
 		var(--text);
 
-	background:
-		var(--background);
-
 	line-height:
 		1.5;
 
@@ -188,16 +142,55 @@ body {
 	overflow-x:
 		hidden;
 
+	background:
+
+		/* Main lavender atmosphere */
+
+		radial-gradient(
+			ellipse 75% 45% at 50% 0%,
+			rgba(175, 105, 220, 0.45),
+			transparent 70%
+		),
+
+		/* Pink atmosphere */
+
+		radial-gradient(
+			ellipse 50% 45% at 0% 35%,
+			rgba(235, 105, 200, 0.30),
+			transparent 72%
+		),
+
+		/* Violet atmosphere */
+
+		radial-gradient(
+			ellipse 50% 45% at 100% 45%,
+			rgba(155, 105, 235, 0.30),
+			transparent 72%
+		),
+
+		/* Lower glow */
+
+		radial-gradient(
+			ellipse 65% 35% at 50% 100%,
+			rgba(190, 90, 205, 0.20),
+			transparent 72%
+		),
+
+		linear-gradient(
+			180deg,
+			#32163d 0%,
+			#291330 35%,
+			#211027 70%,
+			#180c1e 100%
+		);
 }
 
 
-
 /* =========================
-   SHIMMERY CLOUD BACKGROUND
+   CLOUD BACKGROUND
    ========================= */
 
 body::before {
-
 	content:
 		"";
 
@@ -213,94 +206,148 @@ body::before {
 	pointer-events:
 		none;
 
-
 	background:
 
-		/* upper left cloud */
+		/* ---------------------------------
+		   TOP LEFT
+		   --------------------------------- */
 
 		radial-gradient(
-			ellipse 28% 18% at 8% 12%,
-			rgba(255, 180, 240, 0.16),
-			transparent 70%
+			ellipse 18% 12% at 2% 13%,
+			rgba(255, 215, 244, 0.58),
+			rgba(255, 175, 230, 0.38) 38%,
+			transparent 72%
 		),
 
 		radial-gradient(
-			ellipse 20% 14% at 22% 18%,
-			rgba(210, 170, 255, 0.12),
-			transparent 70%
-		),
-
-
-		/* upper right cloud */
-
-		radial-gradient(
-			ellipse 30% 17% at 92% 24%,
-			rgba(220, 190, 255, 0.13),
-			transparent 70%
+			ellipse 25% 15% at 10% 20%,
+			rgba(246, 165, 229, 0.42),
+			transparent 72%
 		),
 
 		radial-gradient(
-			ellipse 18% 12% at 78% 17%,
-			rgba(255, 170, 235, 0.10),
-			transparent 70%
+			ellipse 16% 10% at 23% 13%,
+			rgba(205, 180, 255, 0.35),
+			transparent 72%
 		),
 
 
-		/* middle left */
+		/* ---------------------------------
+		   TOP RIGHT
+		   --------------------------------- */
 
 		radial-gradient(
-			ellipse 24% 15% at 4% 52%,
-			rgba(255, 150, 225, 0.10),
-			transparent 70%
-		),
-
-
-		/* middle right */
-
-		radial-gradient(
-			ellipse 26% 18% at 96% 62%,
-			rgba(190, 150, 255, 0.12),
-			transparent 70%
-		),
-
-
-		/* lower clouds */
-
-		radial-gradient(
-			ellipse 32% 18% at 18% 92%,
-			rgba(255, 175, 235, 0.13),
-			transparent 70%
+			ellipse 20% 13% at 98% 15%,
+			rgba(248, 215, 255, 0.52),
+			rgba(210, 165, 250, 0.32) 38%,
+			transparent 73%
 		),
 
 		radial-gradient(
-			ellipse 28% 17% at 86% 88%,
-			rgba(205, 165, 255, 0.13),
-			transparent 70%
+			ellipse 27% 16% at 91% 22%,
+			rgba(215, 160, 250, 0.36),
+			transparent 73%
+		),
+
+		radial-gradient(
+			ellipse 17% 10% at 77% 12%,
+			rgba(255, 185, 235, 0.28),
+			transparent 72%
+		),
+
+
+		/* ---------------------------------
+		   MIDDLE LEFT
+		   --------------------------------- */
+
+		radial-gradient(
+			ellipse 17% 12% at 0% 48%,
+			rgba(255, 190, 235, 0.42),
+			transparent 72%
+		),
+
+		radial-gradient(
+			ellipse 25% 15% at 8% 55%,
+			rgba(235, 150, 225, 0.30),
+			transparent 73%
+		),
+
+
+		/* ---------------------------------
+		   MIDDLE RIGHT
+		   --------------------------------- */
+
+		radial-gradient(
+			ellipse 18% 12% at 100% 51%,
+			rgba(225, 190, 255, 0.44),
+			transparent 72%
+		),
+
+		radial-gradient(
+			ellipse 25% 15% at 93% 58%,
+			rgba(185, 145, 245, 0.28),
+			transparent 73%
+		),
+
+
+		/* ---------------------------------
+		   BOTTOM LEFT
+		   --------------------------------- */
+
+		radial-gradient(
+			ellipse 22% 14% at 2% 88%,
+			rgba(255, 205, 242, 0.40),
+			rgba(230, 150, 225, 0.25) 40%,
+			transparent 74%
+		),
+
+		radial-gradient(
+			ellipse 28% 16% at 14% 95%,
+			rgba(240, 165, 235, 0.28),
+			transparent 74%
+		),
+
+
+		/* ---------------------------------
+		   BOTTOM RIGHT
+		   --------------------------------- */
+
+		radial-gradient(
+			ellipse 22% 14% at 100% 88%,
+			rgba(225, 205, 255, 0.40),
+			rgba(185, 150, 245, 0.25) 40%,
+			transparent 74%
+		),
+
+		radial-gradient(
+			ellipse 27% 16% at 88% 96%,
+			rgba(205, 165, 250, 0.27),
+			transparent 74%
 		);
 
-
 	filter:
-		blur(35px);
+		blur(24px);
 
 	opacity:
-		0.9;
+		1;
 
 	transform:
-		scale(1.1);
+		scale(1.08);
 
 	animation:
-		cloud-drift 24s ease-in-out infinite alternate;
-
+		cloud-drift
+		32s
+		ease-in-out
+		infinite
+		alternate;
 }
 
 
-
 /* =========================
-   SECOND SHIMMER LAYER
+   CLOUD LIGHT
    ========================= */
 
 body::after {
-
 	content:
 		"";
 
@@ -316,125 +363,118 @@ body::after {
 	pointer-events:
 		none;
 
-
 	background:
 
+		/* glowing cloud cores */
+
 		radial-gradient(
-			ellipse 14% 9% at 34% 30%,
-			rgba(255, 255, 255, 0.055),
-			transparent 70%
+			ellipse 9% 5% at 5% 15%,
+			rgba(255, 250, 255, 0.40),
+			transparent 72%
 		),
 
 		radial-gradient(
-			ellipse 18% 10% at 68% 42%,
-			rgba(255, 220, 250, 0.045),
-			transparent 70%
+			ellipse 11% 6% at 15% 19%,
+			rgba(255, 235, 250, 0.25),
+			transparent 72%
 		),
 
 		radial-gradient(
-			ellipse 15% 9% at 42% 76%,
-			rgba(230, 210, 255, 0.045),
-			transparent 70%
+			ellipse 10% 6% at 96% 17%,
+			rgba(255, 248, 255, 0.36),
+			transparent 72%
+		),
+
+		radial-gradient(
+			ellipse 12% 6% at 91% 23%,
+			rgba(255, 230, 250, 0.23),
+			transparent 72%
+		),
+
+		radial-gradient(
+			ellipse 9% 5% at 4% 50%,
+			rgba(255, 245, 255, 0.28),
+			transparent 72%
+		),
+
+		radial-gradient(
+			ellipse 10% 6% at 96% 53%,
+			rgba(245, 240, 255, 0.30),
+			transparent 72%
+		),
+
+		radial-gradient(
+			ellipse 12% 6% at 7% 90%,
+			rgba(255, 240, 252, 0.27),
+			transparent 72%
+		),
+
+		radial-gradient(
+			ellipse 12% 6% at 94% 90%,
+			rgba(245, 240, 255, 0.27),
+			transparent 72%
 		);
 
-
 	filter:
-		blur(25px);
+		blur(15px);
 
 	opacity:
-		0.8;
+		0.95;
 
 	animation:
-		cloud-shimmer 14s ease-in-out infinite alternate;
-
+		cloud-shimmer
+		18s
+		ease-in-out
+		infinite
+		alternate;
 }
 
 
-
 /* =========================
-   CLOUD ANIMATION
+   CLOUD MOTION
    ========================= */
 
 @keyframes cloud-drift {
 
 	0% {
-
 		transform:
-			scale(1.1)
-			translate3d(-1%, -1%, 0);
-
-		opacity:
-			0.72;
-
+			scale(1.08)
+			translate3d(-1%, -0.5%, 0);
 	}
 
 	50% {
-
 		transform:
-			scale(1.13)
-			translate3d(1%, 1%, 0);
-
-		opacity:
-			0.9;
-
+			scale(1.11)
+			translate3d(1%, 0.5%, 0);
 	}
 
 	100% {
-
 		transform:
-			scale(1.1)
-			translate3d(-0.5%, 1.5%, 0);
-
-		opacity:
-			0.78;
-
+			scale(1.08)
+			translate3d(-0.5%, 1%, 0);
 	}
-
 }
 
 
 @keyframes cloud-shimmer {
 
 	0% {
-
 		transform:
-			translate3d(-1%, 0, 0)
-			scale(1);
+			scale(1)
+			translate3d(-1%, 0, 0);
 
 		opacity:
-			0.45;
-
+			0.65;
 	}
 
 	100% {
-
 		transform:
-			translate3d(1.5%, -1%, 0)
-			scale(1.08);
+			scale(1.07)
+			translate3d(1%, -0.5%, 0);
 
 		opacity:
-			0.85;
-
+			1;
 	}
-
-}
-
-
-
-/* =========================
-   REDUCE MOTION
-   ========================= */
-
-@media (prefers-reduced-motion: reduce) {
-
-	body::before,
-	body::after {
-
-		animation:
-			none;
-
-	}
-
 }
 
 
@@ -443,30 +483,34 @@ body::after {
    ========================= */
 
 h1,
-h2.page-title {
-
+h2.page-title,
+.display-title {
 	font-family:
 		var(--font-display);
 
 	font-weight:
 		400;
-
 }
 
 
-a {
+/* =========================
+   LINKS
+   ========================= */
 
+a {
 	color:
 		inherit;
 
 	text-decoration:
 		none;
-
 }
 
 
-img {
+/* =========================
+   IMAGES
+   ========================= */
 
+img {
 	max-width:
 		100%;
 
@@ -475,5 +519,18 @@ img {
 
 	display:
 		block;
+}
 
+
+/* =========================
+   REDUCED MOTION
+   ========================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+	body::before,
+	body::after {
+		animation:
+			none;
+	}
 }
