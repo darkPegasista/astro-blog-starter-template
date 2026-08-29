@@ -48,6 +48,7 @@
    ========================= */
 
 :root {
+
 	--font-main:
 		'Outfit',
 		sans-serif;
@@ -100,6 +101,7 @@
 
 
 html {
+
 	margin:
 		0;
 
@@ -107,7 +109,7 @@ html {
 		0;
 
 	background:
-		var(--background);
+		#160b18;
 
 	scroll-behavior:
 		smooth;
@@ -115,6 +117,7 @@ html {
 
 
 body {
+
 	margin:
 		0;
 
@@ -143,63 +146,48 @@ body {
 		hidden;
 
 
-	/* =====================
-	   NIGHT SKY
-	   ===================== */
-
 	background:
 
-		/* Moon glow */
+		/* subtle pink horizon */
 
 		radial-gradient(
-			circle 190px at 82% 12%,
-			rgba(255, 220, 250, 0.16),
-			rgba(215, 165, 245, 0.09) 35%,
-			transparent 72%
+			ellipse 70% 35% at 50% 12%,
+			rgba(210, 105, 205, 0.20),
+			transparent 70%
 		),
 
-		/* Large pink atmospheric glow */
+		/* left atmospheric glow */
 
 		radial-gradient(
-			ellipse 65% 45% at 25% 10%,
-			rgba(224, 105, 200, 0.34),
-			transparent 72%
+			ellipse 40% 45% at 0% 45%,
+			rgba(190, 90, 190, 0.16),
+			transparent 70%
 		),
 
-		/* Purple atmospheric glow */
+		/* right atmospheric glow */
 
 		radial-gradient(
-			ellipse 60% 50% at 88% 42%,
-			rgba(150, 105, 225, 0.30),
-			transparent 72%
+			ellipse 40% 45% at 100% 45%,
+			rgba(145, 100, 220, 0.17),
+			transparent 70%
 		),
-
-		/* Lower pink glow */
-
-		radial-gradient(
-			ellipse 70% 40% at 40% 100%,
-			rgba(215, 90, 195, 0.20),
-			transparent 72%
-		),
-
-		/* Overall sky */
 
 		linear-gradient(
 			180deg,
-			#392044 0%,
-			#301938 22%,
-			#26142f 48%,
-			#1e1027 72%,
-			#180c20 100%
+			#2c1835 0%,
+			#26142f 30%,
+			#201127 65%,
+			#160b1b 100%
 		);
 }
 
 
 /* =========================
-   CLOUDS + MOON
+   NIGHT SKY
    ========================= */
 
 body::before {
+
 	content:
 		"";
 
@@ -207,7 +195,7 @@ body::before {
 		fixed;
 
 	inset:
-		-15%;
+		0;
 
 	z-index:
 		-1;
@@ -215,222 +203,131 @@ body::before {
 	pointer-events:
 		none;
 
+
 	background:
 
-		/* =====================
-		   CRESCENT MOON
-		   ===================== */
-
-		/* Bright moon disc */
+		/* =================================
+		   MOON HALO
+		   ================================= */
 
 		radial-gradient(
-			circle 58px at 82% 12%,
-			rgba(255, 246, 253, 0.95) 0,
-			rgba(255, 230, 250, 0.90) 58%,
-			rgba(235, 200, 245, 0.55) 68%,
+			circle 115px at 82% 12%,
+			transparent 62%,
+			rgba(255, 190, 235, 0.13) 63%,
+			rgba(218, 175, 255, 0.20) 65%,
+			rgba(170, 190, 255, 0.11) 68%,
+			transparent 72%
+		),
+
+
+		/* =================================
+		   CRESCENT MOON
+		   ================================= */
+
+		radial-gradient(
+			circle 48px at 82% 12%,
+			rgba(255, 247, 253, 0.98) 0,
+			rgba(255, 229, 249, 0.96) 70%,
+			transparent 72%
+		),
+
+		radial-gradient(
+			circle 45px at 84% 9.7%,
+			#3a2143 0,
+			#3a2143 70%,
+			transparent 72%
+		),
+
+
+		/* =================================
+		   SMALL STARS
+		   ================================= */
+
+		radial-gradient(
+			circle 2px at 76% 8%,
+			rgba(255,255,255,0.9) 0,
+			transparent 60%
+		),
+
+		radial-gradient(
+			circle 1.5px at 89% 17%,
+			rgba(255,220,248,0.85) 0,
+			transparent 60%
+		),
+
+		radial-gradient(
+			circle 2px at 72% 18%,
+			rgba(255,255,255,0.8) 0,
+			transparent 60%
+		),
+
+		radial-gradient(
+			circle 1.5px at 93% 8%,
+			rgba(225,210,255,0.8) 0,
+			transparent 60%
+		),
+
+
+		/* =================================
+		   LEFT CLOUDS
+		   ================================= */
+
+		radial-gradient(
+			ellipse 13% 4% at 3% 24%,
+			rgba(255, 207, 239, 0.32),
 			transparent 70%
 		),
 
-		/* Dark cutout creating crescent */
-
 		radial-gradient(
-			circle 53px at 84.2% 9.5%,
-			rgba(48, 27, 57, 0.98) 0,
-			rgba(48, 27, 57, 0.95) 58%,
-			transparent 63%
-		),
-
-
-		/* =====================
-		   CLOUDS — TOP LEFT
-		   ===================== */
-
-		radial-gradient(
-			ellipse 20% 13% at 3% 14%,
-			rgba(255, 215, 244, 0.52),
-			rgba(245, 170, 230, 0.30) 40%,
-			transparent 74%
+			ellipse 10% 5% at 12% 21%,
+			rgba(245, 180, 230, 0.25),
+			transparent 70%
 		),
 
 		radial-gradient(
-			ellipse 27% 16% at 12% 20%,
-			rgba(244, 160, 228, 0.34),
-			transparent 74%
-		),
-
-		radial-gradient(
-			ellipse 17% 10% at 24% 12%,
-			rgba(211, 186, 255, 0.30),
-			transparent 72%
+			ellipse 14% 4% at 20% 25%,
+			rgba(215, 180, 245, 0.22),
+			transparent 70%
 		),
 
 
-		/* =====================
-		   CLOUDS — TOP RIGHT
-		   ===================== */
+		/* =================================
+		   RIGHT CLOUDS
+		   ================================= */
 
 		radial-gradient(
-			ellipse 22% 14% at 99% 20%,
-			rgba(235, 205, 255, 0.40),
-			rgba(205, 160, 250, 0.22) 40%,
-			transparent 74%
+			ellipse 14% 4% at 99% 29%,
+			rgba(235, 210, 255, 0.30),
+			transparent 70%
 		),
 
 		radial-gradient(
-			ellipse 18% 11% at 72% 20%,
-			rgba(255, 185, 235, 0.22),
-			transparent 72%
+			ellipse 11% 5% at 91% 26%,
+			rgba(220, 180, 250, 0.23),
+			transparent 70%
 		),
 
 
-		/* =====================
-		   CLOUDS — MIDDLE LEFT
-		   ===================== */
+		/* =================================
+		   LOWER CLOUDS
+		   ================================= */
 
 		radial-gradient(
-			ellipse 21% 14% at 1% 50%,
-			rgba(255, 190, 238, 0.38),
-			transparent 74%
+			ellipse 16% 5% at 5% 76%,
+			rgba(255, 200, 238, 0.25),
+			transparent 70%
 		),
 
 		radial-gradient(
-			ellipse 28% 16% at 9% 56%,
-			rgba(230, 145, 225, 0.26),
-			transparent 74%
-		),
-
-
-		/* =====================
-		   CLOUDS — MIDDLE RIGHT
-		   ===================== */
-
-		radial-gradient(
-			ellipse 21% 14% at 100% 55%,
-			rgba(220, 195, 255, 0.38),
-			transparent 74%
+			ellipse 12% 4% at 15% 79%,
+			rgba(225, 180, 250, 0.20),
+			transparent 70%
 		),
 
 		radial-gradient(
-			ellipse 27% 16% at 92% 61%,
-			rgba(185, 145, 245, 0.25),
-			transparent 74%
-		),
-
-
-		/* =====================
-		   CLOUDS — BOTTOM
-		   ===================== */
-
-		radial-gradient(
-			ellipse 25% 15% at 2% 90%,
-			rgba(255, 205, 242, 0.38),
-			rgba(235, 155, 230, 0.22) 42%,
-			transparent 74%
-		),
-
-		radial-gradient(
-			ellipse 30% 17% at 14% 96%,
-			rgba(235, 160, 235, 0.25),
-			transparent 74%
-		),
-
-		radial-gradient(
-			ellipse 24% 15% at 100% 90%,
-			rgba(225, 205, 255, 0.38),
-			rgba(190, 150, 245, 0.22) 42%,
-			transparent 74%
-		),
-
-		radial-gradient(
-			ellipse 28% 17% at 87% 96%,
-			rgba(205, 165, 250, 0.25),
-			transparent 74%
-		);
-
-
-	filter:
-		blur(25px);
-
-	opacity:
-		1;
-
-	transform:
-		scale(1.08);
-
-	animation:
-		cloud-drift
-		34s
-		ease-in-out
-		infinite
-		alternate;
-}
-
-
-/* =========================
-   LUNAR RAINBOW / HALO
-   ========================= */
-
-body::after {
-	content:
-		"";
-
-	position:
-		fixed;
-
-	width:
-		300px;
-
-	height:
-		300px;
-
-	top:
-		calc(12% - 150px);
-
-	left:
-		calc(82% - 150px);
-
-	z-index:
-		-1;
-
-	pointer-events:
-		none;
-
-	border-radius:
-		50%;
-
-
-	/* Rainbow ring */
-
-	background:
-		conic-gradient(
-			from 0deg,
-
-			rgba(255, 190, 235, 0.00),
-			rgba(255, 190, 235, 0.25),
-			rgba(220, 190, 255, 0.28),
-			rgba(185, 205, 255, 0.22),
-			rgba(220, 190, 255, 0.28),
-			rgba(255, 190, 235, 0.25),
-			rgba(255, 190, 235, 0.00)
-		);
-
-
-	/* Turn the disc into a ring */
-
-	mask:
-		radial-gradient(
-			transparent 57%,
-			#000 59%,
-			#000 63%,
-			transparent 66%
-		);
-
-	-webkit-mask:
-		radial-gradient(
-			transparent 57%,
-			#000 59%,
-			#000 63%,
-			transparent 66%
+			ellipse 15% 5% at 97% 72%,
+			rgba(225, 205, 255, 0.25),
+			transparent 70%
 		);
 
 
@@ -438,11 +335,82 @@ body::after {
 		blur(4px);
 
 	opacity:
-		0.75;
+		1;
+}
+
+
+/* =========================
+   SOFT CLOUD GLOW
+   ========================= */
+
+body::after {
+
+	content:
+		"";
+
+	position:
+		fixed;
+
+	inset:
+		0;
+
+	z-index:
+		-1;
+
+	pointer-events:
+		none;
+
+
+	background:
+
+		/* left cloud light */
+
+		radial-gradient(
+			ellipse 9% 3% at 7% 22%,
+			rgba(255, 235, 249, 0.24),
+			transparent 70%
+		),
+
+		radial-gradient(
+			ellipse 8% 3% at 17% 24%,
+			rgba(255, 225, 245, 0.18),
+			transparent 70%
+		),
+
+
+		/* right cloud light */
+
+		radial-gradient(
+			ellipse 9% 3% at 96% 27%,
+			rgba(245, 235, 255, 0.23),
+			transparent 70%
+		),
+
+
+		/* lower cloud light */
+
+		radial-gradient(
+			ellipse 10% 3% at 6% 77%,
+			rgba(255, 225, 248, 0.18),
+			transparent 70%
+		),
+
+		radial-gradient(
+			ellipse 10% 3% at 96% 73%,
+			rgba(235, 225, 255, 0.18),
+			transparent 70%
+		);
+
+
+	filter:
+		blur(8px);
+
+	opacity:
+		0.9;
 
 	animation:
-		halo-shimmer
-		16s
+		sky-shimmer
+		18s
 		ease-in-out
 		infinite
 		alternate;
@@ -450,59 +418,25 @@ body::after {
 
 
 /* =========================
-   CLOUD MOTION
+   SUBTLE SKY MOVEMENT
    ========================= */
 
-@keyframes cloud-drift {
+@keyframes sky-shimmer {
 
 	0% {
 		transform:
-			scale(1.08)
-			translate3d(-1%, -0.5%, 0);
-	}
+			translate3d(-0.5%, 0, 0);
 
-	50% {
-		transform:
-			scale(1.11)
-			translate3d(1%, 0.5%, 0);
+		opacity:
+			0.7;
 	}
 
 	100% {
 		transform:
-			scale(1.08)
-			translate3d(-0.5%, 1%, 0);
-	}
-}
-
-
-/* =========================
-   HALO SHIMMER
-   ========================= */
-
-@keyframes halo-shimmer {
-
-	0% {
-		transform:
-			scale(0.96);
+			translate3d(0.5%, -0.5%, 0);
 
 		opacity:
-			0.50;
-	}
-
-	50% {
-		transform:
-			scale(1.02);
-
-		opacity:
-			0.78;
-	}
-
-	100% {
-		transform:
-			scale(1.06);
-
-		opacity:
-			0.58;
+			1;
 	}
 }
 
@@ -514,6 +448,7 @@ body::after {
 h1,
 h2.page-title,
 .display-title {
+
 	font-family:
 		var(--font-display);
 
@@ -527,6 +462,7 @@ h2.page-title,
    ========================= */
 
 a {
+
 	color:
 		inherit;
 
@@ -540,6 +476,7 @@ a {
    ========================= */
 
 img {
+
 	max-width:
 		100%;
 
@@ -557,7 +494,6 @@ img {
 
 @media (prefers-reduced-motion: reduce) {
 
-	body::before,
 	body::after {
 		animation:
 			none;
@@ -571,20 +507,31 @@ img {
 
 @media (max-width: 700px) {
 
-	body::after {
+	body::before {
 
-		width:
-			230px;
+		background:
 
-		height:
-			230px;
+			radial-gradient(
+				circle 80px at 80% 10%,
+				transparent 61%,
+				rgba(255, 190, 235, 0.13) 63%,
+				rgba(215, 175, 255, 0.18) 66%,
+				transparent 72%
+			),
 
-		top:
-			calc(10% - 115px);
+			radial-gradient(
+				circle 36px at 80% 10%,
+				rgba(255, 247, 253, 0.98) 0,
+				rgba(255, 229, 249, 0.96) 70%,
+				transparent 72%
+			),
 
-		left:
-			calc(82% - 115px);
-
+			radial-gradient(
+				circle 34px at 82% 7.8%,
+				#3a2143 0,
+				#3a2143 70%,
+				transparent 72%
+			);
 	}
 
 }
