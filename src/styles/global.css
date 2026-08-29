@@ -1,71 +1,479 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+/* =========================
+   LOCAL FONTS
+   ========================= */
+
+@font-face {
+	font-family: 'Outfit';
+
+	src:
+		url('/fonts/Outfit-Regular.ttf')
+		format('truetype');
+
+	font-weight: 400;
+
+	font-style: normal;
+
+	font-display: swap;
+}
+
+
+@font-face {
+	font-family: 'Outfit';
+
+	src:
+		url('/fonts/Outfit-Medium.ttf')
+		format('truetype');
+
+	font-weight: 500;
+
+	font-style: normal;
+
+	font-display: swap;
+}
+
+
+@font-face {
+	font-family: 'Outfit';
+
+	src:
+		url('/fonts/Outfit-SemiBold.ttf')
+		format('truetype');
+
+	font-weight: 600;
+
+	font-style: normal;
+
+	font-display: swap;
+}
+
+
+@font-face {
+	font-family: 'Outfit';
+
+	src:
+		url('/fonts/Outfit-Bold.ttf')
+		format('truetype');
+
+	font-weight: 700;
+
+	font-style: normal;
+
+	font-display: swap;
+}
+
+
+@font-face {
+	font-family: 'Elsie Swash Caps';
+
+	src:
+		url('/fonts/ElsieSwashCaps-Regular.ttf')
+		format('truetype');
+
+	font-weight: 400;
+
+	font-style: normal;
+
+	font-display: swap;
+}
+
+
+
+/* =========================
+   VARIABLES
+   ========================= */
 
 :root {
-	--font-main: 'Outfit', sans-serif;
 
-	--background: #160b18;
-	--background-dark: #0d0710;
+	--font-main:
+		'Outfit',
+		sans-serif;
 
-	--pink: #e52aa8;
-	--pink-light: #ff70d1;
-	--purple: #a855f7;
+	--font-display:
+		'Elsie Swash Caps',
+		serif;
 
-	--text: #ffffff;
-	--text-muted: rgba(255, 255, 255, 0.78);
 
-	--card-background: rgba(180, 20, 150, 0.18);
-	--card-border: rgba(255, 130, 225, 0.55);
+	--background:
+		#160b18;
+
+	--background-dark:
+		#0d0710;
+
+
+	--pink:
+		#e52aa8;
+
+	--pink-light:
+		#ff70d1;
+
+	--purple:
+		#a855f7;
+
+
+	--text:
+		#ffffff;
+
+	--text-muted:
+		rgba(255, 255, 255, 0.78);
+
+
+	--card-background:
+		rgba(180, 20, 150, 0.18);
+
+	--card-border:
+		rgba(255, 130, 225, 0.55);
+
 }
+
+
+
+/* =========================
+   GLOBAL
+   ========================= */
 
 * {
-	box-sizing: border-box;
+
+	box-sizing:
+		border-box;
+
 }
+
 
 html {
-	margin: 0;
-	padding: 0;
 
-	background: var(--background);
+	margin:
+		0;
 
-	scroll-behavior: smooth;
-}
-
-body {
-	margin: 0;
-	padding: 0;
-
-	min-height: 100vh;
-
-	font-family: var(--font-main);
-	color: var(--text);
+	padding:
+		0;
 
 	background:
-		radial-gradient(
-			circle at 20% 10%,
-			rgba(220, 40, 180, 0.18),
-			transparent 35%
-		),
-
-		radial-gradient(
-			circle at 80% 60%,
-			rgba(130, 50, 220, 0.12),
-			transparent 35%
-		),
-
 		var(--background);
 
-	background-attachment: fixed;
+	scroll-behavior:
+		smooth;
 
-	line-height: 1.5;
 }
+
+
+body {
+
+	margin:
+		0;
+
+	padding:
+		0;
+
+	min-height:
+		100vh;
+
+	font-family:
+		var(--font-main);
+
+	color:
+		var(--text);
+
+	background:
+		var(--background);
+
+	line-height:
+		1.5;
+
+	position:
+		relative;
+
+	isolation:
+		isolate;
+
+	overflow-x:
+		hidden;
+
+}
+
+
+
+/* =========================
+   SHIMMERY CLOUD BACKGROUND
+   ========================= */
+
+body::before {
+
+	content:
+		"";
+
+	position:
+		fixed;
+
+	inset:
+		-15%;
+
+	z-index:
+		-1;
+
+	pointer-events:
+		none;
+
+
+	background:
+
+		/* upper left cloud */
+
+		radial-gradient(
+			ellipse 28% 18% at 8% 12%,
+			rgba(255, 180, 240, 0.16),
+			transparent 70%
+		),
+
+		radial-gradient(
+			ellipse 20% 14% at 22% 18%,
+			rgba(210, 170, 255, 0.12),
+			transparent 70%
+		),
+
+
+		/* upper right cloud */
+
+		radial-gradient(
+			ellipse 30% 17% at 92% 24%,
+			rgba(220, 190, 255, 0.13),
+			transparent 70%
+		),
+
+		radial-gradient(
+			ellipse 18% 12% at 78% 17%,
+			rgba(255, 170, 235, 0.10),
+			transparent 70%
+		),
+
+
+		/* middle left */
+
+		radial-gradient(
+			ellipse 24% 15% at 4% 52%,
+			rgba(255, 150, 225, 0.10),
+			transparent 70%
+		),
+
+
+		/* middle right */
+
+		radial-gradient(
+			ellipse 26% 18% at 96% 62%,
+			rgba(190, 150, 255, 0.12),
+			transparent 70%
+		),
+
+
+		/* lower clouds */
+
+		radial-gradient(
+			ellipse 32% 18% at 18% 92%,
+			rgba(255, 175, 235, 0.13),
+			transparent 70%
+		),
+
+		radial-gradient(
+			ellipse 28% 17% at 86% 88%,
+			rgba(205, 165, 255, 0.13),
+			transparent 70%
+		);
+
+
+	filter:
+		blur(35px);
+
+	opacity:
+		0.9;
+
+	transform:
+		scale(1.1);
+
+	animation:
+		cloud-drift 24s ease-in-out infinite alternate;
+
+}
+
+
+
+/* =========================
+   SECOND SHIMMER LAYER
+   ========================= */
+
+body::after {
+
+	content:
+		"";
+
+	position:
+		fixed;
+
+	inset:
+		-10%;
+
+	z-index:
+		-1;
+
+	pointer-events:
+		none;
+
+
+	background:
+
+		radial-gradient(
+			ellipse 14% 9% at 34% 30%,
+			rgba(255, 255, 255, 0.055),
+			transparent 70%
+		),
+
+		radial-gradient(
+			ellipse 18% 10% at 68% 42%,
+			rgba(255, 220, 250, 0.045),
+			transparent 70%
+		),
+
+		radial-gradient(
+			ellipse 15% 9% at 42% 76%,
+			rgba(230, 210, 255, 0.045),
+			transparent 70%
+		);
+
+
+	filter:
+		blur(25px);
+
+	opacity:
+		0.8;
+
+	animation:
+		cloud-shimmer 14s ease-in-out infinite alternate;
+
+}
+
+
+
+/* =========================
+   CLOUD ANIMATION
+   ========================= */
+
+@keyframes cloud-drift {
+
+	0% {
+
+		transform:
+			scale(1.1)
+			translate3d(-1%, -1%, 0);
+
+		opacity:
+			0.72;
+
+	}
+
+	50% {
+
+		transform:
+			scale(1.13)
+			translate3d(1%, 1%, 0);
+
+		opacity:
+			0.9;
+
+	}
+
+	100% {
+
+		transform:
+			scale(1.1)
+			translate3d(-0.5%, 1.5%, 0);
+
+		opacity:
+			0.78;
+
+	}
+
+}
+
+
+@keyframes cloud-shimmer {
+
+	0% {
+
+		transform:
+			translate3d(-1%, 0, 0)
+			scale(1);
+
+		opacity:
+			0.45;
+
+	}
+
+	100% {
+
+		transform:
+			translate3d(1.5%, -1%, 0)
+			scale(1.08);
+
+		opacity:
+			0.85;
+
+	}
+
+}
+
+
+
+/* =========================
+   REDUCE MOTION
+   ========================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+	body::before,
+	body::after {
+
+		animation:
+			none;
+
+	}
+
+}
+
+
+/* =========================
+   DISPLAY HEADINGS
+   ========================= */
+
+h1,
+h2.page-title {
+
+	font-family:
+		var(--font-display);
+
+	font-weight:
+		400;
+
+}
+
 
 a {
-	color: inherit;
-	text-decoration: none;
+
+	color:
+		inherit;
+
+	text-decoration:
+		none;
+
 }
 
+
 img {
-	max-width: 100%;
-	height: auto;
-	display: block;
+
+	max-width:
+		100%;
+
+	height:
+		auto;
+
+	display:
+		block;
+
 }
