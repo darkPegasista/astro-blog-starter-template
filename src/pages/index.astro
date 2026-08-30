@@ -189,28 +189,20 @@ import '../styles/global.css';
 			   LOGO PLACEHOLDER
 			   ========================= */
 
-			.logo-placeholder {
-				width: min(80%, 500px);
+			.logo-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
 
-				aspect-ratio: 3 / 1;
+	width: 100%;
 
-				margin: 0 auto 2rem;
+	padding: 1rem 2rem;
+}
 
-				display: flex;
-				align-items: center;
-				justify-content: center;
-
-				border-radius: 20px;
-
-				border: 1px dashed rgba(255, 255, 255, 0.25);
-
-				color: rgba(255, 255, 255, 0.45);
-
-				font-size: 2rem;
-				font-weight: 600;
-
-				letter-spacing: 0.15em;
-			}
+.logo-container img {
+	width: min(420px, 80%);
+	height: auto;
+}
 
 
 			/* =========================
