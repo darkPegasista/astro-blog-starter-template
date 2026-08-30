@@ -151,7 +151,218 @@ body {
 
 	overflow-x:
 		hidden;
+/* =========================
+   DREAMY CLOUDS
+   ========================= */
 
+body::before {
+	content: "";
+
+	position: fixed;
+	inset: 0;
+
+	z-index: -1;
+
+	pointer-events: none;
+
+	background:
+
+		/* =====================
+		   TOP LEFT CLOUD
+		   ===================== */
+
+		radial-gradient(
+			ellipse 110px 45px at 2% 15%,
+			rgba(255, 180, 235, 0.28),
+			transparent 72%
+		),
+
+		radial-gradient(
+			ellipse 80px 55px at 9% 12%,
+			rgba(235, 155, 230, 0.25),
+			transparent 70%
+		),
+
+		radial-gradient(
+			ellipse 130px 40px at 16% 17%,
+			rgba(205, 155, 245, 0.20),
+			transparent 72%
+		),
+
+
+		/* =====================
+		   TOP RIGHT CLOUD
+		   ===================== */
+
+		radial-gradient(
+			ellipse 120px 45px at 98% 19%,
+			rgba(205, 175, 255, 0.28),
+			transparent 72%
+		),
+
+		radial-gradient(
+			ellipse 75px 55px at 91% 15%,
+			rgba(230, 175, 245, 0.24),
+			transparent 70%
+		),
+
+		radial-gradient(
+			ellipse 140px 42px at 84% 21%,
+			rgba(180, 145, 240, 0.18),
+			transparent 72%
+		),
+
+
+		/* =====================
+		   LEFT MIDDLE CLOUD
+		   ===================== */
+
+		radial-gradient(
+			ellipse 120px 42px at 1% 51%,
+			rgba(255, 175, 230, 0.25),
+			transparent 72%
+		),
+
+		radial-gradient(
+			ellipse 75px 55px at 9% 48%,
+			rgba(235, 155, 225, 0.23),
+			transparent 70%
+		),
+
+		radial-gradient(
+			ellipse 145px 40px at 18% 53%,
+			rgba(200, 155, 245, 0.17),
+			transparent 72%
+		),
+
+
+		/* =====================
+		   RIGHT MIDDLE CLOUD
+		   ===================== */
+
+		radial-gradient(
+			ellipse 130px 45px at 100% 58%,
+			rgba(205, 175, 255, 0.25),
+			transparent 72%
+		),
+
+		radial-gradient(
+			ellipse 80px 55px at 91% 55%,
+			rgba(225, 170, 245, 0.22),
+			transparent 70%
+		),
+
+		radial-gradient(
+			ellipse 140px 42px at 83% 60%,
+			rgba(175, 145, 240, 0.17),
+			transparent 72%
+		),
+
+
+		/* =====================
+		   BOTTOM LEFT CLOUD
+		   ===================== */
+
+		radial-gradient(
+			ellipse 150px 50px at 0% 88%,
+			rgba(255, 180, 235, 0.27),
+			transparent 72%
+		),
+
+		radial-gradient(
+			ellipse 90px 60px at 10% 85%,
+			rgba(235, 160, 230, 0.24),
+			transparent 70%
+		),
+
+		radial-gradient(
+			ellipse 170px 45px at 22% 91%,
+			rgba(200, 155, 245, 0.18),
+			transparent 72%
+		),
+
+
+		/* =====================
+		   BOTTOM RIGHT CLOUD
+		   ===================== */
+
+		radial-gradient(
+			ellipse 150px 50px at 100% 87%,
+			rgba(210, 180, 255, 0.27),
+			transparent 72%
+		),
+
+		radial-gradient(
+			ellipse 90px 60px at 91% 84%,
+			rgba(230, 175, 250, 0.22),
+			transparent 70%
+		),
+
+		radial-gradient(
+			ellipse 165px 45px at 78% 91%,
+			rgba(180, 145, 240, 0.18),
+			transparent 72%
+		);
+}
+
+
+/* =========================
+   CLOUD HIGHLIGHTS
+   ========================= */
+
+body::after {
+	content: "";
+
+	position: fixed;
+	inset: 0;
+
+	z-index: -1;
+
+	pointer-events: none;
+
+	background:
+
+		/* small luminous edges */
+
+		radial-gradient(
+			ellipse 55px 22px at 7% 12%,
+			rgba(255, 225, 248, 0.20),
+			transparent 70%
+		),
+
+		radial-gradient(
+			ellipse 60px 23px at 94% 15%,
+			rgba(240, 225, 255, 0.18),
+			transparent 70%
+		),
+
+		radial-gradient(
+			ellipse 60px 22px at 7% 48%,
+			rgba(255, 220, 245, 0.16),
+			transparent 70%
+		),
+
+		radial-gradient(
+			ellipse 60px 22px at 94% 55%,
+			rgba(235, 220, 255, 0.16),
+			transparent 70%
+		),
+
+		radial-gradient(
+			ellipse 70px 25px at 8% 85%,
+			rgba(255, 225, 248, 0.18),
+			transparent 70%
+		),
+
+		radial-gradient(
+			ellipse 70px 25px at 92% 84%,
+			rgba(240, 225, 255, 0.18),
+			transparent 70%
+		);
+
+	filter:
+		blur(7px);
+}
 
 	/* =====================
 	   DREAMY NIGHT BACKGROUND
