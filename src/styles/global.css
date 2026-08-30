@@ -57,21 +57,17 @@
 		serif;
 
 
-	--background:
-		#160b18;
+--background: #17091A;
 
-	--background-dark:
-		#0d0710;
+--card-background: rgba(58, 18, 56, 0.88);
 
+--card-border: rgba(255, 105, 210, 0.55);
 
-	--pink:
-		#e52aa8;
+--pink: #E52AA8;
+--pink-light: #FF70D1;
 
-	--pink-light:
-		#ff70d1;
-
-	--purple:
-		#a855f7;
+--text: #FFFFFF;
+--text-muted: rgba(255, 255, 255, 0.72);
 
 
 	--text:
