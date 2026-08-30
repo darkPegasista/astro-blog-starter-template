@@ -48,6 +48,7 @@
    ========================= */
 
 :root {
+
 	--font-main:
 		'Outfit',
 		sans-serif;
@@ -57,17 +58,51 @@
 		serif;
 
 
---background: #17091A;
+	/* =====================
+	   BACKGROUND
+	   ===================== */
 
---card-background: rgba(58, 18, 56, 0.88);
+	--background:
+		#09091a;
 
---card-border: rgba(255, 105, 210, 0.55);
+	--background-deep:
+		#070711;
 
---pink: #E52AA8;
---pink-light: #FF70D1;
 
---text: #FFFFFF;
---text-muted: rgba(255, 255, 255, 0.72);
+	/* =====================
+	   CARDS
+	   ===================== */
+
+	--card-background:
+		rgba(31, 15, 48, 0.92);
+
+	--card-border:
+		rgba(255, 105, 210, 0.55);
+
+
+	/* =====================
+	   ACCENTS
+	   ===================== */
+
+	--pink:
+		#e52aa8;
+
+	--pink-light:
+		#ff70d1;
+
+	--purple:
+		#a855f7;
+
+
+	/* =====================
+	   TEXT
+	   ===================== */
+
+	--text:
+		#ffffff;
+
+	--text-muted:
+		rgba(255, 255, 255, 0.72);
 }
 
 
@@ -76,17 +111,15 @@
    ========================= */
 
 * {
-	box-sizing:
-		border-box;
+	box-sizing: border-box;
 }
 
 
 html {
-	margin:
-		0;
 
-	padding:
-		0;
+	margin: 0;
+
+	padding: 0;
 
 	background:
 		var(--background);
@@ -97,14 +130,12 @@ html {
 
 
 body {
-	margin:
-		0;
 
-	padding:
-		0;
+	margin: 0;
 
-	min-height:
-		100vh;
+	padding: 0;
+
+	min-height: 100vh;
 
 	font-family:
 		var(--font-main);
@@ -124,55 +155,59 @@ body {
 	overflow-x:
 		hidden;
 
-		background:
 
-		/* Main lavender atmosphere */
+	/* =====================
+	   NIGHT SKY
+	   ===================== */
 
-		radial-gradient(
-			ellipse 75% 45% at 50% 0%,
-			rgba(175, 105, 220, 0.45),
-			transparent 70%
-		),
+	background:
 
-		/* Pink atmosphere */
+		/* soft pink glow near horizon */
 
 		radial-gradient(
-			ellipse 50% 45% at 0% 35%,
-			rgba(235, 105, 200, 0.30),
+			ellipse 55% 28% at 50% 105%,
+			rgba(145, 35, 125, 0.22),
 			transparent 72%
 		),
 
-		/* Violet atmosphere */
+		/* violet atmosphere */
 
 		radial-gradient(
-			ellipse 50% 45% at 100% 45%,
-			rgba(155, 105, 235, 0.30),
+			ellipse 48% 42% at 100% 35%,
+			rgba(85, 50, 160, 0.18),
 			transparent 72%
 		),
 
-		/* Lower glow */
+		/* pink atmosphere */
 
 		radial-gradient(
-			ellipse 65% 35% at 50% 100%,
-			rgba(190, 90, 205, 0.20),
+			ellipse 42% 38% at 0% 48%,
+			rgba(155, 30, 120, 0.16),
 			transparent 72%
 		),
+
+		/* subtle upper violet glow */
+
+		radial-gradient(
+			ellipse 65% 38% at 50% -10%,
+			rgba(80, 45, 130, 0.20),
+			transparent 72%
+		),
+
+		/* actual night sky */
 
 		linear-gradient(
 			180deg,
-			#32163d 0%,
-			#291330 35%,
-			#211027 70%,
-			#180c1e 100%
+			#11102a 0%,
+			#0d0b21 38%,
+			#0a091a 72%,
+			#080713 100%
 		);
 }
 
-/* =========================
-   DREAMY NIGHT SKY DETAILS
-   ========================= */
 
 /* =========================
-   STARS + AURORA
+   STARS + AURORA + MOON HALO
    ========================= */
 
 body::before {
@@ -190,15 +225,17 @@ body::before {
 	background:
 
 		/* =====================
-		   MOON HALO
+		   MOON RAINBOW HALO
 		   ===================== */
 
 		radial-gradient(
-			circle 125px at 82% 12%,
-			transparent 67%,
-			rgba(255, 190, 235, 0.08) 68%,
-			rgba(180, 160, 255, 0.14) 70%,
-			rgba(90, 190, 255, 0.08) 72%,
+			circle 125px at 84% 13%,
+			transparent 62%,
+			rgba(255, 110, 205, 0.10) 63%,
+			rgba(255, 180, 110, 0.08) 65%,
+			rgba(170, 255, 150, 0.08) 67%,
+			rgba(80, 190, 255, 0.10) 69%,
+			rgba(160, 120, 255, 0.10) 71%,
 			transparent 75%
 		),
 
@@ -208,63 +245,50 @@ body::before {
 		   ===================== */
 
 		radial-gradient(
-			ellipse 18% 32% at 48% -5%,
-			rgba(30, 110, 255, 0.16),
-			transparent 70%
+			ellipse 18% 35% at 48% -5%,
+			rgba(30, 110, 255, 0.10),
+			transparent 72%
 		),
 
 		radial-gradient(
-			ellipse 12% 30% at 53% 5%,
-			rgba(40, 255, 170, 0.12),
-			transparent 70%
+			ellipse 13% 32% at 53% 4%,
+			rgba(30, 255, 170, 0.08),
+			transparent 72%
 		),
 
 		radial-gradient(
-			ellipse 10% 28% at 59% 7%,
-			rgba(255, 45, 125, 0.11),
-			transparent 70%
+			ellipse 11% 30% at 59% 7%,
+			rgba(255, 45, 125, 0.08),
+			transparent 72%
 		),
 
 
-		/* left aurora */
+		/* =====================
+		   SIDE COLOR
+		   ===================== */
 
 		radial-gradient(
-			ellipse 18% 12% at -2% 45%,
-			rgba(20, 110, 255, 0.22),
-			transparent 70%
+			ellipse 20% 18% at -3% 45%,
+			rgba(40, 110, 255, 0.13),
+			transparent 72%
 		),
 
 		radial-gradient(
-			ellipse 15% 9% at 3% 48%,
-			rgba(40, 255, 160, 0.14),
-			transparent 70%
+			ellipse 16% 13% at 2% 48%,
+			rgba(40, 255, 170, 0.07),
+			transparent 72%
 		),
 
 		radial-gradient(
-			ellipse 13% 8% at 7% 51%,
-			rgba(255, 45, 115, 0.11),
-			transparent 70%
-		),
-
-
-		/* right aurora */
-
-		radial-gradient(
-			ellipse 18% 12% at 102% 54%,
-			rgba(20, 130, 255, 0.22),
-			transparent 70%
+			ellipse 20% 18% at 103% 55%,
+			rgba(60, 110, 255, 0.13),
+			transparent 72%
 		),
 
 		radial-gradient(
-			ellipse 15% 9% at 97% 58%,
-			rgba(40, 255, 165, 0.14),
-			transparent 70%
-		),
-
-		radial-gradient(
-			ellipse 13% 8% at 94% 62%,
-			rgba(255, 45, 115, 0.11),
-			transparent 70%
+			ellipse 16% 13% at 98% 58%,
+			rgba(40, 255, 170, 0.07),
+			transparent 72%
 		),
 
 
@@ -280,7 +304,7 @@ body::before {
 
 		radial-gradient(
 			circle 1px at 15% 26%,
-			rgba(150,200,255,0.85) 0 1px,
+			rgba(150,200,255,0.8) 0 1px,
 			transparent 2px
 		),
 
@@ -292,7 +316,7 @@ body::before {
 
 		radial-gradient(
 			circle 1px at 31% 20%,
-			rgba(210,185,255,0.85) 0 1px,
+			rgba(210,185,255,0.8) 0 1px,
 			transparent 2px
 		),
 
@@ -304,7 +328,7 @@ body::before {
 
 		radial-gradient(
 			circle 1px at 55% 19%,
-			rgba(140,205,255,0.8) 0 1px,
+			rgba(140,205,255,0.75) 0 1px,
 			transparent 2px
 		),
 
@@ -346,7 +370,7 @@ body::before {
 
 		radial-gradient(
 			circle 1px at 51% 64%,
-			rgba(150,210,255,0.8) 0 1px,
+			rgba(150,210,255,0.75) 0 1px,
 			transparent 2px
 		),
 
@@ -378,9 +402,9 @@ body::after {
 
 	height: 82px;
 
-	top: calc(12% - 41px);
+	top: calc(13% - 41px);
 
-	left: calc(82% - 41px);
+	left: calc(84% - 41px);
 
 	z-index: -1;
 
@@ -388,92 +412,36 @@ body::after {
 
 	border-radius: 50%;
 
-	background:
-		linear-gradient(
-			135deg,
-			#ffffff 0%,
-			#fff8fd 45%,
-			#eadff0 100%
-		);
 
-	box-shadow:
-
-		0 0 8px
-		rgba(255, 245, 253, 0.95),
-
-		0 0 18px
-		rgba(255, 205, 240, 0.55),
-
-		0 0 32px
-		rgba(175, 175, 255, 0.25);
-
-
-	/*
-	   Crescent cutout.
-
-	   The dark circle is positioned partly
-	   outside the moon so only a crescent
-	   remains visible.
-	*/
-
-	clip-path:
-		circle(41px at 50% 50%);
-}
-
-
-/* =========================
-   MOON CRESCENT CUTOUT
-   ========================= */
-
-body::after {
+	/* crescent */
 
 	background:
 
 		radial-gradient(
-			circle 41px at 50% 50%,
+			circle at 45% 50%,
 			#fffaff 0 40px,
 			transparent 41px
 		),
 
 		radial-gradient(
-			circle 38px at 63% 38%,
-			#0a0b22 0 37px,
-			transparent 38px
+			circle at 66% 37%,
+			#11102a 0 38px,
+			transparent 39px
 		);
 
+
+	filter:
+		drop-shadow(
+			0 0 7px
+			rgba(255,255,255,0.85)
+		)
+
+		drop-shadow(
+			0 0 18px
+			rgba(255,190,240,0.35)
+		);
 }
 
-
-/* =========================
-   SUBTLE AURORA MOVEMENT
-   ========================= */
-
-@keyframes aurora-drift {
-
-	0% {
-		transform:
-			translate3d(-0.4%, 0, 0);
-	}
-
-	100% {
-		transform:
-			translate3d(0.4%, -0.3%, 0);
-	}
-}
-
-
-/* =========================
-   REDUCED MOTION
-   ========================= */
-
-@media (prefers-reduced-motion: reduce) {
-
-	body::before,
-	body::after {
-		animation:
-			none;
-	}
-}
 
 /* =========================
    DISPLAY HEADINGS
@@ -482,6 +450,7 @@ body::after {
 h1,
 h2.page-title,
 .display-title {
+
 	font-family:
 		var(--font-display);
 
@@ -495,6 +464,7 @@ h2.page-title,
    ========================= */
 
 a {
+
 	color:
 		inherit;
 
@@ -508,6 +478,7 @@ a {
    ========================= */
 
 img {
+
 	max-width:
 		100%;
 
@@ -527,7 +498,9 @@ img {
 
 	body::before,
 	body::after {
+
 		animation:
 			none;
 	}
+
 }
