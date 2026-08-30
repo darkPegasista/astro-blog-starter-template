@@ -142,7 +142,7 @@ body {
 	overflow-x:
 		hidden;
 
-	background:
+		background:
 
 		/* Main lavender atmosphere */
 
@@ -476,7 +476,6 @@ body::after {
 			1;
 	}
 }
-
 
 /* =========================
    DISPLAY HEADINGS
