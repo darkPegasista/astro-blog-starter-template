@@ -68,20 +68,6 @@
 
 --text: #FFFFFF;
 --text-muted: rgba(255, 255, 255, 0.72);
-
-
-	--text:
-		#ffffff;
-
-	--text-muted:
-		rgba(255, 255, 255, 0.78);
-
-
-	--card-background:
-		rgba(180, 20, 150, 0.18);
-
-	--card-border:
-		rgba(255, 130, 225, 0.55);
 }
 
 
