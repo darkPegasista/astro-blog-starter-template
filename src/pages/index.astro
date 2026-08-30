@@ -21,12 +21,19 @@ import '../styles/global.css';
 			<!-- HERO / ABOUT CARD -->
 <section class="main-card">
 
-	<div class="logo-container">
-		<img
-			src="/Lunar_Visuals Logo.svg"
-			alt="Lunar Visuals"
-		/>
-	</div>
+	<div class="logo-area">
+
+	<img
+		src="/Lunar_Visuals_Logo.svg"
+		alt="Lunar Visuals"
+		class="main-logo"
+	/>
+
+	<p class="artist-name">
+		by darkPegasista
+	</p>
+
+</div>
 				<div class="commission-status">
 
 					<div class="status-title">
@@ -189,19 +196,73 @@ import '../styles/global.css';
 			   LOGO PLACEHOLDER
 			   ========================= */
 
-			.logo-container {
+			/* =========================
+   MAIN LOGO AREA
+   ========================= */
+
+.logo-area {
+
 	display: flex;
-	justify-content: center;
+
+	flex-direction: column;
+
 	align-items: center;
+
+	justify-content: center;
 
 	width: 100%;
 
-	padding: 1rem 2rem;
+	margin-bottom: 2rem;
+
 }
 
-.logo-container img {
-	width: min(420px, 80%);
+
+/* =========================
+   MAIN LOGO
+   ========================= */
+
+.main-logo {
+
+	width: min(520px, 82%);
+
 	height: auto;
+
+	display: block;
+}
+
+
+/* =========================
+   ARTIST NAME
+   ========================= */
+
+.artist-name {
+
+	margin:
+		0.2rem 0 0;
+
+	font-family:
+		var(--font-display);
+
+	font-size:
+		clamp(1.5rem, 3vw, 2.2rem);
+
+	font-weight:
+		400;
+
+	line-height:
+		1;
+
+	color:
+		var(--text);
+
+	text-align:
+		center;
+
+	letter-spacing:
+		0.02em;
+
+	text-shadow:
+		0 0 12px rgba(255, 180, 235, 0.25);
 }
 
 
@@ -456,11 +517,17 @@ import '../styles/global.css';
 					border-radius: 22px;
 				}
 
-				.logo-placeholder {
-					width: 90%;
+	.logo-area {
+		margin-bottom: 1.5rem;
+	}
 
-					font-size: 1.2rem;
-				}
+	.main-logo {
+		width: 88%;
+	}
+
+	.artist-name {
+		font-size: 1.5rem;
+	}
 
 				.commission-status {
 					padding: 0.8rem 1rem;
