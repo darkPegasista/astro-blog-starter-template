@@ -49,42 +49,54 @@
 
 :root {
 
-	/* Typography */
+	/* =====================================================
+	   TYPOGRAPHY
+	   ===================================================== */
 
 	--font-main: 'Outfit', sans-serif;
 	--font-display: 'Elsie Swash Caps', serif;
 
 
-	/* Background */
+	/* =====================================================
+	   BACKGROUND — LAVENDER NIGHT
+	   ===================================================== */
 
-	--background: #0C0A18;
-	--background-deep: #080711;
+	--background: #110D22;
+	--background-deep: #090817;
 
-	--lavender-dark: #17122A;
-	--lavender: #9B7CC7;
-	--lavender-light: #D8C7F2;
+	--lavender-dark: #21183A;
+	--lavender: #9B82C9;
+	--lavender-light: #DCCCF5;
 
 
-	/* UI accents */
+	/* =====================================================
+	   WARM COMPLEMENTARY COLORS
+	   ===================================================== */
+
+	--peach: #F3B6A5;
+	--peach-light: #FFD6C8;
 
 	--pink: #FF72D2;
 	--pink-light: #FFB5E8;
 
 
-	/* Cards */
+	/* =====================================================
+	   TEXT
+	   ===================================================== */
 
-	--card-background: rgba(23, 18, 42, 0.94);
-	--card-background-hover: rgba(30, 24, 52, 0.96);
-
-	--card-border: rgba(216, 199, 242, 0.38);
+	--text: #FFFDFC;
+	--text-muted: rgba(255, 253, 252, 0.74);
 
 
-	/* Text */
+	/* =====================================================
+	   CARDS
+	   ===================================================== */
 
-	--text: #FFFFFF;
-	--text-muted: rgba(255, 255, 255, 0.72);
+	--card-background: rgba(28, 20, 48, 0.92);
+	--card-background-hover: rgba(38, 27, 62, 0.95);
+
+	--card-border: rgba(220, 204, 245, 0.40);
 }
-
 
 /* =========================================================
    GLOBAL RESET
@@ -115,44 +127,64 @@ body {
 	color: var(--text);
 
 	background:
-		/* Very subtle lavender light at the top */
+
+		/* -------------------------------------------------
+		   SOFT LAVENDER LIGHT
+		   ------------------------------------------------- */
+
 		radial-gradient(
-			ellipse 70% 45% at 50% -15%,
-			rgba(155, 124, 199, 0.16),
+			ellipse 70% 55% at 50% -15%,
+			rgba(155, 130, 201, 0.22),
 			transparent 70%
 		),
 
-		/* Subtle light on the right */
+		/* -------------------------------------------------
+		   WARM PEACH LIGHT — LEFT
+		   ------------------------------------------------- */
+
 		radial-gradient(
-			ellipse 40% 55% at 100% 50%,
-			rgba(155, 124, 199, 0.06),
+			ellipse 38% 42% at -5% 30%,
+			rgba(243, 182, 165, 0.13),
 			transparent 70%
 		),
 
-		/* Subtle light on the left */
+		/* -------------------------------------------------
+		   WARM PEACH LIGHT — RIGHT
+		   ------------------------------------------------- */
+
 		radial-gradient(
-			ellipse 40% 55% at 0% 70%,
-			rgba(155, 124, 199, 0.05),
+			ellipse 34% 40% at 105% 68%,
+			rgba(255, 180, 205, 0.10),
 			transparent 70%
 		),
 
-		/* Main night gradient */
+		/* -------------------------------------------------
+		   LOWER LAVENDER
+		   ------------------------------------------------- */
+
+		radial-gradient(
+			ellipse 65% 38% at 50% 110%,
+			rgba(125, 100, 175, 0.15),
+			transparent 70%
+		),
+
+		/* -------------------------------------------------
+		   NIGHT BASE
+		   ------------------------------------------------- */
+
 		linear-gradient(
 			180deg,
-			#17122A 0%,
-			#110D20 45%,
-			#0C0A18 100%
+			#21183A 0%,
+			#17122B 42%,
+			#110D22 100%
 		);
 
 	background-attachment: fixed;
 
 	position: relative;
-
 	overflow-x: hidden;
-
 	isolation: isolate;
 }
-
 
 /* =========================================================
    DREAMY LAVENDER CLOUDS + STARS
