@@ -127,68 +127,30 @@ body {
 	color: var(--text);
 
 	background:
+	linear-gradient(
+		180deg,
 
-		/* =============================================
-		   DAWN ROSE — soft glow from the left
-		   ============================================= */
+		/* Deep lavender night */
+		#17132B 0%,
 
-		radial-gradient(
-			ellipse 55% 65% at -8% 35%,
-			rgba(215, 133, 147, 0.20),
-			transparent 72%
-		),
+		/* Soft violet */
+		#282044 20%,
 
-		/* =============================================
-		   DAWN GOLD — warm glow from the right
-		   ============================================= */
+		/* Lavender twilight */
+		#51406D 42%,
 
-		radial-gradient(
-			ellipse 50% 60% at 108% 25%,
-			rgba(254, 205, 112, 0.15),
-			transparent 72%
-		),
+		/* Dusty dawn rose */
+		#8F6275 62%,
 
-		/* =============================================
-		   LAVENDER — central transition
-		   ============================================= */
+		/* Warm rose */
+		#C27B80 76%,
 
-		radial-gradient(
-			ellipse 70% 55% at 50% -15%,
-			rgba(155, 130, 201, 0.20),
-			transparent 72%
-		),
+		/* Soft golden dawn */
+		#E7AE78 90%,
 
-		/* =============================================
-		   SOFT ROSE — lower atmosphere
-		   ============================================= */
-
-		radial-gradient(
-			ellipse 45% 35% at 15% 105%,
-			rgba(215, 133, 147, 0.10),
-			transparent 72%
-		),
-
-		/* =============================================
-		   SOFT GOLD — lower atmosphere
-		   ============================================= */
-
-		radial-gradient(
-			ellipse 45% 35% at 85% 105%,
-			rgba(254, 205, 112, 0.08),
-			transparent 72%
-		),
-
-		/* =============================================
-		   NIGHT BASE
-		   ============================================= */
-
-		linear-gradient(
-			180deg,
-			#21183A 0%,
-			#17122B 45%,
-			#110D22 100%
-		);
-
+		/* Warm sunrise */
+		#FECD70 100%
+	);
 	background-attachment: fixed;
 
 	position: relative;
