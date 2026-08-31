@@ -49,17 +49,13 @@
 
 :root {
 
-	/* =====================================================
-	   TYPOGRAPHY
-	   ===================================================== */
+	/* Typography */
 
 	--font-main: 'Outfit', sans-serif;
 	--font-display: 'Elsie Swash Caps', serif;
 
 
-	/* =====================================================
-	   BACKGROUND — LAVENDER NIGHT
-	   ===================================================== */
+	/* Background */
 
 	--background: #110D22;
 	--background-deep: #090817;
@@ -69,34 +65,32 @@
 	--lavender-light: #DCCCF5;
 
 
-	/* =====================================================
-	   WARM COMPLEMENTARY COLORS
-	   ===================================================== */
+	/* Dawn colors */
 
-	--peach: #F3B6A5;
-	--peach-light: #FFD6C8;
+	--dawn-rose: #D78593;
+	--dawn-gold: #FECD70;
+
+
+	/* UI accents */
 
 	--pink: #FF72D2;
 	--pink-light: #FFB5E8;
 
 
-	/* =====================================================
-	   TEXT
-	   ===================================================== */
+	/* Text */
 
 	--text: #FFFDFC;
 	--text-muted: rgba(255, 253, 252, 0.74);
 
 
-	/* =====================================================
-	   CARDS
-	   ===================================================== */
+	/* Cards */
 
 	--card-background: rgba(28, 20, 48, 0.92);
 	--card-background-hover: rgba(38, 27, 62, 0.95);
 
 	--card-border: rgba(220, 204, 245, 0.40);
 }
+
 
 /* =========================================================
    GLOBAL RESET
@@ -126,31 +120,39 @@ body {
 
 	color: var(--text);
 
+	/*
+	 * Continuous dawn gradient.
+	 *
+	 * Instead of separate colored patches, the colors
+	 * transition continuously from night lavender into
+	 * dusty rose and finally warm dawn.
+	 */
 	background:
-	linear-gradient(
-		180deg,
+		linear-gradient(
+			180deg,
 
-		/* Deep lavender night */
-		#17132B 0%,
+			/* Deep lavender night */
+			#17132B 0%,
 
-		/* Soft violet */
-		#282044 20%,
+			/* Soft violet */
+			#211A38 18%,
 
-		/* Lavender twilight */
-		#51406D 42%,
+			/* Lavender twilight */
+			#332747 36%,
 
-		/* Dusty dawn rose */
-		#8F6275 62%,
+			/* Muted lavender rose */
+			#5A405D 52%,
 
-		/* Warm rose */
-		#C27B80 76%,
+			/* Dusty dawn rose */
+			#855766 68%,
 
-		/* Soft golden dawn */
-		#E7AE78 90%,
+			/* Warm rose */
+			#AD7078 82%,
 
-		/* Warm sunrise */
-		#FECD70 100%
-	);
+			/* Soft warm dawn */
+			#C9877D 100%
+		);
+
 	background-attachment: fixed;
 
 	position: relative;
@@ -160,8 +162,38 @@ body {
 	isolation: isolate;
 }
 
+
 /* =========================================================
-   DREAMY LAVENDER CLOUDS + STARS
+   WARM DAWN LIGHT
+   ========================================================= */
+
+body::after {
+	content: "";
+
+	position: fixed;
+	inset: 0;
+
+	z-index: -1;
+
+	pointer-events: none;
+
+	/*
+	 * Very broad golden light coming from below.
+	 * This creates the impression of a distant sunrise
+	 * without producing a visible yellow "spot".
+	 */
+
+	background:
+		radial-gradient(
+			ellipse 85% 45% at 50% 110%,
+			rgba(254, 205, 112, 0.18),
+			transparent 70%
+		);
+}
+
+
+/* =========================================================
+   STARS
    ========================================================= */
 
 body::before {
@@ -176,9 +208,10 @@ body::before {
 
 	background:
 
-		/* =====================================================
-		   STARS
-		   ===================================================== */
+		/* -----------------------------------------
+		   Upper sky
+		   ----------------------------------------- */
+
 		radial-gradient(
 			circle 1.5px at 7% 10%,
 			rgba(255, 255, 255, 0.85) 0 1px,
@@ -239,33 +272,31 @@ body::before {
 			transparent 2px
 		),
 
+		/* -----------------------------------------
+		   Lower sky — much fewer stars
+		   ----------------------------------------- */
+
 		radial-gradient(
-			circle 1px at 10% 66%,
-			rgba(216, 199, 242, 0.75) 0 1px,
+			circle 1px at 10% 48%,
+			rgba(216, 199, 242, 0.50) 0 1px,
 			transparent 2px
 		),
 
 		radial-gradient(
-			circle 1.5px at 28% 74%,
-			rgba(255, 255, 255, 0.80) 0 1px,
+			circle 1px at 28% 54%,
+			rgba(255, 255, 255, 0.45) 0 1px,
 			transparent 2px
 		),
 
 		radial-gradient(
-			circle 1px at 50% 66%,
-			rgba(216, 199, 242, 0.75) 0 1px,
+			circle 1px at 72% 49%,
+			rgba(216, 199, 242, 0.45) 0 1px,
 			transparent 2px
 		),
 
 		radial-gradient(
-			circle 1.5px at 78% 73%,
-			rgba(255, 255, 255, 0.80) 0 1px,
-			transparent 2px
-		),
-
-		radial-gradient(
-			circle 1px at 92% 67%,
-			rgba(216, 199, 242, 0.75) 0 1px,
+			circle 1px at 92% 56%,
+			rgba(255, 255, 255, 0.40) 0 1px,
 			transparent 2px
 		);
 }
