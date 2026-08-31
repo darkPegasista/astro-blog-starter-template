@@ -18,18 +18,27 @@ import '../styles/global.css';
 
 		<main>
 
-			<!-- HERO / ABOUT CARD -->
-<section class="main-card">
+			<!-- =====================================================
+			     HERO / ABOUT
+			     ===================================================== -->
 
-	<div class="logo-area">
+			<section class="main-card">
 
-	<img
-		src="/Lunar Visuals Logo.svg"
-		alt="Lunar Visuals"
-		class="main-logo"
-	/>
+				<!-- Logo -->
 
-</div>
+				<div class="logo-area">
+
+					<img
+						src="/Lunar Visuals Logo.svg"
+						alt="Lunar Visuals"
+						class="main-logo"
+					/>
+
+				</div>
+
+
+				<!-- Commission Status -->
+
 				<div class="commission-status">
 
 					<div class="status-title">
@@ -43,43 +52,50 @@ import '../styles/global.css';
 				</div>
 
 
-				<h2>
+				<!-- About -->
+
+				<h2 class="display-title">
 					✦ Who am I and what can I do? ✦
 				</h2>
 
+				<div class="about-text">
 
-				<p class="about-text">
-	Hi, I’m darkPegasista! I’m a passionate digital artist
-	and a long-time member of the brony community, drawing
-	ponies for over a decade. My passion for visual arts led
-	me to become a state-certified graphic designer in Germany.
-</p>
+					<p>
+						Hi, I’m darkPegasista! I’m a passionate digital artist
+						and a long-time member of the brony community, drawing
+						ponies for over a decade. My passion for visual arts led
+						me to become a state-certified graphic designer in Germany.
+					</p>
 
-<p>
-	At conventions, you’ll often find me connecting with
-	fellow creatives or diving into new artistic hobbies.
-	Exchanging ideas with talented people is what inspires
-	my work every day.
-</p>
+					<p>
+						At conventions, you’ll often find me connecting with
+						fellow creatives or diving into new artistic hobbies.
+						Exchanging ideas with talented people is what inspires
+						my work every day.
+					</p>
 
-<p>
-	This site is my central hub where you can request
-	commissions, check out updates on upcoming events,
-	browse my merchandise, or just connect with me!
-</p>
+					<p>
+						This site is my central hub where you can request
+						commissions, check out updates on upcoming events,
+						browse my merchandise, or just connect with me!
+					</p>
+
+				</div>
 
 			</section>
 
 
-			<!-- SOCIALS -->
+			<!-- =====================================================
+			     SOCIALS
+			     ===================================================== -->
 
 			<section class="social-card">
 
-				<h2>✦ Socials ✦</h2>
+				<h2 class="display-title">
+					✦ Socials ✦
+				</h2>
 
 				<div class="social-links">
-
-					<!-- Opens Instagram -->
 
 					<a
 						href="https://www.instagram.com/lunar_dash_visuals/"
@@ -90,9 +106,6 @@ import '../styles/global.css';
 						Instagram
 					</a>
 
-
-					<!-- Opens TikTok -->
-
 					<a
 						href="https://www.tiktok.com/@lunar_dash_visuals"
 						class="social-link"
@@ -101,9 +114,6 @@ import '../styles/global.css';
 					>
 						TikTok
 					</a>
-
-
-					<!-- Opens Derpibooru -->
 
 					<a
 						href="https://derpibooru.org/profiles/dankPegasista"
@@ -114,9 +124,6 @@ import '../styles/global.css';
 						Derpibooru
 					</a>
 
-
-					<!-- Copies Telegram username -->
-
 					<button
 						type="button"
 						class="social-link copy-social"
@@ -124,9 +131,6 @@ import '../styles/global.css';
 					>
 						Telegram
 					</button>
-
-
-					<!-- Copies Barq username -->
 
 					<button
 						type="button"
@@ -141,7 +145,7 @@ import '../styles/global.css';
 			</section>
 
 
-			<!-- COPY NOTIFICATION -->
+			<!-- Copy notification -->
 
 			<div
 				id="copy-toast"
@@ -153,11 +157,15 @@ import '../styles/global.css';
 		</main>
 
 
+		<!-- =========================================================
+		     PAGE STYLES
+		     ========================================================= -->
+
 		<style>
 
-			/* =========================
+			/* =====================================================
 			   MAIN LAYOUT
-			   ========================= */
+			   ===================================================== */
 
 			main {
 				max-width: 900px;
@@ -166,9 +174,9 @@ import '../styles/global.css';
 			}
 
 
-			/* =========================
+			/* =====================================================
 			   MAIN ABOUT CARD
-			   ========================= */
+			   ===================================================== */
 
 			.main-card {
 				padding: 3rem;
@@ -194,88 +202,40 @@ import '../styles/global.css';
 			}
 
 
-			/* =========================
-			   LOGO PLACEHOLDER
-			   ========================= */
+			/* =====================================================
+			   LOGO
+			   ===================================================== */
 
-			/* =========================
-   MAIN LOGO AREA
-   ========================= */
+			.logo-area {
+				display: flex;
+				align-items: center;
+				justify-content: center;
 
-.logo-area {
+				width: 100%;
 
-	display: flex;
+				/*
+				 * Extra breathing room between the logo and
+				 * the commission status card.
+				 */
+				margin-bottom: 3.5rem;
+			}
 
-	flex-direction: column;
+			.main-logo {
+				display: block;
 
-	align-items: center;
-
-	justify-content: center;
-
-	width: 100%;
-
-	margin-bottom: 2rem;
-
-}
-
-
-/* =========================
-   MAIN LOGO
-   ========================= */
-
-.main-logo {
-
-	width: min(520px, 82%);
-
-	height: auto;
-
-	display: block;
-}
+				width: min(520px, 82%);
+				height: auto;
+			}
 
 
-/* =========================
-   ARTIST NAME
-   ========================= */
-
-.artist-name {
-
-	margin:
-		0.2rem 0 0;
-
-	font-family:
-		var(--font-display);
-
-	font-size:
-		clamp(1.5rem, 3vw, 2.2rem);
-
-	font-weight:
-		400;
-
-	line-height:
-		1;
-
-	color:
-		var(--text);
-
-	text-align:
-		center;
-
-	letter-spacing:
-		0.02em;
-
-	text-shadow:
-		0 0 12px rgba(255, 180, 235, 0.25);
-}
-
-
-			/* =========================
+			/* =====================================================
 			   COMMISSION STATUS
-			   ========================= */
+			   ===================================================== */
 
 			.commission-status {
 				max-width: 500px;
 
-				margin: 0 auto 2.5rem;
+				margin: 0 auto 2.8rem;
 
 				padding: 1rem 1.5rem;
 
@@ -290,14 +250,12 @@ import '../styles/global.css';
 					inset 0 0 15px rgba(255, 70, 200, 0.08);
 			}
 
-
 			.status-title {
 				font-size: 0.95rem;
 				font-weight: 600;
 
 				letter-spacing: 0.08em;
 			}
-
 
 			.status {
 				margin-top: 0.2rem;
@@ -314,19 +272,19 @@ import '../styles/global.css';
 			}
 
 
-			/* =========================
-			   ABOUT TEXT
-			   ========================= */
+			/* =====================================================
+			   ABOUT SECTION
+			   ===================================================== */
 
 			.main-card h2 {
-				margin-bottom: 1.5rem;
+				margin-top: 0;
+				margin-bottom: 1.7rem;
 
-				font-size: 1.25rem;
+				font-size: 1.5rem;
 			}
 
-
 			.about-text {
-				max-width: 650px;
+				max-width: 820px;
 
 				margin: 0 auto;
 
@@ -337,10 +295,24 @@ import '../styles/global.css';
 				line-height: 1.65;
 			}
 
+			.about-text p {
+				max-width: 820px;
 
-			/* =========================
-			   SOCIALS
-			   ========================= */
+				margin: 0 auto 1.4rem;
+			}
+
+			.about-text p:first-child {
+				color: var(--text);
+			}
+
+			.about-text p:last-child {
+				margin-bottom: 0;
+			}
+
+
+			/* =====================================================
+			   SOCIAL CARD
+			   ===================================================== */
 
 			.social-card {
 				margin-top: 2rem;
@@ -364,7 +336,6 @@ import '../styles/global.css';
 				text-align: center;
 			}
 
-
 			.social-card h2 {
 				margin-top: 0;
 				margin-bottom: 1.5rem;
@@ -372,6 +343,10 @@ import '../styles/global.css';
 				font-size: 1.3rem;
 			}
 
+
+			/* =====================================================
+			   SOCIAL LINKS
+			   ===================================================== */
 
 			.social-links {
 				max-width: 600px;
@@ -384,11 +359,6 @@ import '../styles/global.css';
 				gap: 0.8rem;
 			}
 
-
-			/* =========================
-			   SOCIAL BUTTONS
-			   ========================= */
-
 			.social-link {
 				width: 100%;
 
@@ -399,7 +369,6 @@ import '../styles/global.css';
 				min-height: 44px;
 
 				padding: 0.8rem 1.5rem;
-
 				margin: 0;
 
 				border-radius: 12px;
@@ -434,7 +403,6 @@ import '../styles/global.css';
 				-webkit-appearance: none;
 			}
 
-
 			.social-link:hover {
 				transform: translateY(-2px);
 
@@ -448,9 +416,9 @@ import '../styles/global.css';
 			}
 
 
-			/* =========================
+			/* =====================================================
 			   COPY TOAST
-			   ========================= */
+			   ===================================================== */
 
 			.copy-toast {
 				position: fixed;
@@ -464,11 +432,9 @@ import '../styles/global.css';
 
 				border-radius: 999px;
 
-				border: 1px solid
-					rgba(255, 130, 225, 0.7);
+				border: 1px solid rgba(255, 130, 225, 0.7);
 
-				background:
-					rgba(35, 10, 35, 0.92);
+				background: rgba(35, 10, 35, 0.92);
 
 				color: white;
 
@@ -476,8 +442,7 @@ import '../styles/global.css';
 				font-weight: 600;
 
 				box-shadow:
-					0 0 20px
-					rgba(255, 80, 200, 0.3);
+					0 0 20px rgba(255, 80, 200, 0.3);
 
 				backdrop-filter: blur(10px);
 
@@ -492,25 +457,21 @@ import '../styles/global.css';
 				z-index: 1000;
 			}
 
-
 			.copy-toast.show {
 				opacity: 1;
 
-				transform:
-					translate(-50%, 0);
+				transform: translate(-50%, 0);
 			}
 
 
-			/* =========================
+			/* =====================================================
 			   MOBILE
-			   ========================= */
+			   ===================================================== */
 
 			@media (max-width: 700px) {
 
 				main {
-					padding:
-						2rem 0.8rem
-						3rem;
+					padding: 2rem 0.8rem 3rem;
 				}
 
 				.main-card {
@@ -519,20 +480,18 @@ import '../styles/global.css';
 					border-radius: 22px;
 				}
 
-	.logo-area {
-		margin-bottom: 1.5rem;
-	}
+				.logo-area {
+					margin-bottom: 2.5rem;
+				}
 
-	.main-logo {
-		width: 88%;
-	}
-
-	.artist-name {
-		font-size: 1.5rem;
-	}
+				.main-logo {
+					width: 88%;
+				}
 
 				.commission-status {
 					padding: 0.8rem 1rem;
+
+					margin-bottom: 2.3rem;
 				}
 
 				.status {
@@ -540,11 +499,15 @@ import '../styles/global.css';
 				}
 
 				.main-card h2 {
-					font-size: 1.1rem;
+					font-size: 1.2rem;
 				}
 
 				.about-text {
 					font-size: 0.95rem;
+				}
+
+				.about-text p {
+					margin-bottom: 1.2rem;
 				}
 
 				.social-card {
@@ -552,11 +515,14 @@ import '../styles/global.css';
 
 					border-radius: 22px;
 				}
-
 			}
 
 		</style>
 
+
+		<!-- =========================================================
+		     COPY SOCIAL USERNAMES
+		     ========================================================= -->
 
 		<script>
 
@@ -588,16 +554,11 @@ import '../styles/global.css';
 
 						toast.classList.add('show');
 
-
 						clearTimeout(toastTimeout);
 
-
 						toastTimeout = setTimeout(() => {
-
 							toast.classList.remove('show');
-
 						}, 2500);
-
 
 					} catch (error) {
 
@@ -606,14 +567,10 @@ import '../styles/global.css';
 
 						toast.classList.add('show');
 
-
 						clearTimeout(toastTimeout);
 
-
 						toastTimeout = setTimeout(() => {
-
 							toast.classList.remove('show');
-
 						}, 2500);
 
 					}
