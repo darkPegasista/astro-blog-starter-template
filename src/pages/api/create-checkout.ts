@@ -12,63 +12,63 @@ const PRODUCTS = {
 	'wine-pony-cheers': {
 		name: 'Wine Pony Cheers',
 		price: 1200,
-		stock: 1,
+		stock: 13,
 		shippingClass: 'tracked-small',
 	},
 
 	'dont-drink-and-fly': {
 		name: "Don't Drink and Fly",
 		price: 1200,
-		stock: 1,
+		stock: 17,
 		shippingClass: 'tracked-small',
 	},
 
 	'pony-princesses': {
 		name: 'Pony Princesses',
 		price: 3500,
-		stock: 1,
+		stock: 2,
 		shippingClass: 'tracked-small',
 	},
 
 	'six-best-friends': {
 		name: 'Six Best Friends',
 		price: 3500,
-		stock: 1,
+		stock: 6,
 		shippingClass: 'tracked-small',
 	},
 
 	'musician-ponies': {
 		name: 'Musician Ponies',
 		price: 3500,
-		stock: 1,
+		stock: 2,
 		shippingClass: 'tracked-small',
 	},
 
 	'villains-of-harmony': {
 		name: 'Villains of Harmony',
 		price: 3500,
-		stock: 1,
+		stock: 5,
 		shippingClass: 'tracked-small',
 	},
 
 	'socialist-pony-propaganda': {
 		name: 'Socialist Pony Propaganda',
 		price: 1500,
-		stock: 1,
+		stock: 8,
 		shippingClass: 'tracked-small',
 	},
 
 	'drama-unicorn': {
 		name: 'Drama Unicorn',
 		price: 500,
-		stock: 1,
+		stock: 47,
 		shippingClass: 'tracked-letter',
 	},
 
 	'cider-dash': {
 		name: 'Cider Dash',
 		price: 500,
-		stock: 1,
+		stock: 3,
 		shippingClass: 'tracked-letter',
 	},
 } as const;
