@@ -1,81 +1,100 @@
 import type { APIRoute } from 'astro';
-import { env } from 'cloudflare:workers';
 
 export const prerender = false;
+
+
+/* =========================================================
+   TYPES
+   ========================================================= */
 
 interface CartItem {
 	slug: string;
 	quantity: number;
 }
 
-const PRODUCTS = {
+
+interface Product {
+	name: string;
+	price: number;
+	shippingClass:
+		| 'tracked-letter'
+		| 'tracked-small';
+}
+
+
+/* =========================================================
+   PHYSICAL PRODUCTS
+   =========================================================
+   
+   Stock is intentionally NOT stored here anymore.
+   D1 inventory is now the source of truth.
+   ========================================================= */
+
+const PRODUCTS: Record<string, Product> = {
+
 	'wine-pony-cheers': {
 		name: 'Wine Pony Cheers',
 		price: 1200,
-		stock: 13,
 		shippingClass: 'tracked-small',
 	},
 
 	'dont-drink-and-fly': {
 		name: "Don't Drink and Fly",
 		price: 1200,
-		stock: 17,
 		shippingClass: 'tracked-small',
 	},
 
 	'pony-princesses': {
 		name: 'Pony Princesses',
 		price: 3500,
-		stock: 2,
 		shippingClass: 'tracked-small',
 	},
 
 	'six-best-friends': {
 		name: 'Six Best Friends',
 		price: 3500,
-		stock: 6,
 		shippingClass: 'tracked-small',
 	},
 
 	'musician-ponies': {
 		name: 'Musician Ponies',
 		price: 3500,
-		stock: 2,
 		shippingClass: 'tracked-small',
 	},
 
 	'villains-of-harmony': {
 		name: 'Villains of Harmony',
 		price: 3500,
-		stock: 5,
 		shippingClass: 'tracked-small',
 	},
 
 	'socialist-pony-propaganda': {
 		name: 'Socialist Pony Propaganda',
 		price: 1500,
-		stock: 8,
 		shippingClass: 'tracked-small',
 	},
 
 	'drama-unicorn': {
 		name: 'Drama Unicorn',
 		price: 500,
-		stock: 47,
 		shippingClass: 'tracked-letter',
 	},
 
 	'cider-dash': {
 		name: 'Cider Dash',
 		price: 500,
-		stock: 3,
 		shippingClass: 'tracked-letter',
 	},
-} as const;
 
-type ProductSlug = keyof typeof PRODUCTS;
+};
+
+
+/* =========================================================
+   SHIPPING
+   ========================================================= */
 
 const SHIPPING = {
+
 	'tracked-letter': {
 		name: 'Tracked shipping',
 		amount: 390,
@@ -90,7 +109,13 @@ const SHIPPING = {
 		name: 'Tracked parcel shipping',
 		amount: 790,
 	},
+
 } as const;
+
+
+/* =========================================================
+   RESPONSE HELPER
+   ========================================================= */
 
 function json(
 	data: unknown,
@@ -101,14 +126,20 @@ function json(
 		JSON.stringify(data),
 		{
 			status,
+
 			headers: {
-				'Content-Type': 'application/json',
+				'Content-Type':
+					'application/json',
 			},
 		},
 	);
 
 }
 
+
+/* =========================================================
+   POST
+   ========================================================= */
 
 export const POST: APIRoute = async ({
 	request,
@@ -117,9 +148,9 @@ export const POST: APIRoute = async ({
 
 	try {
 
-		/*
-		 * Get Cloudflare environment variables.
-		 */
+		/* =====================================================
+		   CLOUDFLARE ENVIRONMENT
+		   ===================================================== */
 
 		const runtime =
 			(locals as any).runtime;
@@ -145,9 +176,26 @@ export const POST: APIRoute = async ({
 		}
 
 
-		/*
-		 * Read cart.
-		 */
+		if (!env?.DB) {
+
+			console.error(
+				'D1 database binding DB is missing.',
+			);
+
+			return json(
+				{
+					error:
+						'Inventory database is not configured.',
+				},
+				500,
+			);
+
+		}
+
+
+		/* =====================================================
+		   READ CART
+		   ===================================================== */
 
 		const body =
 			await request.json() as {
@@ -171,9 +219,12 @@ export const POST: APIRoute = async ({
 		}
 
 
-		/*
-		 * Determine shipping class.
-		 */
+		/* =====================================================
+		   VALIDATE CART
+		   ===================================================== */
+
+		const cartItems: CartItem[] = [];
+
 
 		let highestShippingClass:
 			| 'tracked-letter'
@@ -187,9 +238,9 @@ export const POST: APIRoute = async ({
 
 		for (const item of body.items) {
 
-			/*
-			 * Validate quantity.
-			 */
+			/* -------------------------------------------------
+			   Validate quantity
+			   ------------------------------------------------- */
 
 			if (
 				typeof item.slug !== 'string' ||
@@ -208,14 +259,12 @@ export const POST: APIRoute = async ({
 			}
 
 
-			/*
-			 * Find product.
-			 */
+			/* -------------------------------------------------
+			   Find product
+			   ------------------------------------------------- */
 
 			const product =
-				PRODUCTS[
-					item.slug as ProductSlug
-				];
+				PRODUCTS[item.slug];
 
 
 			if (!product) {
@@ -231,29 +280,9 @@ export const POST: APIRoute = async ({
 			}
 
 
-			/*
-			 * Check stock.
-			 */
-
-			if (
-				item.quantity >
-				product.stock
-			) {
-
-				return json(
-					{
-						error:
-							`${product.name} is only available in the current stock quantity.`,
-					},
-					400,
-				);
-
-			}
-
-
-			/*
-			 * Determine basic shipping class.
-			 */
+			/* -------------------------------------------------
+			   Determine shipping
+			   ------------------------------------------------- */
 
 			if (
 				product.shippingClass ===
@@ -266,9 +295,9 @@ export const POST: APIRoute = async ({
 			}
 
 
-			/*
-			 * Count bucket hats.
-			 */
+			/* -------------------------------------------------
+			   Count bucket hats
+			   ------------------------------------------------- */
 
 			if (
 				[
@@ -284,13 +313,18 @@ export const POST: APIRoute = async ({
 
 			}
 
+
+			cartItems.push({
+				slug: item.slug,
+				quantity: item.quantity,
+			});
+
 		}
 
 
-		/*
-		 * Three or more bucket hats
-		 * require parcel shipping.
-		 */
+		/* =====================================================
+		   BUCKET HAT SHIPPING
+		   ===================================================== */
 
 		if (
 			bucketHatQuantity >= 3
@@ -306,28 +340,174 @@ export const POST: APIRoute = async ({
 			SHIPPING[highestShippingClass];
 
 
+		/* =====================================================
+		   RESERVE INVENTORY
+		   =====================================================
+
+		   We reserve the products BEFORE creating the Stripe
+		   Checkout Session.
+
+		   This prevents two customers from purchasing the
+		   same limited item simultaneously.
+		   ===================================================== */
+
+		const reservationId =
+			crypto.randomUUID();
+
+
+		const reservationItems =
+			JSON.stringify(cartItems);
+
+
+		const reservationTime =
+			new Date().toISOString();
+
+
 		/*
-		 * Build Stripe request.
+		 * Build one atomic D1 transaction.
 		 *
-		 * URLSearchParams is used here instead
-		 * of manually constructing the form body.
+		 * Every stock update must succeed.
+		 *
+		 * If even ONE product doesn't have enough stock,
+		 * the entire transaction fails.
 		 */
+
+		const statements = [];
+
+
+		for (const item of cartItems) {
+
+			statements.push(
+				env.DB
+					.prepare(
+						`
+						UPDATE inventory
+						SET stock = stock - ?
+						WHERE slug = ?
+						  AND stock >= ?
+						`,
+					)
+					.bind(
+						item.quantity,
+						item.slug,
+						item.quantity,
+					),
+			);
+
+		}
+
+
+		/*
+		 * Create the reservation record.
+		 *
+		 * The temporary reservation ID is stored in the
+		 * database and will later be replaced by the Stripe
+		 * Checkout Session ID.
+		 */
+
+		statements.push(
+			env.DB
+				.prepare(
+					`
+					INSERT INTO reservations (
+						stripe_session_id,
+						slug,
+						quantity,
+						status,
+						created_at,
+						items_json
+					)
+					VALUES (?, ?, ?, ?, ?, ?)
+					`,
+				)
+				.bind(
+					reservationId,
+					'__pending__',
+					0,
+					'pending',
+					reservationTime,
+					reservationItems,
+				),
+		);
+
+
+		try {
+
+			const results =
+				await env.DB.batch(
+					statements,
+				);
+
+
+			/*
+			 * Check every inventory UPDATE.
+			 *
+			 * D1 returns the number of rows changed.
+			 */
+
+			for (
+				let i = 0;
+				i < cartItems.length;
+				i++
+			) {
+
+				const result =
+					results[i];
+
+				if (
+					result.meta
+						.changes !== 1
+				) {
+
+					throw new Error(
+						`Insufficient stock for ${cartItems[i].slug}.`,
+					);
+
+				}
+
+			}
+
+		} catch (error) {
+
+			console.error(
+				'Inventory reservation failed:',
+				error,
+			);
+
+			/*
+			 * Because the inventory updates and reservation
+			 * insert are part of one D1 batch, a failed
+			 * reservation does not leave partial stock changes.
+			 */
+
+			return json(
+				{
+					error:
+						'One or more products are no longer available in the requested quantity.',
+				},
+				409,
+			);
+
+		}
+
+
+		/* =====================================================
+		   BUILD STRIPE CHECKOUT REQUEST
+		   ===================================================== */
 
 		const stripeParams =
 			new URLSearchParams();
 
 
-		/*
-		 * Products.
-		 */
+		/* -----------------------------------------------------
+		   PRODUCTS
+		   ----------------------------------------------------- */
 
-		body.items.forEach(
+		cartItems.forEach(
 			(item, index) => {
 
 				const product =
-					PRODUCTS[
-						item.slug as ProductSlug
-					];
+					PRODUCTS[item.slug];
 
 
 				stripeParams.set(
@@ -357,24 +537,27 @@ export const POST: APIRoute = async ({
 		);
 
 
-		/*
-		 * Shipping.
-		 */
+		/* -----------------------------------------------------
+		   SHIPPING
+		   ----------------------------------------------------- */
 
 		stripeParams.set(
 			'shipping_options[0][shipping_rate_data][type]',
 			'fixed_amount',
 		);
 
+
 		stripeParams.set(
 			'shipping_options[0][shipping_rate_data][fixed_amount][amount]',
 			String(shipping.amount),
 		);
 
+
 		stripeParams.set(
 			'shipping_options[0][shipping_rate_data][fixed_amount][currency]',
 			'eur',
 		);
+
 
 		stripeParams.set(
 			'shipping_options[0][shipping_rate_data][display_name]',
@@ -382,9 +565,9 @@ export const POST: APIRoute = async ({
 		);
 
 
-		/*
-		 * Germany only.
-		 */
+		/* -----------------------------------------------------
+		   GERMANY ONLY
+		   ----------------------------------------------------- */
 
 		stripeParams.set(
 			'shipping_address_collection[allowed_countries][0]',
@@ -392,14 +575,15 @@ export const POST: APIRoute = async ({
 		);
 
 
-		/*
-		 * Checkout settings.
-		 */
+		/* -----------------------------------------------------
+		   CHECKOUT SETTINGS
+		   ----------------------------------------------------- */
 
 		stripeParams.set(
 			'mode',
 			'payment',
 		);
+
 
 		stripeParams.set(
 			'billing_address_collection',
@@ -407,9 +591,9 @@ export const POST: APIRoute = async ({
 		);
 
 
-		/*
-		 * Return URLs.
-		 */
+		/* -----------------------------------------------------
+		   RETURN URLS
+		   ----------------------------------------------------- */
 
 		const siteUrl =
 			new URL(
@@ -429,9 +613,9 @@ export const POST: APIRoute = async ({
 		);
 
 
-		/*
-		 * Metadata.
-		 */
+		/* -----------------------------------------------------
+		   METADATA
+		   ----------------------------------------------------- */
 
 		stripeParams.set(
 			'metadata[cart_source]',
@@ -440,43 +624,177 @@ export const POST: APIRoute = async ({
 
 
 		/*
-		 * Create Stripe Checkout Session.
+		 * Store the temporary reservation ID so that the
+		 * webhook knows which reservation belongs to this
+		 * Checkout Session.
 		 */
 
-		const response =
-			await fetch(
-				'https://api.stripe.com/v1/checkout/sessions',
-				{
-					method: 'POST',
+		stripeParams.set(
+			'metadata[reservation_id]',
+			reservationId,
+		);
 
-					headers: {
-						'Authorization':
-							`Bearer ${env.STRIPE_SECRET_KEY}`,
 
-						'Content-Type':
-							'application/x-www-form-urlencoded',
+		/* =====================================================
+		   CREATE STRIPE SESSION
+		   ===================================================== */
+
+		let stripeSessionId:
+			| string
+			| null = null;
+
+
+		try {
+
+			const response =
+				await fetch(
+					'https://api.stripe.com/v1/checkout/sessions',
+					{
+						method: 'POST',
+
+						headers: {
+							'Authorization':
+								`Bearer ${env.STRIPE_SECRET_KEY}`,
+
+							'Content-Type':
+								'application/x-www-form-urlencoded',
+						},
+
+						body:
+							stripeParams.toString(),
 					},
-
-					body:
-						stripeParams.toString(),
-				},
-			);
+				);
 
 
-		const responseText =
-			await response.text();
+			const responseText =
+				await response.text();
 
 
-		/*
-		 * Stripe should always return JSON.
-		 */
+			if (!response.ok) {
 
-		if (!response.ok) {
+				console.error(
+					'Stripe error:',
+					responseText,
+				);
+
+				throw new Error(
+					'Stripe could not create checkout session.',
+				);
+
+			}
+
+
+			const session =
+				JSON.parse(
+					responseText,
+				) as {
+					id?: string;
+					url?: string;
+				};
+
+
+			if (
+				!session.id ||
+				!session.url
+			) {
+
+				throw new Error(
+					'Stripe did not return a valid checkout session.',
+				);
+
+			}
+
+
+			stripeSessionId =
+				session.id;
+
+
+			/* =================================================
+			   UPDATE RESERVATION WITH REAL STRIPE SESSION ID
+			   ================================================= */
+
+			await env.DB
+				.prepare(
+					`
+					UPDATE reservations
+					SET stripe_session_id = ?,
+					    status = 'reserved'
+					WHERE stripe_session_id = ?
+					`,
+				)
+				.bind(
+					stripeSessionId,
+					reservationId,
+				)
+				.run();
+
+
+			/* =================================================
+			   RETURN CHECKOUT URL
+			   ================================================= */
+
+			return json({
+				url:
+					session.url,
+			});
+
+
+		} catch (error) {
 
 			console.error(
-				'Stripe error:',
-				responseText,
+				'Stripe checkout creation failed:',
+				error,
 			);
+
+
+			/* =================================================
+			   RELEASE INVENTORY IF STRIPE FAILED
+			   ================================================= */
+
+			try {
+
+				for (const item of cartItems) {
+
+					await env.DB
+						.prepare(
+							`
+							UPDATE inventory
+							SET stock = stock + ?
+							WHERE slug = ?
+							`,
+						)
+						.bind(
+							item.quantity,
+							item.slug,
+						)
+						.run();
+
+				}
+
+
+				await env.DB
+					.prepare(
+						`
+						UPDATE reservations
+						SET status = 'cancelled'
+						WHERE stripe_session_id = ?
+						`,
+					)
+					.bind(
+						reservationId,
+					)
+					.run();
+
+
+			} catch (releaseError) {
+
+				console.error(
+					'CRITICAL: Could not release inventory:',
+					releaseError,
+				);
+
+			}
+
 
 			return json(
 				{
@@ -487,43 +805,6 @@ export const POST: APIRoute = async ({
 			);
 
 		}
-
-
-		const session =
-			JSON.parse(
-				responseText,
-			) as {
-				url?: string;
-			};
-
-
-		if (!session.url) {
-
-			console.error(
-				'Stripe response contained no checkout URL:',
-				responseText,
-			);
-
-			return json(
-				{
-					error:
-						'Stripe did not return a checkout URL.',
-				},
-				500,
-			);
-
-		}
-
-
-		/*
-		 * Send checkout URL back to cart.
-		 */
-
-		return json({
-			url:
-				session.url,
-		});
-
 
 	} catch (error) {
 
