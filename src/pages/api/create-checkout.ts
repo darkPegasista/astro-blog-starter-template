@@ -1,7 +1,4 @@
-interface Env {
-	STRIPE_SECRET_KEY: string;
-	SITE_URL: string;
-}
+import type { APIRoute } from 'astro';
 
 interface CartItem {
 	slug: string;
@@ -92,10 +89,12 @@ const SHIPPING = {
 	},
 } as const;
 
+
 function json(
 	data: unknown,
 	status = 200,
 ): Response {
+
 	return new Response(
 		JSON.stringify(data),
 		{
@@ -105,31 +104,74 @@ function json(
 			},
 		},
 	);
+
 }
 
-export const onRequestPost: PagesFunction<Env> = async ({
+
+export const POST: APIRoute = async ({
 	request,
-	env,
+	locals,
 }) => {
 
 	try {
 
-		const body = await request.json() as {
-			items?: CartItem[];
-		};
+		/*
+		 * Get Cloudflare environment variables.
+		 */
+
+		const runtime =
+			(locals as any).runtime;
+
+		const env =
+			runtime?.env;
+
+
+		if (!env?.STRIPE_SECRET_KEY) {
+
+			console.error(
+				'STRIPE_SECRET_KEY is missing.',
+			);
+
+			return json(
+				{
+					error:
+						'Stripe configuration is missing.',
+				},
+				500,
+			);
+
+		}
+
+
+		/*
+		 * Read cart.
+		 */
+
+		const body =
+			await request.json() as {
+				items?: CartItem[];
+			};
+
 
 		if (
 			!Array.isArray(body.items) ||
 			body.items.length === 0
 		) {
+
 			return json(
-				{ error: 'Your cart is empty.' },
+				{
+					error:
+						'Your cart is empty.',
+				},
 				400,
 			);
+
 		}
 
 
-		const lineItems: string[] = [];
+		/*
+		 * Determine shipping class.
+		 */
 
 		let highestShippingClass:
 			| 'tracked-letter'
@@ -138,33 +180,64 @@ export const onRequestPost: PagesFunction<Env> = async ({
 			= 'tracked-letter';
 
 
+		let bucketHatQuantity = 0;
+
+
 		for (const item of body.items) {
+
+			/*
+			 * Validate quantity.
+			 */
 
 			if (
 				typeof item.slug !== 'string' ||
 				!Number.isInteger(item.quantity) ||
 				item.quantity < 1
 			) {
+
 				return json(
-					{ error: 'Invalid cart item.' },
+					{
+						error:
+							'Invalid cart item.',
+					},
 					400,
 				);
+
 			}
 
 
+			/*
+			 * Find product.
+			 */
+
 			const product =
-				PRODUCTS[item.slug as ProductSlug];
+				PRODUCTS[
+					item.slug as ProductSlug
+				];
 
 
 			if (!product) {
+
 				return json(
-					{ error: 'One of the products is no longer available.' },
+					{
+						error:
+							'One of the products is no longer available.',
+					},
 					400,
 				);
+
 			}
 
 
-			if (item.quantity > product.stock) {
+			/*
+			 * Check stock.
+			 */
+
+			if (
+				item.quantity >
+				product.stock
+			) {
+
 				return json(
 					{
 						error:
@@ -172,70 +245,58 @@ export const onRequestPost: PagesFunction<Env> = async ({
 					},
 					400,
 				);
+
 			}
 
+
+			/*
+			 * Determine basic shipping class.
+			 */
 
 			if (
 				product.shippingClass ===
 				'tracked-small'
 			) {
 
-				if (
-					highestShippingClass ===
-					'tracked-letter'
-				) {
-					highestShippingClass =
-						'tracked-small';
-				}
+				highestShippingClass =
+					'tracked-small';
 
 			}
 
 
-			lineItems.push(
-				`line_items[${lineItems.length}][price_data][currency]=eur`,
-			);
+			/*
+			 * Count bucket hats.
+			 */
 
-			lineItems.push(
-				`line_items[${lineItems.length - 1}][price_data][product_data][name]=${encodeURIComponent(product.name)}`,
-			);
+			if (
+				[
+					'pony-princesses',
+					'six-best-friends',
+					'musician-ponies',
+					'villains-of-harmony',
+				].includes(item.slug)
+			) {
 
-			lineItems.push(
-				`line_items[${lineItems.length - 1}][price_data][unit_amount]=${product.price}`,
-			);
+				bucketHatQuantity +=
+					item.quantity;
 
-			lineItems.push(
-				`line_items[${lineItems.length - 1}][quantity]=${item.quantity}`,
-			);
+			}
 
 		}
 
 
 		/*
-		 * Five or more bucket hats require
-		 * parcel packaging.
+		 * Three or more bucket hats
+		 * require parcel shipping.
 		 */
 
-		const bucketHatQuantity =
-			body.items
-				.filter(
-					(item) =>
-						[
-							'pony-princesses',
-							'six-best-friends',
-							'musician-ponies',
-							'villains-of-harmony',
-						].includes(item.slug),
-				)
-				.reduce(
-					(total, item) =>
-						total + item.quantity,
-					0,
-				);
+		if (
+			bucketHatQuantity >= 3
+		) {
 
-
-		if (bucketHatQuantity >= 3) {
 			highestShippingClass =
 				'tracked-parcel';
+
 		}
 
 
@@ -243,50 +304,142 @@ export const onRequestPost: PagesFunction<Env> = async ({
 			SHIPPING[highestShippingClass];
 
 
-		lineItems.push(
-			`shipping_options[0][shipping_rate_data][type]=fixed_amount`,
+		/*
+		 * Build Stripe request.
+		 *
+		 * URLSearchParams is used here instead
+		 * of manually constructing the form body.
+		 */
+
+		const stripeParams =
+			new URLSearchParams();
+
+
+		/*
+		 * Products.
+		 */
+
+		body.items.forEach(
+			(item, index) => {
+
+				const product =
+					PRODUCTS[
+						item.slug as ProductSlug
+					];
+
+
+				stripeParams.set(
+					`line_items[${index}][price_data][currency]`,
+					'eur',
+				);
+
+
+				stripeParams.set(
+					`line_items[${index}][price_data][product_data][name]`,
+					product.name,
+				);
+
+
+				stripeParams.set(
+					`line_items[${index}][price_data][unit_amount]`,
+					String(product.price),
+				);
+
+
+				stripeParams.set(
+					`line_items[${index}][quantity]`,
+					String(item.quantity),
+				);
+
+			},
 		);
 
-		lineItems.push(
-			`shipping_options[0][shipping_rate_data[fixed_amount][amount]=${shipping.amount}`,
+
+		/*
+		 * Shipping.
+		 */
+
+		stripeParams.set(
+			'shipping_options[0][shipping_rate_data][type]',
+			'fixed_amount',
 		);
 
-		lineItems.push(
-			`shipping_options[0][shipping_rate_data[fixed_amount][currency]=eur`,
+		stripeParams.set(
+			'shipping_options[0][shipping_rate_data][fixed_amount][amount]',
+			String(shipping.amount),
 		);
 
-		lineItems.push(
-			`shipping_options[0][shipping_rate_data[display_name]=${encodeURIComponent(shipping.name)}`,
+		stripeParams.set(
+			'shipping_options[0][shipping_rate_data][fixed_amount][currency]',
+			'eur',
 		);
 
-		lineItems.push(
-			`shipping_address_collection[allowed_countries][0]=DE`,
+		stripeParams.set(
+			'shipping_options[0][shipping_rate_data][display_name]',
+			shipping.name,
 		);
 
-		lineItems.push(
-			`mode=payment`,
+
+		/*
+		 * Germany only.
+		 */
+
+		stripeParams.set(
+			'shipping_address_collection[allowed_countries][0]',
+			'DE',
 		);
 
-		lineItems.push(
-			`success_url=${encodeURIComponent(
-				`${env.SITE_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-			)}`,
+
+		/*
+		 * Checkout settings.
+		 */
+
+		stripeParams.set(
+			'mode',
+			'payment',
 		);
 
-		lineItems.push(
-			`cancel_url=${encodeURIComponent(
-				`${env.SITE_URL}/cart`,
-			)}`,
+		stripeParams.set(
+			'billing_address_collection',
+			'auto',
 		);
 
-		lineItems.push(
-			`billing_address_collection=auto`,
+
+		/*
+		 * Return URLs.
+		 */
+
+		const siteUrl =
+			new URL(
+				request.url,
+			).origin;
+
+
+		stripeParams.set(
+			'success_url',
+			`${siteUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
 		);
 
-		lineItems.push(
-			`metadata[cart_source]=lunar_visuals`,
+
+		stripeParams.set(
+			'cancel_url',
+			`${siteUrl}/cart`,
 		);
 
+
+		/*
+		 * Metadata.
+		 */
+
+		stripeParams.set(
+			'metadata[cart_source]',
+			'lunar_visuals',
+		);
+
+
+		/*
+		 * Create Stripe Checkout Session.
+		 */
 
 		const response =
 			await fetch(
@@ -303,32 +456,30 @@ export const onRequestPost: PagesFunction<Env> = async ({
 					},
 
 					body:
-						lineItems.join('&'),
+						stripeParams.toString(),
 				},
 			);
 
 
-		const session =
-			await response.json() as {
-				id?: string;
-				url?: string;
-				error?: {
-					message?: string;
-				};
-			};
+		const responseText =
+			await response.text();
 
 
-		if (!response.ok || !session.url) {
+		/*
+		 * Stripe should always return JSON.
+		 */
+
+		if (!response.ok) {
 
 			console.error(
 				'Stripe error:',
-				session,
+				responseText,
 			);
 
 			return json(
 				{
 					error:
-						'Could not create the checkout session.',
+						'Stripe could not create the checkout session.',
 				},
 				500,
 			);
@@ -336,9 +487,41 @@ export const onRequestPost: PagesFunction<Env> = async ({
 		}
 
 
+		const session =
+			JSON.parse(
+				responseText,
+			) as {
+				url?: string;
+			};
+
+
+		if (!session.url) {
+
+			console.error(
+				'Stripe response contained no checkout URL:',
+				responseText,
+			);
+
+			return json(
+				{
+					error:
+						'Stripe did not return a checkout URL.',
+				},
+				500,
+			);
+
+		}
+
+
+		/*
+		 * Send checkout URL back to cart.
+		 */
+
 		return json({
-			url: session.url,
+			url:
+				session.url,
 		});
+
 
 	} catch (error) {
 
