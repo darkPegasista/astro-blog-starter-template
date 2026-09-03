@@ -1,0 +1,17 @@
+{
+	"$schema": "./node_modules/wrangler/config-schema.json",
+
+	"name": "astro-blog-starter-template",
+
+	"pages_build_output_dir": "./dist",
+
+	"compatibility_date": "2026-09-03",
+
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "lunar-visuals-orders",
+			"database_id": "466e0a8a-2a53-48a7-b9ca-61377aaa270c"
+		}
+	]
+}
