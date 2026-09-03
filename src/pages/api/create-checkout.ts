@@ -1,6 +1,8 @@
 import type { APIRoute } from 'astro';
 import { env } from 'cloudflare:workers';
 
+export const prerender = false;
+
 interface CartItem {
 	slug: string;
 	quantity: number;
