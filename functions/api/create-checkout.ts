@@ -8,353 +8,559 @@ interface CartItem {
 	quantity: number;
 }
 
+
+/* =========================================================
+   PRODUCT CATALOGUE
+   ========================================================= */
+
 const PRODUCTS = {
+
 	'wine-pony-cheers': {
 		name: 'Wine Pony Cheers',
 		price: 1200,
 		stock: 1,
-		shippingClass: 'tracked-small',
+		shippingClass: 'small',
 	},
 
 	'dont-drink-and-fly': {
 		name: "Don't Drink and Fly",
 		price: 1200,
 		stock: 1,
-		shippingClass: 'tracked-small',
+		shippingClass: 'small',
 	},
 
 	'pony-princesses': {
 		name: 'Pony Princesses',
 		price: 3500,
 		stock: 1,
-		shippingClass: 'tracked-small',
+		shippingClass: 'small',
 	},
 
 	'six-best-friends': {
 		name: 'Six Best Friends',
 		price: 3500,
 		stock: 1,
-		shippingClass: 'tracked-small',
+		shippingClass: 'small',
 	},
 
 	'musician-ponies': {
 		name: 'Musician Ponies',
 		price: 3500,
 		stock: 1,
-		shippingClass: 'tracked-small',
+		shippingClass: 'small',
 	},
 
 	'villains-of-harmony': {
 		name: 'Villains of Harmony',
 		price: 3500,
 		stock: 1,
-		shippingClass: 'tracked-small',
+		shippingClass: 'small',
 	},
 
 	'socialist-pony-propaganda': {
 		name: 'Socialist Pony Propaganda',
 		price: 1500,
 		stock: 1,
-		shippingClass: 'tracked-small',
+		shippingClass: 'small',
 	},
 
 	'drama-unicorn': {
 		name: 'Drama Unicorn',
 		price: 500,
 		stock: 1,
-		shippingClass: 'tracked-letter',
+		shippingClass: 'letter',
 	},
 
 	'cider-dash': {
 		name: 'Cider Dash',
 		price: 500,
 		stock: 1,
-		shippingClass: 'tracked-letter',
+		shippingClass: 'letter',
 	},
+
 } as const;
 
-type ProductSlug = keyof typeof PRODUCTS;
 
-const SHIPPING = {
-	'tracked-letter': {
+type ProductSlug =
+	keyof typeof PRODUCTS;
+
+
+/* =========================================================
+   SHIPPING RATES
+   ========================================================= */
+
+const SHIPPING_RATES = {
+
+	letter: {
 		name: 'Tracked shipping',
 		amount: 390,
 	},
 
-	'tracked-small': {
+	small: {
 		name: 'Tracked shipping',
 		amount: 490,
 	},
 
-	'tracked-parcel': {
+	parcel: {
 		name: 'Tracked parcel shipping',
 		amount: 790,
 	},
+
 } as const;
+
+
+/* =========================================================
+   RESPONSE HELPER
+   ========================================================= */
 
 function json(
 	data: unknown,
 	status = 200,
 ): Response {
+
 	return new Response(
 		JSON.stringify(data),
 		{
 			status,
+
 			headers: {
-				'Content-Type': 'application/json',
+				'Content-Type':
+					'application/json',
 			},
 		},
 	);
+
 }
 
-export const onRequestPost: PagesFunction<Env> = async ({
-	request,
-	env,
-}) => {
 
-	try {
+/* =========================================================
+   CHECKOUT
+   ========================================================= */
 
-		const body = await request.json() as {
-			items?: CartItem[];
-		};
+export const onRequestPost: PagesFunction<Env> =
+	async ({ request, env }) => {
 
-		if (
-			!Array.isArray(body.items) ||
-			body.items.length === 0
-		) {
-			return json(
-				{ error: 'Your cart is empty.' },
-				400,
-			);
-		}
+		try {
+
+			const body =
+				await request.json() as {
+					items?: CartItem[];
+				};
 
 
-		const lineItems: string[] = [];
-
-		let highestShippingClass:
-			| 'tracked-letter'
-			| 'tracked-small'
-			| 'tracked-parcel'
-			= 'tracked-letter';
-
-
-		for (const item of body.items) {
+			/* -----------------------------------------
+			   Validate cart
+			   ----------------------------------------- */
 
 			if (
-				typeof item.slug !== 'string' ||
-				!Number.isInteger(item.quantity) ||
-				item.quantity < 1
+				!Array.isArray(body.items) ||
+				body.items.length === 0
 			) {
-				return json(
-					{ error: 'Invalid cart item.' },
-					400,
-				);
-			}
 
-
-			const product =
-				PRODUCTS[item.slug as ProductSlug];
-
-
-			if (!product) {
-				return json(
-					{ error: 'One of the products is no longer available.' },
-					400,
-				);
-			}
-
-
-			if (item.quantity > product.stock) {
 				return json(
 					{
 						error:
-							`${product.name} is only available in the current stock quantity.`,
+							'Your cart is empty.',
 					},
 					400,
 				);
+
 			}
 
 
-			if (
-				product.shippingClass ===
-				'tracked-small'
+			/* -----------------------------------------
+			   Determine shipping
+			   ----------------------------------------- */
+
+			let shippingClass:
+				'letter' |
+				'small' |
+				'parcel' =
+					'letter';
+
+
+			const lineItems: {
+				price_data: {
+					currency: string;
+					product_data: {
+						name: string;
+					};
+					unit_amount: number;
+				};
+				quantity: number;
+			}[] = [];
+
+
+			let bucketHatQuantity = 0;
+
+
+			/* -----------------------------------------
+			   Process products
+			   ----------------------------------------- */
+
+			for (
+				const item of body.items
 			) {
 
 				if (
-					highestShippingClass ===
-					'tracked-letter'
+					typeof item.slug !== 'string' ||
+					!Number.isInteger(item.quantity) ||
+					item.quantity < 1
 				) {
-					highestShippingClass =
-						'tracked-small';
+
+					return json(
+						{
+							error:
+								'Invalid cart item.',
+						},
+						400,
+					);
+
 				}
+
+
+				const product =
+					PRODUCTS[
+						item.slug as ProductSlug
+					];
+
+
+				if (!product) {
+
+					return json(
+						{
+							error:
+								'One of the products in your cart is no longer available.',
+						},
+						400,
+					);
+
+				}
+
+
+				/* -------------------------------------
+				   Stock validation
+				   ------------------------------------- */
+
+				if (
+					item.quantity >
+					product.stock
+				) {
+
+					return json(
+						{
+							error:
+								`${product.name} is only available in the current stock quantity.`,
+						},
+						400,
+					);
+
+				}
+
+
+				/* -------------------------------------
+				   Shipping class
+				   ------------------------------------- */
+
+				if (
+					product.shippingClass ===
+					'small'
+				) {
+
+					shippingClass =
+						'small';
+
+				}
+
+
+				/* -------------------------------------
+				   Count bucket hats
+				   ------------------------------------- */
+
+				const bucketHatSlugs = [
+					'pony-princesses',
+					'six-best-friends',
+					'musician-ponies',
+					'villains-of-harmony',
+				];
+
+
+				if (
+					bucketHatSlugs.includes(
+						item.slug,
+					)
+				) {
+
+					bucketHatQuantity +=
+						item.quantity;
+
+				}
+
+
+				/* -------------------------------------
+				   Stripe line item
+				   ------------------------------------- */
+
+				lineItems.push({
+
+					price_data: {
+
+						currency:
+							'eur',
+
+						product_data: {
+
+							name:
+								product.name,
+
+						},
+
+						unit_amount:
+							product.price,
+
+					},
+
+					quantity:
+						item.quantity,
+
+				});
 
 			}
 
 
-			lineItems.push(
-				`line_items[${lineItems.length}][price_data][currency]=eur`,
-			);
+			/* -----------------------------------------
+			   Three or more bucket hats
+			   require parcel shipping
+			   ----------------------------------------- */
 
-			lineItems.push(
-				`line_items[${lineItems.length - 1}][price_data][product_data][name]=${encodeURIComponent(product.name)}`,
-			);
+			if (
+				bucketHatQuantity >= 3
+			) {
 
-			lineItems.push(
-				`line_items[${lineItems.length - 1}][price_data][unit_amount]=${product.price}`,
-			);
+				shippingClass =
+					'parcel';
 
-			lineItems.push(
-				`line_items[${lineItems.length - 1}][quantity]=${item.quantity}`,
-			);
-
-		}
+			}
 
 
-		/*
-		 * Five or more bucket hats require
-		 * parcel packaging.
-		 */
-
-		const bucketHatQuantity =
-			body.items
-				.filter(
-					(item) =>
-						[
-							'pony-princesses',
-							'six-best-friends',
-							'musician-ponies',
-							'villains-of-harmony',
-						].includes(item.slug),
-				)
-				.reduce(
-					(total, item) =>
-						total + item.quantity,
-					0,
-				);
+			const shipping =
+				SHIPPING_RATES[
+					shippingClass
+				];
 
 
-		if (bucketHatQuantity >= 3) {
-			highestShippingClass =
-				'tracked-parcel';
-		}
+			/* =================================================
+			   BUILD STRIPE REQUEST
+			   ================================================= */
+
+			const params =
+				new URLSearchParams();
 
 
-		const shipping =
-			SHIPPING[highestShippingClass];
+			/* -----------------------------------------
+			   Line items
+			   ----------------------------------------- */
 
+			lineItems.forEach(
+				(item, index) => {
 
-		lineItems.push(
-			`shipping_options[0][shipping_rate_data][type]=fixed_amount`,
-		);
+					params.append(
+						`line_items[${index}][price_data][currency]`,
+						item.price_data.currency,
+					);
 
-		lineItems.push(
-			`shipping_options[0][shipping_rate_data[fixed_amount][amount]=${shipping.amount}`,
-		);
+					params.append(
+						`line_items[${index}][price_data][product_data][name]`,
+						item.price_data.product_data.name,
+					);
 
-		lineItems.push(
-			`shipping_options[0][shipping_rate_data[fixed_amount][currency]=eur`,
-		);
+					params.append(
+						`line_items[${index}][price_data][unit_amount]`,
+						item.price_data.unit_amount.toString(),
+					);
 
-		lineItems.push(
-			`shipping_options[0][shipping_rate_data[display_name]=${encodeURIComponent(shipping.name)}`,
-		);
+					params.append(
+						`line_items[${index}][quantity]`,
+						item.quantity.toString(),
+					);
 
-		lineItems.push(
-			`shipping_address_collection[allowed_countries][0]=DE`,
-		);
-
-		lineItems.push(
-			`mode=payment`,
-		);
-
-		lineItems.push(
-			`success_url=${encodeURIComponent(
-				`${env.SITE_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-			)}`,
-		);
-
-		lineItems.push(
-			`cancel_url=${encodeURIComponent(
-				`${env.SITE_URL}/cart`,
-			)}`,
-		);
-
-		lineItems.push(
-			`billing_address_collection=auto`,
-		);
-
-		lineItems.push(
-			`metadata[cart_source]=lunar_visuals`,
-		);
-
-
-		const response =
-			await fetch(
-				'https://api.stripe.com/v1/checkout/sessions',
-				{
-					method: 'POST',
-
-					headers: {
-						'Authorization':
-							`Bearer ${env.STRIPE_SECRET_KEY}`,
-
-						'Content-Type':
-							'application/x-www-form-urlencoded',
-					},
-
-					body:
-						lineItems.join('&'),
 				},
 			);
 
 
-		const session =
-			await response.json() as {
-				id?: string;
-				url?: string;
-				error?: {
-					message?: string;
+			/* -----------------------------------------
+			   Shipping
+			   ----------------------------------------- */
+
+			params.append(
+				'shipping_options[0][shipping_rate_data][type]',
+				'fixed_amount',
+			);
+
+			params.append(
+				'shipping_options[0][shipping_rate_data][display_name]',
+				shipping.name,
+			);
+
+			params.append(
+				'shipping_options[0][shipping_rate_data][fixed_amount][amount]',
+				shipping.amount.toString(),
+			);
+
+			params.append(
+				'shipping_options[0][shipping_rate_data][fixed_amount][currency]',
+				'eur',
+			);
+
+
+			/* -----------------------------------------
+			   Germany only
+			   ----------------------------------------- */
+
+			params.append(
+				'shipping_address_collection[allowed_countries][0]',
+				'DE',
+			);
+
+
+			/* -----------------------------------------
+			   Checkout mode
+			   ----------------------------------------- */
+
+			params.append(
+				'mode',
+				'payment',
+			);
+
+
+			/* -----------------------------------------
+			   Billing address
+			   ----------------------------------------- */
+
+			params.append(
+				'billing_address_collection',
+				'auto',
+			);
+
+
+			/* -----------------------------------------
+			   Redirect URLs
+			   ----------------------------------------- */
+
+			params.append(
+				'success_url',
+				`${env.SITE_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+			);
+
+			params.append(
+				'cancel_url',
+				`${env.SITE_URL}/cart`,
+			);
+
+
+			/* -----------------------------------------
+			   Metadata
+			   ----------------------------------------- */
+
+			params.append(
+				'metadata[cart_source]',
+				'lunar_visuals',
+			);
+
+
+			/* =================================================
+			   CREATE STRIPE SESSION
+			   ================================================= */
+
+			const stripeResponse =
+				await fetch(
+					'https://api.stripe.com/v1/checkout/sessions',
+					{
+						method: 'POST',
+
+						headers: {
+
+							'Authorization':
+								`Bearer ${env.STRIPE_SECRET_KEY}`,
+
+							'Content-Type':
+								'application/x-www-form-urlencoded',
+
+						},
+
+						body:
+							params.toString(),
+
+					},
+				);
+
+
+			const session =
+				await stripeResponse.json() as {
+
+					id?: string;
+
+					url?: string;
+
+					error?: {
+						message?: string;
+					};
+
 				};
-			};
 
 
-		if (!response.ok || !session.url) {
+			/* -----------------------------------------
+			   Stripe error
+			   ----------------------------------------- */
+
+			if (
+				!stripeResponse.ok ||
+				!session.url
+			) {
+
+				console.error(
+					'Stripe error:',
+					session,
+				);
+
+				return json(
+					{
+						error:
+							'Could not create the checkout session.',
+					},
+					500,
+				);
+
+			}
+
+
+			/* -----------------------------------------
+			   Return checkout URL
+			   ----------------------------------------- */
+
+			return json({
+
+				url:
+					session.url,
+
+			});
+
+
+		} catch (error) {
 
 			console.error(
-				'Stripe error:',
-				session,
+				'Checkout error:',
+				error,
 			);
 
 			return json(
 				{
 					error:
-						'Could not create the checkout session.',
+						'Something went wrong while starting checkout.',
 				},
 				500,
 			);
 
 		}
 
-
-		return json({
-			url: session.url,
-		});
-
-	} catch (error) {
-
-		console.error(
-			'Checkout error:',
-			error,
-		);
-
-		return json(
-			{
-				error:
-					'Something went wrong while starting checkout.',
-			},
-			500,
-		);
-
-	}
-
-};
+	};
