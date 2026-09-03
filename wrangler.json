@@ -10,5 +10,12 @@
 	"observability": {
 		"enabled": true
 	},
-	"upload_source_maps": true
+	"upload_source_maps": true,
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "lunar-visuals-orders",
+			"database_id": "466e0a8a-2a53-48a7-b9ca-61377aaa270c"
+		}
+	]
 }
