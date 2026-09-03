@@ -351,6 +351,350 @@ async function getNextOrderNumber(
 
 }
 
+async function sendOrderConfirmationEmail(
+	env: any,
+	order: {
+		orderNumber: string;
+		customerName: string | null;
+		customerEmail: string;
+		items: {
+			name: string;
+			quantity: number;
+			unit_amount: number;
+			currency: string;
+		}[];
+		amountTotal: number;
+		currency: string;
+		shippingAmount: number;
+		addressLine1: string | null;
+		addressLine2: string | null;
+		city: string | null;
+		postalCode: string | null;
+		country: string | null;
+	},
+): Promise<void> {
+
+	if (!env.RESEND_API_KEY) {
+
+		console.error(
+			'RESEND_API_KEY is missing. Order confirmation email was not sent.',
+		);
+
+		return;
+
+	}
+
+
+	const formatMoney = (
+		amount: number,
+		currency: string,
+	) => {
+
+		return new Intl.NumberFormat(
+			'de-DE',
+			{
+				style: 'currency',
+				currency: currency.toUpperCase(),
+			},
+		).format(amount / 100);
+
+	};
+
+
+	const escapeHtml = (
+		value: string,
+	) => {
+
+		return value
+			.replaceAll('&', '&amp;')
+			.replaceAll('<', '&lt;')
+			.replaceAll('>', '&gt;')
+			.replaceAll('"', '&quot;')
+			.replaceAll("'", '&#039;');
+
+	};
+
+
+	const customerName =
+		order.customerName
+			? escapeHtml(order.customerName)
+			: 'there';
+
+
+	const itemsHtml =
+		order.items
+			.map(
+				(item) => `
+					<tr>
+						<td style="padding:10px 0;border-bottom:1px solid #eee;">
+							${escapeHtml(item.name)}
+							× ${item.quantity}
+						</td>
+
+						<td style="padding:10px 0;border-bottom:1px solid #eee;text-align:right;">
+							${formatMoney(
+								item.unit_amount *
+									item.quantity,
+								item.currency,
+							)}
+						</td>
+					</tr>
+				`,
+			)
+			.join('');
+
+
+	const addressHtml = [
+		order.addressLine1,
+		order.addressLine2,
+		[
+			order.postalCode,
+			order.city,
+		]
+			.filter(Boolean)
+			.join(' '),
+		order.country,
+	]
+		.filter(Boolean)
+		.map(escapeHtml)
+		.join('<br>');
+
+
+	const html = `
+		<!DOCTYPE html>
+
+		<html>
+
+			<body
+				style="
+					margin:0;
+					padding:0;
+					background:#f5f2f7;
+					font-family:Arial,sans-serif;
+					color:#24152b;
+				"
+			>
+
+				<div
+					style="
+						max-width:600px;
+						margin:40px auto;
+						background:white;
+						border-radius:16px;
+						padding:40px;
+					"
+				>
+
+					<h1
+						style="
+							margin-top:0;
+							color:#24152b;
+						"
+					>
+						Thank you for your order!
+					</h1>
+
+
+					<p>
+						Hi ${customerName},
+					</p>
+
+
+					<p>
+						We've received your order
+						<strong>${escapeHtml(
+							order.orderNumber,
+						)}</strong>.
+					</p>
+
+
+					<h2>
+						Order summary
+					</h2>
+
+
+					<table
+						width="100%"
+						cellspacing="0"
+						cellpadding="0"
+						style="border-collapse:collapse;"
+					>
+
+						${itemsHtml}
+
+					</table>
+
+
+					<table
+						width="100%"
+						cellspacing="0"
+						cellpadding="0"
+						style="
+							margin-top:20px;
+							border-collapse:collapse;
+						"
+					>
+
+						<tr>
+							<td style="padding:6px 0;">
+								Shipping
+							</td>
+
+							<td
+								style="
+									padding:6px 0;
+									text-align:right;
+								"
+							>
+								${formatMoney(
+									order.shippingAmount,
+									order.currency,
+								)}
+							</td>
+						</tr>
+
+
+						<tr>
+							<td
+								style="
+									padding:12px 0;
+									font-weight:bold;
+									font-size:18px;
+								"
+							>
+								Total
+							</td>
+
+							<td
+								style="
+									padding:12px 0;
+									text-align:right;
+									font-weight:bold;
+									font-size:18px;
+								"
+							>
+								${formatMoney(
+									order.amountTotal,
+									order.currency,
+								)}
+							</td>
+						</tr>
+
+					</table>
+
+
+					<h2>
+						Shipping address
+					</h2>
+
+
+					<p>
+						${addressHtml || '—'}
+					</p>
+
+
+					<p
+						style="
+							margin-top:32px;
+							color:#75677a;
+						"
+					>
+						We'll send you another email when
+						your order has shipped.
+					</p>
+
+
+					<p
+						style="
+							margin-top:32px;
+							color:#75677a;
+							font-size:13px;
+						"
+					>
+						Lunar Visuals
+					</p>
+
+				</div>
+
+			</body>
+
+		</html>
+	`;
+
+
+	try {
+
+		const response =
+			await fetch(
+				'https://api.resend.com/emails',
+				{
+					method: 'POST',
+
+					headers: {
+						'Authorization':
+							`Bearer ${env.RESEND_API_KEY}`,
+
+						'Content-Type':
+							'application/json',
+					},
+
+					body: JSON.stringify({
+
+						from:
+							'Lunar Visuals <orders@lunar-visuals.de>',
+
+						to: [
+							order.customerEmail,
+						],
+
+						subject:
+							`Order confirmation ${order.orderNumber} — Lunar Visuals`,
+
+						html,
+
+					}),
+				},
+			);
+
+
+		const responseText =
+			await response.text();
+
+
+		if (!response.ok) {
+
+			console.error(
+				'Resend error:',
+				responseText,
+			);
+
+			return;
+
+		}
+
+
+		console.log(
+			'Order confirmation email sent:',
+			order.customerEmail,
+		);
+
+
+	} catch (error) {
+
+		/*
+		 * Email failure must NOT cause the Stripe webhook
+		 * to fail. The order has already been successfully
+		 * recorded, so Stripe should still receive HTTP 200.
+		 */
+
+		console.error(
+			'Could not send order confirmation email:',
+			error,
+		);
+
+	}
+
+}
 
 /* =========================================================
    RELEASE RESERVATION
@@ -957,6 +1301,61 @@ export const POST: APIRoute = async ({
 
 			)
 			.run();
+		if (!customerEmail) {
+	console.error(
+		'Order has no customer email; confirmation email skipped.',
+	);
+} else {
+	await sendOrderConfirmationEmail(
+		env,
+		{
+			orderNumber,
+			customerName,
+			customerEmail,
+			items,
+			amountTotal:
+				session.amount_total ?? 0,
+			currency:
+				session.currency ?? 'eur',
+			shippingAmount,
+			addressLine1:
+				address?.line1 ?? null,
+			addressLine2:
+				address?.line2 ?? null,
+			city:
+				address?.city ?? null,
+			postalCode:
+				address?.postal_code ?? null,
+			country:
+				address?.country ?? null,
+		},
+	);
+}
+		
+		await sendOrderConfirmationEmail(
+	env,
+	{
+		orderNumber,
+		customerName,
+		customerEmail: customerEmail!,
+		items,
+		amountTotal:
+			session.amount_total ?? 0,
+		currency:
+			session.currency ?? 'eur',
+		shippingAmount,
+		addressLine1:
+			address?.line1 ?? null,
+		addressLine2:
+			address?.line2 ?? null,
+		city:
+			address?.city ?? null,
+		postalCode:
+			address?.postal_code ?? null,
+		country:
+			address?.country ?? null,
+	},
+);
 
 
 		/* =====================================================
