@@ -301,31 +301,21 @@ export const onRequestPost: PagesFunction<Env> =
 				   Stripe line item
 				   ------------------------------------- */
 
-				lineItems.push({
+				lineItems.push(
+	`shipping_options[0][shipping_rate_data][type]=fixed_amount`,
+);
 
-					price_data: {
+lineItems.push(
+	`shipping_options[0][shipping_rate_data][fixed_amount][amount]=${shipping.amount}`,
+);
 
-						currency:
-							'eur',
+lineItems.push(
+	`shipping_options[0][shipping_rate_data][fixed_amount][currency]=eur`,
+);
 
-						product_data: {
-
-							name:
-								product.name,
-
-						},
-
-						unit_amount:
-							product.price,
-
-					},
-
-					quantity:
-						item.quantity,
-
-				});
-
-			}
+lineItems.push(
+	`shipping_options[0][shipping_rate_data][display_name]=${encodeURIComponent(shipping.name)}`,
+);
 
 
 			/* -----------------------------------------
