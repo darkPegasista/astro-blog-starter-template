@@ -54,6 +54,10 @@ interface StripeCheckoutSession {
 	shipping_cost?: {
 		amount_total?: number;
 	} | null;
+
+	metadata?: {
+		[key: string]: string | undefined;
+	};
 }
 
 
@@ -66,6 +70,7 @@ interface StripeLineItem {
 		unit_amount?: number | null;
 		currency?: string;
 		product?: string | null;
+
 		product_data?: {
 			name?: string;
 		};
@@ -77,6 +82,12 @@ interface StripeLineItem {
 
 interface StripeLineItemsResponse {
 	data?: StripeLineItem[];
+}
+
+
+interface ReservationItem {
+	slug: string;
+	quantity: number;
 }
 
 
@@ -253,7 +264,7 @@ async function verifyStripeSignature(
 
 
 /* =========================================================
-   GET CHECKOUT LINE ITEMS FROM STRIPE
+   GET CHECKOUT LINE ITEMS
    ========================================================= */
 
 async function getStripeLineItems(
@@ -309,14 +320,6 @@ async function getNextOrderNumber(
 	db: any,
 ): Promise<string> {
 
-	/*
-	 * Increment the counter and return the number
-	 * that was assigned to this order.
-	 *
-	 * D1's atomic UPDATE prevents two simultaneous
-	 * orders from receiving the same number.
-	 */
-
 	const result =
 		await db
 			.prepare(
@@ -345,6 +348,168 @@ async function getNextOrderNumber(
 	return `LV-${String(
 		result.assigned_number,
 	).padStart(4, '0')}`;
+
+}
+
+
+/* =========================================================
+   RELEASE RESERVATION
+   ========================================================= */
+
+async function releaseReservation(
+	db: any,
+	sessionId: string,
+): Promise<boolean> {
+
+	/*
+	 * Find the reservation.
+	 */
+
+	const reservation =
+		await db
+			.prepare(
+				`
+				SELECT
+					id,
+					items_json,
+					status
+				FROM reservations
+				WHERE stripe_session_id = ?
+				LIMIT 1
+				`,
+			)
+			.bind(sessionId)
+			.first();
+
+
+	if (!reservation) {
+
+		console.log(
+			'No reservation found for expired session:',
+			sessionId,
+		);
+
+		return false;
+
+	}
+
+
+	/*
+	 * If it has already been released,
+	 * do nothing.
+	 */
+
+	if (
+		reservation.status ===
+		'released'
+	) {
+
+		console.log(
+			'Reservation already released:',
+			sessionId,
+		);
+
+		return false;
+
+	}
+
+
+	/*
+	 * If payment already fulfilled it,
+	 * do NOT return the stock.
+	 */
+
+	if (
+		reservation.status ===
+		'fulfilled'
+	) {
+
+		console.log(
+			'Reservation already fulfilled:',
+			sessionId,
+		);
+
+		return false;
+
+	}
+
+
+	if (
+		!reservation.items_json
+	) {
+
+		throw new Error(
+			'Reservation has no items_json.',
+		);
+
+	}
+
+
+	const items =
+		JSON.parse(
+			reservation.items_json as string,
+		) as ReservationItem[];
+
+
+	/*
+	 * Build one atomic D1 batch.
+	 *
+	 * Either all stock is returned and the reservation
+	 * becomes released, or none of the changes happen.
+	 */
+
+	const statements = [];
+
+
+	for (const item of items) {
+
+		statements.push(
+			db
+				.prepare(
+					`
+					UPDATE inventory
+					SET stock = stock + ?
+					WHERE slug = ?
+					`,
+				)
+				.bind(
+					item.quantity,
+					item.slug,
+				),
+		);
+
+	}
+
+
+	statements.push(
+		db
+			.prepare(
+				`
+				UPDATE reservations
+				SET status = 'released'
+				WHERE stripe_session_id = ?
+				  AND status = 'reserved'
+				`,
+			)
+			.bind(sessionId),
+	);
+
+
+	await db.batch(
+		statements,
+	);
+
+
+	console.log(
+		'RESERVATION RELEASED',
+		{
+			sessionId,
+			items,
+		},
+	);
+
+
+	return true;
 
 }
 
@@ -500,7 +665,42 @@ export const POST: APIRoute = async ({
 
 
 		/* =====================================================
-		   ONLY PROCESS COMPLETED CHECKOUTS
+		   HANDLE EXPIRED CHECKOUT
+		   ===================================================== */
+
+		if (
+			event.type ===
+			'checkout.session.expired'
+		) {
+
+			const session =
+				event.data.object;
+
+
+			if (!session.id) {
+
+				throw new Error(
+					'Expired Checkout Session has no ID.',
+				);
+
+			}
+
+
+			await releaseReservation(
+				env.DB,
+				session.id,
+			);
+
+
+			return json({
+				received: true,
+			});
+
+		}
+
+
+		/* =====================================================
+		   IGNORE OTHER EVENTS
 		   ===================================================== */
 
 		if (
@@ -514,6 +714,10 @@ export const POST: APIRoute = async ({
 
 		}
 
+
+		/* =====================================================
+		   COMPLETED CHECKOUT
+		   ===================================================== */
 
 		const session =
 			event.data.object;
@@ -756,12 +960,11 @@ export const POST: APIRoute = async ({
 
 
 		/* =====================================================
-		   FULFILL INVENTORY RESERVATION
+		   FULFILL RESERVATION
 		   ===================================================== */
 
 		const reservationId =
-			(session as any)
-				.metadata
+			session.metadata
 				?.reservation_id;
 
 
@@ -774,6 +977,7 @@ export const POST: APIRoute = async ({
 					SET stripe_session_id = ?,
 					    status = 'fulfilled'
 					WHERE stripe_session_id = ?
+					  AND status = 'reserved'
 					`,
 				)
 				.bind(
