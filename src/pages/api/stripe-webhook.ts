@@ -11,35 +11,76 @@ export const prerender = false;
 interface StripeEvent {
 	id: string;
 	type: string;
+
 	data: {
-		object: {
-			id?: string;
-			payment_status?: string;
-			customer_details?: {
-				email?: string;
-				name?: string;
-				address?: {
-					line1?: string;
-					line2?: string;
-					city?: string;
-					postal_code?: string;
-					country?: string;
-				};
-			};
-			amount_total?: number;
-			currency?: string;
-			shipping_details?: {
-				name?: string;
-				address?: {
-					line1?: string;
-					line2?: string;
-					city?: string;
-					postal_code?: string;
-					country?: string;
-				};
-			};
-		};
+		object: StripeCheckoutSession;
 	};
+}
+
+
+interface StripeCheckoutSession {
+	id?: string;
+
+	payment_status?: string;
+
+	amount_total?: number;
+
+	currency?: string;
+
+	customer_details?: {
+		email?: string | null;
+		name?: string | null;
+
+		address?: {
+			line1?: string | null;
+			line2?: string | null;
+			city?: string | null;
+			postal_code?: string | null;
+			country?: string | null;
+		} | null;
+	} | null;
+
+	shipping_details?: {
+		name?: string | null;
+
+		address?: {
+			line1?: string | null;
+			line2?: string | null;
+			city?: string | null;
+			postal_code?: string | null;
+			country?: string | null;
+		} | null;
+	} | null;
+
+	shipping_cost?: {
+		amount_total?: number;
+	} | null;
+}
+
+
+interface StripeLineItem {
+	id?: string;
+
+	quantity?: number;
+
+	price?: {
+		unit_amount?: number | null;
+
+		currency?: string;
+
+		product?: string | null;
+
+		product_data?: {
+			name?: string;
+		};
+	} | null;
+
+	description?: string | null;
+}
+
+
+interface StripeLineItemsResponse {
+	data?: StripeLineItem[];
 }
 
 
@@ -56,6 +97,7 @@ function json(
 		JSON.stringify(data),
 		{
 			status,
+
 			headers: {
 				'Content-Type':
 					'application/json',
@@ -90,6 +132,7 @@ function secureCompare(
 	}
 
 	return result === 0;
+
 }
 
 
@@ -107,6 +150,7 @@ async function verifyStripeSignature(
 		signatureHeader.split(',');
 
 	let timestamp = '';
+
 	const signatures: string[] = [];
 
 
@@ -136,17 +180,19 @@ async function verifyStripeSignature(
 	}
 
 
-	/*
-	 * Reject very old webhook requests.
-	 *
-	 * Five minutes is Stripe's usual tolerance.
-	 */
-
 	const timestampNumber =
 		Number(timestamp);
 
 	const currentTime =
-		Math.floor(Date.now() / 1000);
+		Math.floor(
+			Date.now() / 1000,
+		);
+
+
+	/*
+	 * Reject webhook requests
+	 * older than five minutes.
+	 */
 
 	if (
 		!Number.isFinite(timestampNumber) ||
@@ -160,12 +206,6 @@ async function verifyStripeSignature(
 	}
 
 
-	/*
-	 * Stripe signs:
-	 *
-	 * timestamp + "." + payload
-	 */
-
 	const signedPayload =
 		`${timestamp}.${payload}`;
 
@@ -174,14 +214,10 @@ async function verifyStripeSignature(
 		new TextEncoder();
 
 
-	const keyData =
-		encoder.encode(secret);
-
-
 	const cryptoKey =
 		await crypto.subtle.importKey(
 			'raw',
-			keyData,
+			encoder.encode(secret),
 			{
 				name: 'HMAC',
 				hash: 'SHA-256',
@@ -214,10 +250,6 @@ async function verifyStripeSignature(
 			.join('');
 
 
-	/*
-	 * At least one v1 signature must match.
-	 */
-
 	return signatures.some(
 		(receivedSignature) =>
 			secureCompare(
@@ -230,7 +262,55 @@ async function verifyStripeSignature(
 
 
 /* =========================================================
-   WEBHOOK ENDPOINT
+   GET CHECKOUT LINE ITEMS FROM STRIPE
+   ========================================================= */
+
+async function getStripeLineItems(
+	sessionId: string,
+): Promise<StripeLineItem[]> {
+
+	const response =
+		await fetch(
+			`https://api.stripe.com/v1/checkout/sessions/${encodeURIComponent(sessionId)}/line_items`,
+			{
+				method: 'GET',
+
+				headers: {
+					'Authorization':
+						`Bearer ${env.STRIPE_SECRET_KEY}`,
+				},
+			},
+		);
+
+
+	if (!response.ok) {
+
+		const errorText =
+			await response.text();
+
+		console.error(
+			'Could not retrieve Stripe line items:',
+			errorText,
+		);
+
+		throw new Error(
+			'Could not retrieve Stripe line items.',
+		);
+
+	}
+
+
+	const data =
+		await response.json() as StripeLineItemsResponse;
+
+
+	return data.data ?? [];
+
+}
+
+
+/* =========================================================
+   WEBHOOK
    ========================================================= */
 
 export const POST: APIRoute = async ({
@@ -239,9 +319,26 @@ export const POST: APIRoute = async ({
 
 	try {
 
-		/*
-		 * Make sure the webhook secret exists.
-		 */
+		/* =====================================================
+		   CHECK REQUIRED CLOUDFLARE SECRETS
+		   ===================================================== */
+
+		if (!env.STRIPE_SECRET_KEY) {
+
+			console.error(
+				'STRIPE_SECRET_KEY is missing.',
+			);
+
+			return json(
+				{
+					error:
+						'Stripe secret key is not configured.',
+				},
+				500,
+			);
+
+		}
+
 
 		if (!env.STRIPE_WEBHOOK_SECRET) {
 
@@ -252,7 +349,7 @@ export const POST: APIRoute = async ({
 			return json(
 				{
 					error:
-						'Stripe webhook is not configured.',
+						'Stripe webhook secret is not configured.',
 				},
 				500,
 			);
@@ -260,9 +357,9 @@ export const POST: APIRoute = async ({
 		}
 
 
-		/*
-		 * Stripe signature header.
-		 */
+		/* =====================================================
+		   GET STRIPE SIGNATURE
+		   ===================================================== */
 
 		const signature =
 			request.headers.get(
@@ -271,10 +368,6 @@ export const POST: APIRoute = async ({
 
 
 		if (!signature) {
-
-			console.error(
-				'Stripe signature header is missing.',
-			);
 
 			return json(
 				{
@@ -287,23 +380,17 @@ export const POST: APIRoute = async ({
 		}
 
 
-		/*
-		 * IMPORTANT:
-		 *
-		 * Read the raw body.
-		 *
-		 * Do NOT call request.json()
-		 * before signature verification.
-		 */
+		/* =====================================================
+		   READ RAW REQUEST BODY
+		   ===================================================== */
 
 		const payload =
 			await request.text();
 
 
-		/*
-		 * Verify that the request
-		 * actually came from Stripe.
-		 */
+		/* =====================================================
+		   VERIFY STRIPE SIGNATURE
+		   ===================================================== */
 
 		const valid =
 			await verifyStripeSignature(
@@ -330,11 +417,9 @@ export const POST: APIRoute = async ({
 		}
 
 
-		/*
-		 * Signature is valid.
-		 *
-		 * Now it is safe to parse the event.
-		 */
+		/* =====================================================
+		   PARSE EVENT
+		   ===================================================== */
 
 		const event =
 			JSON.parse(
@@ -343,67 +428,301 @@ export const POST: APIRoute = async ({
 
 
 		console.log(
-			'Stripe webhook received:',
+			'Stripe event received:',
 			event.type,
 			event.id,
 		);
 
 
-		/*
-		 * Handle completed Checkout sessions.
-		 */
+		/* =====================================================
+		   ONLY PROCESS COMPLETED CHECKOUTS
+		   ===================================================== */
 
 		if (
-			event.type ===
+			event.type !==
 			'checkout.session.completed'
 		) {
 
-			const session =
-				event.data.object;
+			return json({
+				received: true,
+			});
+
+		}
 
 
-			console.log(
-				'ORDER COMPLETED',
-				{
-					sessionId:
-						session.id,
+		const session =
+			event.data.object;
 
-					paymentStatus:
-						session.payment_status,
 
-					amountTotal:
-						session.amount_total,
+		if (!session.id) {
 
-					currency:
-						session.currency,
-
-					customerEmail:
-						session
-							.customer_details
-							?.email,
-
-					customerName:
-						session
-							.customer_details
-							?.name,
-
-					address:
-						session
-							.shipping_details
-							?.address,
-				},
+			throw new Error(
+				'Stripe Checkout Session has no ID.',
 			);
 
 		}
 
 
+		/* =====================================================
+		   CHECK FOR DUPLICATE EVENT / ORDER
+		   ===================================================== */
+
+		const existingOrder =
+			await env.DB
+				.prepare(
+					`
+					SELECT id
+					FROM orders
+					WHERE stripe_session_id = ?
+					LIMIT 1
+					`,
+				)
+				.bind(session.id)
+				.first();
+
+
+		if (existingOrder) {
+
+			console.log(
+				'Order already exists for session:',
+				session.id,
+			);
+
+			return json({
+				received: true,
+				duplicate: true,
+			});
+
+		}
+
+
+		/* =====================================================
+		   GET PURCHASED PRODUCTS
+		   ===================================================== */
+
+		const stripeItems =
+			await getStripeLineItems(
+				session.id,
+			);
+
+
+		if (
+			stripeItems.length === 0
+		) {
+
+			throw new Error(
+				'Stripe Checkout Session contains no line items.',
+			);
+
+		}
+
+
+		/* =====================================================
+		   BUILD ORDER ITEMS
+		   ===================================================== */
+
+		const items = stripeItems.map(
+			(item) => ({
+
+				name:
+					item.price
+						?.product_data
+						?.name ??
+					item.description ??
+					'Unknown product',
+
+				quantity:
+					item.quantity ?? 1,
+
+				unit_amount:
+					item.price
+						?.unit_amount ??
+					0,
+
+				currency:
+					item.price
+						?.currency ??
+					session.currency ??
+					'eur',
+
+			}),
+		);
+
+
+		/* =====================================================
+		   CUSTOMER INFORMATION
+		   ===================================================== */
+
+		const customerDetails =
+			session.customer_details;
+
+
+		const shippingDetails =
+			session.shipping_details;
+
+
+		const address =
+			shippingDetails?.address ??
+			customerDetails?.address;
+
+
+		const customerName =
+			shippingDetails?.name ??
+			customerDetails?.name ??
+			null;
+
+
+		const customerEmail =
+			customerDetails?.email ??
+			null;
+
+
+		/* =====================================================
+		   SHIPPING
+		   ===================================================== */
+
+		const shippingAmount =
+			session.shipping_cost
+				?.amount_total ??
+			0;
+
+
+		/* =====================================================
+		   ORDER NUMBER
+		   ===================================================== */
+
 		/*
-		 * Tell Stripe that the event
-		 * was successfully received.
+		 * We use a timestamp-based order number for now.
+		 *
+		 * This avoids duplicate order numbers if two
+		 * customers complete checkout at almost exactly
+		 * the same time.
+		 *
+		 * We can later replace this with a clean sequential
+		 * LV-0001 system once the basic order database is
+		 * fully tested.
 		 */
+
+		const orderNumber =
+			`LV-${Date.now()}`;
+
+
+		/* =====================================================
+		   SAVE ORDER
+		   ===================================================== */
+
+		await env.DB
+			.prepare(
+				`
+				INSERT INTO orders (
+					order_number,
+					stripe_session_id,
+					payment_status,
+					customer_name,
+					customer_email,
+					address_line1,
+					address_line2,
+					city,
+					postal_code,
+					country,
+					amount_total,
+					currency,
+					shipping_amount,
+					items_json,
+					order_status,
+					created_at
+				)
+				VALUES (
+					?,
+					?,
+					?,
+					?,
+					?,
+					?,
+					?,
+					?,
+					?,
+					?,
+					?,
+					?,
+					?,
+					?,
+					?,
+					?
+				)
+				`,
+			)
+			.bind(
+
+				orderNumber,
+
+				session.id,
+
+				session.payment_status ??
+					'paid',
+
+				customerName,
+
+				customerEmail,
+
+				address?.line1 ??
+					null,
+
+				address?.line2 ??
+					null,
+
+				address?.city ??
+					null,
+
+				address?.postal_code ??
+					null,
+
+				address?.country ??
+					null,
+
+				session.amount_total ??
+					0,
+
+				session.currency ??
+					'eur',
+
+				shippingAmount,
+
+				JSON.stringify(items),
+
+				'paid',
+
+				new Date().toISOString(),
+
+			)
+			.run();
+
+
+		/* =====================================================
+		   LOG SUCCESS
+		   ===================================================== */
+
+		console.log(
+			'ORDER SAVED',
+			{
+				orderNumber,
+				sessionId: session.id,
+				customerEmail,
+				amountTotal:
+					session.amount_total,
+				shippingAmount,
+				items,
+			},
+		);
+
+
+		/* =====================================================
+		   TELL STRIPE WE SUCCESSFULLY PROCESSED THE EVENT
+		   ===================================================== */
 
 		return json({
 			received: true,
+			orderNumber,
 		});
 
 
