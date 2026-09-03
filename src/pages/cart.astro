@@ -433,22 +433,24 @@ import Footer from '../components/Footer.astro';
 
 
 							<button
-	type="button"
-	class="checkout-button"
-	id="checkout-button"
->
-	Proceed to checkout
-</button>
+								type="button"
+								class="checkout-button"
+								id="checkout-button"
+							>
+								Proceed to checkout
+							</button>
 
-<p class="checkout-note">
-	Secure payment and checkout powered by Stripe.
-</p>
 
-<p
-	id="checkout-error"
-	class="checkout-error"
-	aria-live="polite"
-></p>
+							<p class="checkout-note">
+								Secure payment and checkout powered by Stripe.
+							</p>
+
+
+							<p
+								id="checkout-error"
+								class="checkout-error"
+								aria-live="polite"
+							></p>
 
 
 						</aside>
@@ -471,7 +473,9 @@ import Footer from '../components/Footer.astro';
 			function addListeners() {
 
 
-				// Minus
+				// =========================
+				// MINUS
+				// =========================
 
 				document
 					.querySelectorAll(
@@ -497,7 +501,9 @@ import Footer from '../components/Footer.astro';
 
 
 
-				// Plus
+				// =========================
+				// PLUS
+				// =========================
 
 				document
 					.querySelectorAll(
@@ -523,7 +529,9 @@ import Footer from '../components/Footer.astro';
 
 
 
-				// Remove
+				// =========================
+				// REMOVE
+				// =========================
 
 				document
 					.querySelectorAll(
@@ -545,6 +553,166 @@ import Footer from '../components/Footer.astro';
 
 						}
 					);
+
+
+
+				// =========================
+				// CHECKOUT
+				// =========================
+
+				const checkoutButton =
+					document.querySelector(
+						'#checkout-button'
+					);
+
+
+				if (checkoutButton) {
+
+					checkoutButton.addEventListener(
+						'click',
+						startCheckout
+					);
+
+				}
+
+			}
+
+
+
+			// =========================
+			// START STRIPE CHECKOUT
+			// =========================
+
+			async function startCheckout() {
+
+				const cart =
+					getCart();
+
+
+				const checkoutButton =
+					document.querySelector(
+						'#checkout-button'
+					);
+
+
+				const checkoutError =
+					document.querySelector(
+						'#checkout-error'
+					);
+
+
+				if (
+					cart.length === 0 ||
+					!checkoutButton
+				) {
+
+					return;
+
+				}
+
+
+				checkoutButton.disabled =
+					true;
+
+
+				checkoutButton.textContent =
+					'Preparing checkout...';
+
+
+				if (checkoutError) {
+
+					checkoutError.textContent =
+						'';
+
+				}
+
+
+				try {
+
+					const items =
+						cart.map(
+							(item) => ({
+								slug:
+									item.slug,
+
+								quantity:
+									item.quantity,
+							})
+						);
+
+
+					const response =
+						await fetch(
+							'/api/create-checkout',
+							{
+								method:
+									'POST',
+
+								headers: {
+									'Content-Type':
+										'application/json',
+								},
+
+								body:
+									JSON.stringify({
+										items,
+									}),
+							}
+						);
+
+
+					const data =
+						await response.json();
+
+
+					if (!response.ok) {
+
+						throw new Error(
+							data.error ||
+							'Could not start checkout.'
+						);
+
+					}
+
+
+					if (!data.url) {
+
+						throw new Error(
+							'Stripe did not return a checkout URL.'
+						);
+
+					}
+
+
+					window.location.href =
+						data.url;
+
+				} catch (error) {
+
+					console.error(
+						'Checkout error:',
+						error
+					);
+
+
+					if (checkoutError) {
+
+						checkoutError.textContent =
+							error instanceof Error
+								? error.message
+								: 'Could not start checkout. Please try again.';
+
+					}
+
+
+					checkoutButton.disabled =
+						false;
+
+
+					checkoutButton.textContent =
+						'Proceed to checkout';
+
+				}
 
 			}
 
@@ -1400,14 +1568,52 @@ import Footer from '../components/Footer.astro';
 			700;
 
 		cursor:
-			not-allowed;
+			pointer;
 
 		opacity:
-			0.55;
+			1;
 
 		box-shadow:
 			0 0 15px
 			rgba(255, 80, 200, 0.08);
+
+		transition:
+			transform 0.2s ease,
+			background 0.2s ease,
+			border-color 0.2s ease,
+			box-shadow 0.2s ease;
+
+	}
+
+
+	.checkout-button:hover {
+
+		background:
+			rgba(255, 70, 200, 0.18);
+
+		border-color:
+			rgba(255, 130, 225, 0.9);
+
+		box-shadow:
+			0 0 20px
+			rgba(255, 80, 200, 0.25);
+
+		transform:
+			translateY(-1px);
+
+	}
+
+
+	.checkout-button:disabled {
+
+		cursor:
+			wait;
+
+		opacity:
+			0.6;
+
+		transform:
+			none;
 
 	}
 
@@ -1422,6 +1628,26 @@ import Footer from '../components/Footer.astro';
 
 		font-size:
 			0.68rem;
+
+		line-height:
+			1.5;
+
+		text-align:
+			center;
+
+	}
+
+
+	.checkout-error {
+
+		margin:
+			0.8rem 0 0;
+
+		color:
+			var(--pink-light);
+
+		font-size:
+			0.75rem;
 
 		line-height:
 			1.5;
@@ -1572,6 +1798,8 @@ import Footer from '../components/Footer.astro';
 				static;
 
 		}
+
+
 
 	}
 
