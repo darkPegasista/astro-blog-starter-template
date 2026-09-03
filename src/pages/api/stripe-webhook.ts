@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
-import { env } from 'cloudflare:workers';
 
 export const prerender = false;
+
 
 /* =========================================================
    TYPES
@@ -64,11 +64,8 @@ interface StripeLineItem {
 
 	price?: {
 		unit_amount?: number | null;
-
 		currency?: string;
-
 		product?: string | null;
-
 		product_data?: {
 			name?: string;
 		};
@@ -188,11 +185,6 @@ async function verifyStripeSignature(
 		);
 
 
-	/*
-	 * Reject webhook requests
-	 * older than five minutes.
-	 */
-
 	if (
 		!Number.isFinite(timestampNumber) ||
 		Math.abs(
@@ -266,6 +258,7 @@ async function verifyStripeSignature(
 
 async function getStripeLineItems(
 	sessionId: string,
+	env: any,
 ): Promise<StripeLineItem[]> {
 
 	const response =
@@ -309,20 +302,76 @@ async function getStripeLineItems(
 
 
 /* =========================================================
+   GET NEXT ORDER NUMBER
+   ========================================================= */
+
+async function getNextOrderNumber(
+	db: any,
+): Promise<string> {
+
+	/*
+	 * Increment the counter and return the number
+	 * that was assigned to this order.
+	 *
+	 * D1's atomic UPDATE prevents two simultaneous
+	 * orders from receiving the same number.
+	 */
+
+	const result =
+		await db
+			.prepare(
+				`
+				UPDATE order_counter
+				SET next_number = next_number + 1
+				WHERE id = 1
+				RETURNING next_number - 1 AS assigned_number
+				`,
+			)
+			.first();
+
+
+	if (
+		!result ||
+		typeof result.assigned_number !== 'number'
+	) {
+
+		throw new Error(
+			'Could not generate order number.',
+		);
+
+	}
+
+
+	return `LV-${String(
+		result.assigned_number,
+	).padStart(4, '0')}`;
+
+}
+
+
+/* =========================================================
    WEBHOOK
    ========================================================= */
 
 export const POST: APIRoute = async ({
 	request,
+	locals,
 }) => {
 
 	try {
 
 		/* =====================================================
-		   CHECK REQUIRED CLOUDFLARE SECRETS
+		   CLOUDFLARE ENVIRONMENT
 		   ===================================================== */
 
-		if (!env.STRIPE_SECRET_KEY) {
+		const runtime =
+			(locals as any).runtime;
+
+		const env =
+			runtime?.env;
+
+
+		if (!env?.STRIPE_SECRET_KEY) {
 
 			console.error(
 				'STRIPE_SECRET_KEY is missing.',
@@ -339,7 +388,7 @@ export const POST: APIRoute = async ({
 		}
 
 
-		if (!env.STRIPE_WEBHOOK_SECRET) {
+		if (!env?.STRIPE_WEBHOOK_SECRET) {
 
 			console.error(
 				'STRIPE_WEBHOOK_SECRET is missing.',
@@ -356,8 +405,25 @@ export const POST: APIRoute = async ({
 		}
 
 
+		if (!env?.DB) {
+
+			console.error(
+				'D1 database binding DB is missing.',
+			);
+
+			return json(
+				{
+					error:
+						'Database is not configured.',
+				},
+				500,
+			);
+
+		}
+
+
 		/* =====================================================
-		   GET STRIPE SIGNATURE
+		   STRIPE SIGNATURE
 		   ===================================================== */
 
 		const signature =
@@ -380,7 +446,7 @@ export const POST: APIRoute = async ({
 
 
 		/* =====================================================
-		   READ RAW REQUEST BODY
+		   RAW BODY
 		   ===================================================== */
 
 		const payload =
@@ -388,7 +454,7 @@ export const POST: APIRoute = async ({
 
 
 		/* =====================================================
-		   VERIFY STRIPE SIGNATURE
+		   VERIFY SIGNATURE
 		   ===================================================== */
 
 		const valid =
@@ -463,7 +529,7 @@ export const POST: APIRoute = async ({
 
 
 		/* =====================================================
-		   CHECK FOR DUPLICATE EVENT / ORDER
+		   DUPLICATE PROTECTION
 		   ===================================================== */
 
 		const existingOrder =
@@ -483,7 +549,7 @@ export const POST: APIRoute = async ({
 		if (existingOrder) {
 
 			console.log(
-				'Order already exists for session:',
+				'Order already exists:',
 				session.id,
 			);
 
@@ -496,12 +562,13 @@ export const POST: APIRoute = async ({
 
 
 		/* =====================================================
-		   GET PURCHASED PRODUCTS
+		   GET STRIPE LINE ITEMS
 		   ===================================================== */
 
 		const stripeItems =
 			await getStripeLineItems(
 				session.id,
+				env,
 			);
 
 
@@ -520,32 +587,33 @@ export const POST: APIRoute = async ({
 		   BUILD ORDER ITEMS
 		   ===================================================== */
 
-		const items = stripeItems.map(
-			(item) => ({
+		const items =
+			stripeItems.map(
+				(item) => ({
 
-				name:
-					item.price
-						?.product_data
-						?.name ??
-					item.description ??
-					'Unknown product',
+					name:
+						item.price
+							?.product_data
+							?.name ??
+						item.description ??
+						'Unknown product',
 
-				quantity:
-					item.quantity ?? 1,
+					quantity:
+						item.quantity ?? 1,
 
-				unit_amount:
-					item.price
-						?.unit_amount ??
-					0,
+					unit_amount:
+						item.price
+							?.unit_amount ??
+						0,
 
-				currency:
-					item.price
-						?.currency ??
-					session.currency ??
-					'eur',
+					currency:
+						item.price
+							?.currency ??
+						session.currency ??
+						'eur',
 
-			}),
-		);
+				}),
+			);
 
 
 		/* =====================================================
@@ -590,20 +658,10 @@ export const POST: APIRoute = async ({
 		   ORDER NUMBER
 		   ===================================================== */
 
-		/*
-		 * We use a timestamp-based order number for now.
-		 *
-		 * This avoids duplicate order numbers if two
-		 * customers complete checkout at almost exactly
-		 * the same time.
-		 *
-		 * We can later replace this with a clean sequential
-		 * LV-0001 system once the basic order database is
-		 * fully tested.
-		 */
-
 		const orderNumber =
-			`LV-${Date.now()}`;
+			await getNextOrderNumber(
+				env.DB,
+			);
 
 
 		/* =====================================================
@@ -698,7 +756,37 @@ export const POST: APIRoute = async ({
 
 
 		/* =====================================================
-		   LOG SUCCESS
+		   FULFILL INVENTORY RESERVATION
+		   ===================================================== */
+
+		const reservationId =
+			(session as any)
+				.metadata
+				?.reservation_id;
+
+
+		if (reservationId) {
+
+			await env.DB
+				.prepare(
+					`
+					UPDATE reservations
+					SET stripe_session_id = ?,
+					    status = 'fulfilled'
+					WHERE stripe_session_id = ?
+					`,
+				)
+				.bind(
+					session.id,
+					reservationId,
+				)
+				.run();
+
+		}
+
+
+		/* =====================================================
+		   SUCCESS LOG
 		   ===================================================== */
 
 		console.log(
@@ -714,10 +802,6 @@ export const POST: APIRoute = async ({
 			},
 		);
 
-
-		/* =====================================================
-		   TELL STRIPE WE SUCCESSFULLY PROCESSED THE EVENT
-		   ===================================================== */
 
 		return json({
 			received: true,
