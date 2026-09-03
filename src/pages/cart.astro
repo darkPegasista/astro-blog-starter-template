@@ -433,18 +433,22 @@ import Footer from '../components/Footer.astro';
 
 
 							<button
-								type="button"
-								class="checkout-button"
-								disabled
-							>
-								Checkout coming soon
-							</button>
+	type="button"
+	class="checkout-button"
+	id="checkout-button"
+>
+	Proceed to checkout
+</button>
 
+<p class="checkout-note">
+	Secure payment and checkout powered by Stripe.
+</p>
 
-							<p class="checkout-note">
-								Checkout and secure payment
-								will be available soon.
-							</p>
+<p
+	id="checkout-error"
+	class="checkout-error"
+	aria-live="polite"
+></p>
 
 
 						</aside>
