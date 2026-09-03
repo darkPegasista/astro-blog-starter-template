@@ -92,7 +92,6 @@ const SHIPPING = {
 	},
 } as const;
 
-
 function json(
 	data: unknown,
 	status = 200,
