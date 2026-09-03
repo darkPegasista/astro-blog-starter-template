@@ -7,6 +7,256 @@ const env = runtime?.env;
 let error = '';
 let orders: any[] = [];
 
+
+/* =========================================================
+   SEND SHIPPING EMAIL
+   ========================================================= */
+
+async function sendShippingEmail(
+	env: any,
+	order: {
+		orderNumber: string;
+		customerName: string | null;
+		customerEmail: string;
+		trackingNumber: string;
+		items: {
+			name: string;
+			quantity: number;
+		}[];
+	},
+): Promise<void> {
+
+	if (!env?.RESEND_API_KEY) {
+
+		console.error(
+			'RESEND_API_KEY is missing. Shipping email was not sent.',
+		);
+
+		return;
+
+	}
+
+
+	const escapeHtml = (
+		value: string,
+	) => {
+
+		return value
+			.replaceAll('&', '&amp;')
+			.replaceAll('<', '&lt;')
+			.replaceAll('>', '&gt;')
+			.replaceAll('"', '&quot;')
+			.replaceAll("'", '&#039;');
+
+	};
+
+
+	const customerName =
+		order.customerName
+			? escapeHtml(order.customerName)
+			: 'there';
+
+
+	const itemsHtml =
+		order.items
+			.map(
+				(item) => `
+					<li style="padding:6px 0;">
+						${escapeHtml(item.name)}
+						× ${item.quantity}
+					</li>
+				`,
+			)
+			.join('');
+
+
+	const trackingNumber =
+		escapeHtml(
+			order.trackingNumber,
+		);
+
+
+	const html = `
+		<!DOCTYPE html>
+
+		<html>
+
+			<body
+				style="
+					margin:0;
+					padding:0;
+					background:#f5f2f7;
+					font-family:Arial,sans-serif;
+					color:#24152b;
+				"
+			>
+
+				<div
+					style="
+						max-width:600px;
+						margin:40px auto;
+						background:white;
+						border-radius:16px;
+						padding:40px;
+					"
+				>
+
+					<h1
+						style="
+							margin-top:0;
+							color:#24152b;
+						"
+					>
+						Your order has shipped!
+					</h1>
+
+
+					<p>
+						Hi ${customerName},
+					</p>
+
+
+					<p>
+						Your Lunar Visuals order
+						<strong>
+							${escapeHtml(
+								order.orderNumber,
+							)}
+						</strong>
+						has been shipped.
+					</p>
+
+
+					<h2>
+						Tracking number
+					</h2>
+
+
+					<p
+						style="
+							padding:16px;
+							background:#f5f2f7;
+							border-radius:10px;
+							font-size:18px;
+							font-weight:bold;
+							word-break:break-all;
+						"
+					>
+						${trackingNumber}
+					</p>
+
+
+					<h2>
+						Your order
+					</h2>
+
+
+					<ul
+						style="
+							padding-left:20px;
+						"
+					>
+						${itemsHtml}
+					</ul>
+
+
+					<p
+						style="
+							margin-top:32px;
+							color:#75677a;
+						"
+					>
+						Thank you for supporting Lunar Visuals!
+					</p>
+
+
+					<p
+						style="
+							margin-top:32px;
+							color:#75677a;
+							font-size:13px;
+						"
+					>
+						Lunar Visuals
+					</p>
+
+				</div>
+
+			</body>
+
+		</html>
+	`;
+
+
+	try {
+
+		const response =
+			await fetch(
+				'https://api.resend.com/emails',
+				{
+					method: 'POST',
+
+					headers: {
+						'Authorization':
+							`Bearer ${env.RESEND_API_KEY}`,
+
+						'Content-Type':
+							'application/json',
+					},
+
+					body: JSON.stringify({
+
+						from:
+							'Lunar Visuals <orders@lunar-visuals.de>',
+
+						to: [
+							order.customerEmail,
+						],
+
+						subject:
+							`Your order ${order.orderNumber} has shipped — Lunar Visuals`,
+
+						html,
+
+					}),
+				},
+			);
+
+
+		const responseText =
+			await response.text();
+
+
+		if (!response.ok) {
+
+			console.error(
+				'Resend shipping email error:',
+				responseText,
+			);
+
+			return;
+
+		}
+
+
+		console.log(
+			'Shipping email sent:',
+			order.customerEmail,
+		);
+
+
+	} catch (error) {
+
+		console.error(
+			'Could not send shipping email:',
+			error,
+		);
+
+	}
+
+}
+
+
 /* =========================================================
    HANDLE ADMIN ACTION
    ========================================================= */
@@ -14,7 +264,10 @@ let orders: any[] = [];
 if (Astro.request.method === 'POST') {
 
 	if (!env?.DB) {
-		error = 'Database is not configured.';
+
+		error =
+			'Database is not configured.';
+
 	} else {
 
 		try {
@@ -22,15 +275,24 @@ if (Astro.request.method === 'POST') {
 			const formData =
 				await Astro.request.formData();
 
+
 			const orderId =
-				formData.get('order_id');
+				formData.get(
+					'order_id',
+				);
+
 
 			const action =
-				formData.get('action');
+				formData.get(
+					'action',
+				);
+
 
 			const trackingNumber =
 				String(
-					formData.get('tracking_number') ?? ''
+					formData.get(
+						'tracking_number',
+					) ?? '',
 				).trim();
 
 
@@ -60,11 +322,47 @@ if (Astro.request.method === 'POST') {
 			}
 
 
-			/* -------------------------------------------------
-			   SHIPPED
-			   ------------------------------------------------- */
+			/* =================================================
+			   GET CURRENT ORDER
+			   ================================================= */
 
-			if (action === 'shipped') {
+			const currentOrder =
+				await env.DB
+					.prepare(
+						`
+						SELECT
+							id,
+							order_number,
+							customer_name,
+							customer_email,
+							items_json,
+							order_status,
+							tracking_number
+						FROM orders
+						WHERE id = ?
+						LIMIT 1
+						`,
+					)
+					.bind(orderId)
+					.first();
+
+
+			if (!currentOrder) {
+
+				throw new Error(
+					'Order could not be found.',
+				);
+
+			}
+
+
+			/* =================================================
+			   MARK AS SHIPPED
+			   ================================================= */
+
+			if (
+				action === 'shipped'
+			) {
 
 				if (!trackingNumber) {
 
@@ -73,6 +371,16 @@ if (Astro.request.method === 'POST') {
 					);
 
 				}
+
+
+				/*
+				 * Only send the shipping email if this order
+				 * wasn't already marked as shipped.
+				 */
+
+				const alreadyShipped =
+					currentOrder.order_status ===
+					'shipped';
 
 
 				await env.DB
@@ -89,17 +397,91 @@ if (Astro.request.method === 'POST') {
 					.bind(
 						'shipped',
 						trackingNumber,
-						new Date().toISOString(),
+						alreadyShipped
+							? currentOrder.shipped_at ?? new Date().toISOString()
+							: new Date().toISOString(),
 						orderId,
 					)
 					.run();
 
+
+				/*
+				 * Send shipping email only on the first
+				 * transition to shipped.
+				 */
+
+				if (
+					!alreadyShipped &&
+					currentOrder.customer_email
+				) {
+
+					let items: {
+						name: string;
+						quantity: number;
+					}[] = [];
+
+
+					try {
+
+						const parsedItems =
+							JSON.parse(
+								currentOrder.items_json ?? '[]',
+							);
+
+
+						items =
+							parsedItems.map(
+								(item: any) => ({
+									name:
+										String(
+											item.name ??
+											'Unknown product',
+										),
+
+									quantity:
+										Number(
+											item.quantity ?? 1,
+										),
+								}),
+							);
+
+					} catch {
+
+						console.error(
+							'Could not parse order items for shipping email.',
+						);
+
+					}
+
+
+					await sendShippingEmail(
+						env,
+						{
+							orderNumber:
+								currentOrder.order_number ??
+								`Order #${currentOrder.id}`,
+
+							customerName:
+								currentOrder.customer_name ??
+								null,
+
+							customerEmail:
+								currentOrder.customer_email,
+
+							trackingNumber,
+
+							items,
+						},
+					);
+
+				}
+
 			}
 
 
-			/* -------------------------------------------------
+			/* =================================================
 			   OTHER STATUSES
-			   ------------------------------------------------- */
+			   ================================================= */
 
 			else {
 
@@ -121,8 +503,8 @@ if (Astro.request.method === 'POST') {
 
 
 			/*
-			 * Redirect back to /admin so that refreshing the
-			 * page does not submit the form again.
+			 * Redirect back to /admin so refreshing the page
+			 * doesn't submit the form again.
 			 */
 
 			return Astro.redirect(
@@ -193,6 +575,7 @@ if (!env?.DB) {
 					`,
 				)
 				.all();
+
 
 		orders =
 			result.results ?? [];
