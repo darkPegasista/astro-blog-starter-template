@@ -1,0 +1,353 @@
+---
+export const prerender = false;
+
+const runtime = (Astro.locals as any).runtime;
+const env = runtime?.env;
+
+let orders: any[] = [];
+let error = '';
+
+if (!env?.DB) {
+	error = 'Database is not configured.';
+} else {
+	try {
+		const result = await env.DB
+			.prepare(`
+				SELECT
+					id,
+					order_number,
+					stripe_session_id,
+					payment_status,
+					customer_name,
+					customer_email,
+					address_line1,
+					address_line2,
+					city,
+					postal_code,
+					country,
+					amount_total,
+					currency,
+					shipping_amount,
+					items_json,
+					order_status,
+					created_at
+				FROM orders
+				ORDER BY id DESC
+			`)
+			.all();
+
+		orders = result.results ?? [];
+	} catch (e) {
+		console.error('Admin order query failed:', e);
+		error = 'Could not load orders.';
+	}
+}
+
+function formatMoney(
+	amount: number | null,
+	currency: string | null,
+) {
+	if (amount == null) return '—';
+
+	return new Intl.NumberFormat('de-DE', {
+		style: 'currency',
+		currency: (currency ?? 'eur').toUpperCase(),
+	}).format(amount / 100);
+}
+
+function formatDate(date: string | null) {
+	if (!date) return '—';
+
+	return new Date(date).toLocaleString('de-DE', {
+		dateStyle: 'medium',
+		timeStyle: 'short',
+	});
+}
+
+function getItems(itemsJson: string | null) {
+	if (!itemsJson) return [];
+
+	try {
+		return JSON.parse(itemsJson);
+	} catch {
+		return [];
+	}
+}
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1"
+		/>
+
+		<title>Orders | Lunar Visuals</title>
+
+		<style>
+			:global(*) {
+				box-sizing: border-box;
+			}
+
+			:global(body) {
+				margin: 0;
+				background: #0d0918;
+				color: #f8efff;
+				font-family: Arial, sans-serif;
+			}
+
+			main {
+				width: min(1200px, calc(100% - 32px));
+				margin: 40px auto;
+			}
+
+			h1 {
+				margin-bottom: 8px;
+			}
+
+			.subtitle {
+				color: #b9aabd;
+				margin-bottom: 32px;
+			}
+
+			.error {
+				padding: 20px;
+				border: 1px solid #ff6fae;
+				border-radius: 12px;
+				color: #ff9dcc;
+			}
+
+			.empty {
+				padding: 40px;
+				text-align: center;
+				color: #b9aabd;
+				border: 1px solid #49304e;
+				border-radius: 16px;
+			}
+
+			.order {
+				margin-bottom: 20px;
+				padding: 24px;
+				border: 1px solid #49304e;
+				border-radius: 16px;
+				background: #170d20;
+			}
+
+			.order-header {
+				display: flex;
+				flex-wrap: wrap;
+				align-items: center;
+				justify-content: space-between;
+				gap: 16px;
+				margin-bottom: 20px;
+			}
+
+			.order-number {
+				font-size: 24px;
+				font-weight: bold;
+			}
+
+			.status {
+				display: inline-block;
+				padding: 6px 12px;
+				border-radius: 999px;
+				background: #3d183d;
+				color: #ff9bdd;
+				font-size: 14px;
+			}
+
+			.grid {
+				display: grid;
+				grid-template-columns:
+					repeat(auto-fit, minmax(220px, 1fr));
+				gap: 20px;
+			}
+
+			.section {
+				margin-top: 20px;
+			}
+
+			.label {
+				margin-bottom: 5px;
+				color: #a995aa;
+				font-size: 13px;
+			}
+
+			.value {
+				line-height: 1.5;
+			}
+
+			.items {
+				margin: 0;
+				padding: 0;
+				list-style: none;
+			}
+
+			.item {
+				display: flex;
+				justify-content: space-between;
+				gap: 20px;
+				padding: 10px 0;
+				border-bottom: 1px solid #35243a;
+			}
+
+			.total {
+				margin-top: 16px;
+				font-size: 20px;
+				font-weight: bold;
+			}
+
+			.address {
+				white-space: pre-line;
+			}
+
+			.session {
+				margin-top: 20px;
+				color: #75677a;
+				font-size: 11px;
+				word-break: break-all;
+			}
+		</style>
+	</head>
+
+	<body>
+		<main>
+			<h1>Orders</h1>
+			<div class="subtitle">
+				Lunar Visuals order management
+			</div>
+
+			{error && (
+				<div class="error">
+					{error}
+				</div>
+			)}
+
+			{!error && orders.length === 0 && (
+				<div class="empty">
+					No orders yet.
+				</div>
+			)}
+
+			{orders.map((order) => {
+				const items = getItems(order.items_json);
+
+				const address = [
+					order.address_line1,
+					order.address_line2,
+					order.postal_code && order.city
+						? `${order.postal_code} ${order.city}`
+						: order.postal_code ?? order.city,
+					order.country,
+				]
+					.filter(Boolean)
+					.join('\n');
+
+				return (
+					<section class="order">
+						<div class="order-header">
+							<div>
+								<div class="order-number">
+									{order.order_number ?? `Order #${order.id}`}
+								</div>
+
+								<div class="label">
+									{formatDate(order.created_at)}
+								</div>
+							</div>
+
+							<div class="status">
+								{order.order_status ?? 'unknown'}
+							</div>
+						</div>
+
+						<div class="grid">
+							<div>
+								<div class="label">
+									Customer
+								</div>
+
+								<div class="value">
+									{order.customer_name ?? '—'}
+								</div>
+
+								<div class="value">
+									{order.customer_email ?? '—'}
+								</div>
+							</div>
+
+							<div>
+								<div class="label">
+									Shipping address
+								</div>
+
+								<div class="value address">
+									{address || '—'}
+								</div>
+							</div>
+
+							<div>
+								<div class="label">
+									Payment
+								</div>
+
+								<div class="value">
+									{order.payment_status ?? '—'}
+								</div>
+
+								<div class="value">
+									{formatMoney(
+										order.amount_total,
+										order.currency,
+									)}
+								</div>
+							</div>
+						</div>
+
+						<div class="section">
+							<div class="label">
+								Items
+							</div>
+
+							<ul class="items">
+								{items.map((item: any) => (
+									<li class="item">
+										<span>
+											{item.name}
+											{' × '}
+											{item.quantity}
+										</span>
+
+										<span>
+											{formatMoney(
+												item.unit_amount *
+													item.quantity,
+												item.currency,
+											)}
+										</span>
+									</li>
+								))}
+							</ul>
+
+							<div class="total">
+								Total:
+								{' '}
+								{formatMoney(
+									order.amount_total,
+									order.currency,
+								)}
+							</div>
+						</div>
+
+						<div class="session">
+							Stripe session:
+							{' '}
+							{order.stripe_session_id}
+						</div>
+					</section>
+				);
+			})}
+		</main>
+	</body>
+</html>
