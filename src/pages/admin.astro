@@ -4,350 +4,1157 @@ export const prerender = false;
 const runtime = (Astro.locals as any).runtime;
 const env = runtime?.env;
 
-let orders: any[] = [];
 let error = '';
+let orders: any[] = [];
+
+
+/* =========================================================
+   HANDLE ADMIN ACTION
+   ========================================================= */
+
+if (Astro.request.method === 'POST') {
+
+	if (!env?.DB) {
+		error = 'Database is not configured.';
+	} else {
+
+		try {
+
+			const formData =
+				await Astro.request.formData();
+
+			const orderId =
+				formData.get('order_id');
+
+			const action =
+				formData.get('action');
+
+			const trackingNumber =
+				String(
+					formData.get('tracking_number') ?? ''
+				).trim();
+
+
+			if (
+				typeof orderId !== 'string' ||
+				!orderId
+			) {
+
+				throw new Error(
+					'Invalid order ID.',
+				);
+
+			}
+
+
+			if (
+				action !== 'processing' &&
+				action !== 'shipped' &&
+				action !== 'completed' &&
+				action !== 'paid'
+			) {
+
+				throw new Error(
+					'Invalid order status.',
+				);
+
+			}
+
+
+			/* -------------------------------------------------
+			   SHIPPED
+			   ------------------------------------------------- */
+
+			if (action === 'shipped') {
+
+				if (!trackingNumber) {
+
+					throw new Error(
+						'Please enter a tracking number before marking the order as shipped.',
+					);
+
+				}
+
+
+				await env.DB
+					.prepare(
+						`
+						UPDATE orders
+						SET
+							order_status = ?,
+							tracking_number = ?,
+							shipped_at = ?
+						WHERE id = ?
+						`,
+					)
+					.bind(
+						'shipped',
+						trackingNumber,
+						new Date().toISOString(),
+						orderId,
+					)
+					.run();
+
+			}
+
+
+			/* -------------------------------------------------
+			   OTHER STATUSES
+			   ------------------------------------------------- */
+
+			else {
+
+				await env.DB
+					.prepare(
+						`
+						UPDATE orders
+						SET order_status = ?
+						WHERE id = ?
+						`,
+					)
+					.bind(
+						action,
+						orderId,
+					)
+					.run();
+
+			}
+
+
+			/*
+			 * Redirect back to /admin so that refreshing the
+			 * page does not submit the form again.
+			 */
+
+			return Astro.redirect(
+				'/admin',
+				303,
+			);
+
+
+		} catch (e) {
+
+			console.error(
+				'Admin update failed:',
+				e,
+			);
+
+			error =
+				e instanceof Error
+					? e.message
+					: 'Could not update order.';
+
+		}
+
+	}
+
+}
+
+
+/* =========================================================
+   LOAD ORDERS
+   ========================================================= */
 
 if (!env?.DB) {
-	error = 'Database is not configured.';
-} else {
-	try {
-		const result = await env.DB
-			.prepare(`
-				SELECT
-					id,
-					order_number,
-					stripe_session_id,
-					payment_status,
-					customer_name,
-					customer_email,
-					address_line1,
-					address_line2,
-					city,
-					postal_code,
-					country,
-					amount_total,
-					currency,
-					shipping_amount,
-					items_json,
-					order_status,
-					created_at
-				FROM orders
-				ORDER BY id DESC
-			`)
-			.all();
 
-		orders = result.results ?? [];
+	error =
+		error ||
+		'Database is not configured.';
+
+} else {
+
+	try {
+
+		const result =
+			await env.DB
+				.prepare(
+					`
+					SELECT
+						id,
+						order_number,
+						stripe_session_id,
+						payment_status,
+						customer_name,
+						customer_email,
+						address_line1,
+						address_line2,
+						city,
+						postal_code,
+						country,
+						amount_total,
+						currency,
+						shipping_amount,
+						items_json,
+						order_status,
+						tracking_number,
+						shipped_at,
+						created_at
+					FROM orders
+					ORDER BY id DESC
+					`,
+				)
+				.all();
+
+		orders =
+			result.results ?? [];
+
 	} catch (e) {
-		console.error('Admin order query failed:', e);
-		error = 'Could not load orders.';
+
+		console.error(
+			'Admin order query failed:',
+			e,
+		);
+
+		error =
+			'Could not load orders.';
+
 	}
+
 }
+
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
 
 function formatMoney(
 	amount: number | null,
 	currency: string | null,
 ) {
-	if (amount == null) return '—';
 
-	return new Intl.NumberFormat('de-DE', {
-		style: 'currency',
-		currency: (currency ?? 'eur').toUpperCase(),
-	}).format(amount / 100);
+	if (amount == null) {
+		return '—';
+	}
+
+
+	return new Intl.NumberFormat(
+		'de-DE',
+		{
+			style: 'currency',
+			currency:
+				(
+					currency ??
+					'eur'
+				).toUpperCase(),
+		},
+	).format(
+		amount / 100,
+	);
+
 }
 
-function formatDate(date: string | null) {
-	if (!date) return '—';
 
-	return new Date(date).toLocaleString('de-DE', {
-		dateStyle: 'medium',
-		timeStyle: 'short',
-	});
+function formatDate(
+	date: string | null,
+) {
+
+	if (!date) {
+		return '—';
+	}
+
+
+	return new Date(
+		date,
+	).toLocaleString(
+		'de-DE',
+		{
+			dateStyle: 'medium',
+			timeStyle: 'short',
+		},
+	);
+
 }
 
-function getItems(itemsJson: string | null) {
-	if (!itemsJson) return [];
 
-	try {
-		return JSON.parse(itemsJson);
-	} catch {
+function getItems(
+	itemsJson: string | null,
+) {
+
+	if (!itemsJson) {
 		return [];
 	}
+
+
+	try {
+
+		return JSON.parse(
+			itemsJson,
+		);
+
+	} catch {
+
+		return [];
+
+	}
+
 }
 ---
 
 <html lang="en">
+
 	<head>
+
 		<meta charset="utf-8" />
+
 		<meta
 			name="viewport"
 			content="width=device-width, initial-scale=1"
 		/>
 
-		<title>Orders | Lunar Visuals</title>
+		<title>
+			Orders | Lunar Visuals
+		</title>
+
 
 		<style>
+
 			:global(*) {
 				box-sizing: border-box;
 			}
 
+
 			:global(body) {
+
 				margin: 0;
+
 				background: #0d0918;
+
 				color: #f8efff;
-				font-family: Arial, sans-serif;
+
+				font-family:
+					Arial,
+					sans-serif;
+
 			}
+
 
 			main {
-				width: min(1200px, calc(100% - 32px));
-				margin: 40px auto;
+
+				width:
+					min(
+						1200px,
+						calc(100% - 32px)
+					);
+
+				margin:
+					40px auto;
+
 			}
+
 
 			h1 {
+
 				margin-bottom: 8px;
+
 			}
+
 
 			.subtitle {
+
 				color: #b9aabd;
+
 				margin-bottom: 32px;
+
 			}
+
 
 			.error {
+
 				padding: 20px;
-				border: 1px solid #ff6fae;
+
+				margin-bottom: 24px;
+
+				border:
+					1px solid
+					#ff6fae;
+
 				border-radius: 12px;
+
 				color: #ff9dcc;
+
+				background:
+					rgba(
+						255,
+						70,
+						150,
+						0.08
+					);
+
 			}
+
 
 			.empty {
+
 				padding: 40px;
+
 				text-align: center;
+
 				color: #b9aabd;
-				border: 1px solid #49304e;
+
+				border:
+					1px solid
+					#49304e;
+
 				border-radius: 16px;
+
 			}
+
 
 			.order {
+
 				margin-bottom: 20px;
+
 				padding: 24px;
-				border: 1px solid #49304e;
+
+				border:
+					1px solid
+					#49304e;
+
 				border-radius: 16px;
-				background: #170d20;
+
+				background:
+					#170d20;
+
 			}
+
 
 			.order-header {
+
 				display: flex;
+
 				flex-wrap: wrap;
+
 				align-items: center;
-				justify-content: space-between;
+
+				justify-content:
+					space-between;
+
 				gap: 16px;
-				margin-bottom: 20px;
+
+				margin-bottom: 24px;
+
 			}
+
 
 			.order-number {
+
 				font-size: 24px;
+
 				font-weight: bold;
+
 			}
+
+
+			.order-date {
+
+				margin-top: 5px;
+
+				color: #a995aa;
+
+				font-size: 13px;
+
+			}
+
 
 			.status {
+
 				display: inline-block;
-				padding: 6px 12px;
+
+				padding:
+					7px 13px;
+
 				border-radius: 999px;
-				background: #3d183d;
-				color: #ff9bdd;
+
+				background:
+					#3d183d;
+
+				color:
+					#ff9bdd;
+
 				font-size: 14px;
+
+				font-weight: bold;
+
 			}
+
 
 			.grid {
+
 				display: grid;
+
 				grid-template-columns:
-					repeat(auto-fit, minmax(220px, 1fr));
+					repeat(
+						auto-fit,
+						minmax(
+							220px,
+							1fr
+						)
+					);
+
 				gap: 20px;
+
 			}
+
 
 			.section {
-				margin-top: 20px;
+
+				margin-top: 24px;
+
+				padding-top: 20px;
+
+				border-top:
+					1px solid
+					#35243a;
+
 			}
+
 
 			.label {
-				margin-bottom: 5px;
+
+				margin-bottom: 6px;
+
 				color: #a995aa;
+
 				font-size: 13px;
+
 			}
+
 
 			.value {
+
 				line-height: 1.5;
+
 			}
+
 
 			.items {
+
 				margin: 0;
+
 				padding: 0;
+
 				list-style: none;
+
 			}
+
 
 			.item {
+
 				display: flex;
-				justify-content: space-between;
+
+				justify-content:
+					space-between;
+
 				gap: 20px;
-				padding: 10px 0;
-				border-bottom: 1px solid #35243a;
+
+				padding:
+					10px 0;
+
+				border-bottom:
+					1px solid
+					#35243a;
+
 			}
+
 
 			.total {
+
 				margin-top: 16px;
+
 				font-size: 20px;
+
 				font-weight: bold;
+
 			}
+
 
 			.address {
+
 				white-space: pre-line;
+
 			}
+
+
+			.shipping-controls {
+
+				display: grid;
+
+				grid-template-columns:
+					minmax(
+						200px,
+						1fr
+					)
+					auto;
+
+				gap: 12px;
+
+				align-items: end;
+
+			}
+
+
+			.input-group {
+
+				display: flex;
+
+				flex-direction: column;
+
+				gap: 6px;
+
+			}
+
+
+			input {
+
+				width: 100%;
+
+				padding:
+					12px 14px;
+
+				border:
+					1px solid
+					#5b4261;
+
+				border-radius: 10px;
+
+				background:
+					#0d0918;
+
+				color:
+					#ffffff;
+
+				font-size: 14px;
+
+				outline: none;
+
+			}
+
+
+			input:focus {
+
+				border-color:
+					#ff73c7;
+
+			}
+
+
+			button {
+
+				padding:
+					12px 18px;
+
+				border:
+					1px solid
+					#ff73c7;
+
+				border-radius: 10px;
+
+				background:
+					#451642;
+
+				color:
+					#ffffff;
+
+				font-weight: bold;
+
+				cursor: pointer;
+
+			}
+
+
+			button:hover {
+
+				background:
+					#5b1b58;
+
+			}
+
+
+			.status-controls {
+
+				display: flex;
+
+				flex-wrap: wrap;
+
+				gap: 10px;
+
+			}
+
+
+			.status-controls button {
+
+				border-color:
+					#5b4261;
+
+				background:
+					#24132b;
+
+			}
+
+
+			.status-controls button:hover {
+
+				border-color:
+					#ff73c7;
+
+			}
+
+
+			.shipped-info {
+
+				margin-top: 12px;
+
+				color:
+					#c9b7ce;
+
+				font-size: 13px;
+
+			}
+
+
+			.tracking {
+
+				color:
+					#ff9bdd;
+
+				font-weight: bold;
+
+				word-break: break-all;
+
+			}
+
 
 			.session {
+
 				margin-top: 20px;
+
 				color: #75677a;
+
 				font-size: 11px;
+
 				word-break: break-all;
+
 			}
+
+
+			@media (max-width: 600px) {
+
+				main {
+
+					width:
+						min(
+							100% - 20px,
+							1200px
+						);
+
+					margin:
+						20px auto;
+
+				}
+
+
+				.order {
+
+					padding: 18px;
+
+				}
+
+
+				.shipping-controls {
+
+					grid-template-columns:
+						1fr;
+
+				}
+
+			}
+
 		</style>
+
 	</head>
 
+
 	<body>
+
 		<main>
-			<h1>Orders</h1>
+
+			<h1>
+				Orders
+			</h1>
+
+
 			<div class="subtitle">
 				Lunar Visuals order management
 			</div>
 
+
 			{error && (
+
 				<div class="error">
 					{error}
 				</div>
+
 			)}
 
-			{!error && orders.length === 0 && (
-				<div class="empty">
-					No orders yet.
-				</div>
-			)}
 
-			{orders.map((order) => {
-				const items = getItems(order.items_json);
+			{!error &&
+				orders.length === 0 && (
 
-				const address = [
-					order.address_line1,
-					order.address_line2,
-					order.postal_code && order.city
-						? `${order.postal_code} ${order.city}`
-						: order.postal_code ?? order.city,
-					order.country,
-				]
-					.filter(Boolean)
-					.join('\n');
+					<div class="empty">
+						No orders yet.
+					</div>
 
-				return (
-					<section class="order">
-						<div class="order-header">
-							<div>
-								<div class="order-number">
-									{order.order_number ?? `Order #${order.id}`}
+				)}
+
+
+			{orders.map(
+				(order) => {
+
+					const items =
+						getItems(
+							order.items_json,
+						);
+
+
+					const address = [
+
+						order.address_line1,
+
+						order.address_line2,
+
+						order.postal_code &&
+						order.city
+							? `${order.postal_code} ${order.city}`
+							: order.postal_code ??
+								order.city,
+
+						order.country,
+
+					]
+						.filter(Boolean)
+						.join('\n');
+
+
+					return (
+
+						<section
+							class="order"
+						>
+
+							<div
+								class="order-header"
+							>
+
+								<div>
+
+									<div
+										class="order-number"
+									>
+
+										{order.order_number ??
+											`Order #${order.id}`}
+
+									</div>
+
+
+									<div
+										class="order-date"
+									>
+
+										{formatDate(
+											order.created_at,
+										)}
+
+									</div>
+
 								</div>
 
-								<div class="label">
-									{formatDate(order.created_at)}
+
+								<div
+									class="status"
+								>
+
+									{order.order_status ??
+										'unknown'}
+
 								</div>
+
 							</div>
 
-							<div class="status">
-								{order.order_status ?? 'unknown'}
+
+							<div class="grid">
+
+								<div>
+
+									<div class="label">
+										Customer
+									</div>
+
+
+									<div class="value">
+										{order.customer_name ??
+											'—'}
+									</div>
+
+
+									<div class="value">
+										{order.customer_email ??
+											'—'}
+									</div>
+
+								</div>
+
+
+								<div>
+
+									<div class="label">
+										Shipping address
+									</div>
+
+
+									<div
+										class="value address"
+									>
+										{address ||
+											'—'}
+									</div>
+
+								</div>
+
+
+								<div>
+
+									<div class="label">
+										Payment
+									</div>
+
+
+									<div class="value">
+										{order.payment_status ??
+											'—'}
+									</div>
+
+
+									<div class="value">
+										{formatMoney(
+											order.amount_total,
+											order.currency,
+										)}
+									</div>
+
+								</div>
+
 							</div>
-						</div>
 
-						<div class="grid">
-							<div>
+
+							<div class="section">
+
 								<div class="label">
-									Customer
+									Items
 								</div>
 
-								<div class="value">
-									{order.customer_name ?? '—'}
-								</div>
 
-								<div class="value">
-									{order.customer_email ?? '—'}
-								</div>
-							</div>
+								<ul class="items">
 
-							<div>
-								<div class="label">
-									Shipping address
-								</div>
+									{items.map(
+										(item: any) => (
 
-								<div class="value address">
-									{address || '—'}
-								</div>
-							</div>
+											<li
+												class="item"
+											>
 
-							<div>
-								<div class="label">
-									Payment
-								</div>
+												<span>
 
-								<div class="value">
-									{order.payment_status ?? '—'}
-								</div>
+													{item.name}
+													{' × '}
+													{item.quantity}
 
-								<div class="value">
+												</span>
+
+
+												<span>
+
+													{formatMoney(
+														item.unit_amount *
+															item.quantity,
+														item.currency,
+													)}
+
+												</span>
+
+											</li>
+
+										),
+									)}
+
+								</ul>
+
+
+								<div class="total">
+
+									Total:
+									{' '}
 									{formatMoney(
 										order.amount_total,
 										order.currency,
 									)}
+
 								</div>
-							</div>
-						</div>
 
-						<div class="section">
-							<div class="label">
-								Items
 							</div>
 
-							<ul class="items">
-								{items.map((item: any) => (
-									<li class="item">
-										<span>
-											{item.name}
-											{' × '}
-											{item.quantity}
+
+							<div class="section">
+
+								<div class="label">
+									Order status
+								</div>
+
+
+								<form
+									method="POST"
+									class="status-controls"
+								>
+
+									<input
+										type="hidden"
+										name="order_id"
+										value={order.id}
+									/>
+
+
+									<button
+										type="submit"
+										name="action"
+										value="paid"
+									>
+										Paid
+									</button>
+
+
+									<button
+										type="submit"
+										name="action"
+										value="processing"
+									>
+										Processing
+									</button>
+
+
+									<button
+										type="submit"
+										name="action"
+										value="completed"
+									>
+										Completed
+									</button>
+
+								</form>
+
+							</div>
+
+
+							<div class="section">
+
+								<div class="label">
+									Shipping
+								</div>
+
+
+								<form
+									method="POST"
+									class="shipping-controls"
+								>
+
+									<input
+										type="hidden"
+										name="order_id"
+										value={order.id}
+									/>
+
+
+									<div class="input-group">
+
+										<label
+											class="label"
+											for={`tracking-${order.id}`}
+										>
+											Tracking number
+										</label>
+
+
+										<input
+											id={`tracking-${order.id}`}
+											type="text"
+											name="tracking_number"
+											value={
+												order.tracking_number ??
+												''
+											}
+											placeholder="Enter tracking number"
+										/>
+
+									</div>
+
+
+									<button
+										type="submit"
+										name="action"
+										value="shipped"
+									>
+										Mark as Shipped
+									</button>
+
+								</form>
+
+
+								{order.tracking_number && (
+
+									<div class="shipped-info">
+
+										Tracking:
+										{' '}
+
+										<span class="tracking">
+											{order.tracking_number}
 										</span>
 
-										<span>
-											{formatMoney(
-												item.unit_amount *
-													item.quantity,
-												item.currency,
-											)}
-										</span>
-									</li>
-								))}
-							</ul>
 
-							<div class="total">
-								Total:
-								{' '}
-								{formatMoney(
-									order.amount_total,
-									order.currency,
+										{order.shipped_at && (
+											<>
+												<br />
+												Shipped:
+												{' '}
+												{formatDate(
+													order.shipped_at,
+												)}
+											</>
+										)}
+
+									</div>
+
 								)}
-							</div>
-						</div>
 
-						<div class="session">
-							Stripe session:
-							{' '}
-							{order.stripe_session_id}
-						</div>
-					</section>
-				);
-			})}
+							</div>
+
+
+							<div class="session">
+
+								Stripe session:
+								{' '}
+								{order.stripe_session_id}
+
+							</div>
+
+						</section>
+
+					);
+
+				},
+			)}
+
 		</main>
+
 	</body>
+
 </html>
