@@ -12,7 +12,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const {
 	title,
 	description,
-	image = '/blog-placeholder-1.jpg',
+	image = '/Lunar Visuals Logo.svg',
 } = Astro.props;
 ---
 
@@ -20,10 +20,38 @@ const {
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-<link rel="canonical" href={canonicalURL} />
+<link
+	rel="icon"
+	type="image/svg+xml"
+	href="/Lunar Visuals Logo.svg"
+/>
+
+<link
+	rel="apple-touch-icon"
+	href="/Lunar Visuals Logo.svg"
+/>
+
+<link
+	rel="canonical"
+	href={canonicalURL}
+/>
+
+
+<!-- App / browser naming -->
+
+<meta
+	name="application-name"
+	content="Lunar Visuals"
+/>
+
+<meta
+	name="apple-mobile-web-app-title"
+	content="Lunar Visuals"
+/>
+
 
 <!-- Font preloads -->
+
 <link
 	rel="preload"
 	href="/fonts/Outfit-Regular.ttf"
@@ -40,20 +68,70 @@ const {
 	crossorigin
 />
 
+
 <!-- Page metadata -->
-<title>{title}</title>
-<meta name="description" content={description} />
+
+<title>
+	{title} | Lunar Visuals
+</title>
+
+<meta
+	name="description"
+	content={description}
+/>
+
 
 <!-- Open Graph -->
-<meta property="og:type" content="website" />
-<meta property="og:url" content={Astro.url} />
-<meta property="og:title" content={title} />
-<meta property="og:description" content={description} />
-<meta property="og:image" content={new URL(image, Astro.url)} />
+
+<meta
+	property="og:type"
+	content="website"
+/>
+
+<meta
+	property="og:url"
+	content={Astro.url}
+/>
+
+<meta
+	property="og:title"
+	content={`${title} | Lunar Visuals`}
+/>
+
+<meta
+	property="og:description"
+	content={description}
+/>
+
+<meta
+	property="og:image"
+	content={new URL(image, Astro.url)}
+/>
+
 
 <!-- Social sharing -->
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:url" content={Astro.url} />
-<meta name="twitter:title" content={title} />
-<meta name="twitter:description" content={description} />
-<meta name="twitter:image" content={new URL(image, Astro.url)} />
+
+<meta
+	name="twitter:card"
+	content="summary_large_image"
+/>
+
+<meta
+	name="twitter:url"
+	content={Astro.url}
+/>
+
+<meta
+	name="twitter:title"
+	content={`${title} | Lunar Visuals`}
+/>
+
+<meta
+	name="twitter:description"
+	content={description}
+/>
+
+<meta
+	name="twitter:image"
+	content={new URL(image, Astro.url)}
+/>
