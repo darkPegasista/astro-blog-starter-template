@@ -87,6 +87,57 @@ const commissionItems = [
 				</h1>
 
 			</section>
+<!-- HOW TO ORDER -->
+
+<section class="order-card">
+
+	<div class="order-content">
+
+		<h2>
+			How to order a commission
+		</h2>
+
+
+		<p>
+			Want your own artwork? Send me your idea,
+			character references, and what you have in mind.
+			I will get back to you with a quote and all
+			necessary details.
+		</p>
+
+
+		<ul>
+
+			<li>
+				Choose your commission type
+			</li>
+
+			<li>
+				Send your references and wishes
+			</li>
+
+			<li>
+				Confirm the details and price
+			</li>
+
+			<li>
+				I start creating your artwork
+			</li>
+
+		</ul>
+
+
+		<a
+			href="mailto:lunar.dash.visuals@gmail.com"
+			class="order-button"
+		>
+			Order Here ✨
+		</a>
+
+
+	</div>
+
+</section>
 
 
 			<!-- TELEGRAM STICKERS -->
@@ -188,49 +239,6 @@ const commissionItems = [
 
 			</section>
 
-			<!-- COMMISSION CONTACT -->
-
-			<section
-				class="commission-contact"
-				style="--glow: #ff61c6;"
-			>
-
-				<div class="contact-content">
-
-					<h2>
-						Want a custom artwork?
-					</h2>
-
-					<p>
-						I accept both digital and traditional
-						commissions! Send me an email with your
-						idea, references and any specific wishes.
-						I'll get back to you with my availability,
-						questions and a final price.
-					</p>
-
-					<p class="contact-note">
-						Commission work only begins after we have
-						discussed and agreed on the commission.
-						You can cancel your request at any time
-						before I start working on it.
-					</p>
-
-					<a
-						class="contact-button"
-						href="mailto:lunar.dash.visuals@gmail.com?subject=Commission%20Request"
-					>
-						<span>Request a Commission</span>
-						<span class="arrow">→</span>
-					</a>
-
-					<p class="contact-email">
-						lunar.dash.visuals@gmail.com
-					</p>
-
-				</div>
-
-			</section>
 
 			<!-- FLEXIBLE PRICE NOTE -->
 
@@ -634,7 +642,163 @@ const commissionItems = [
 
 		line-height: 1.5;
 	}
+/* =========================
+   ORDER CARD
+   ========================= */
 
+.order-card {
+
+	margin-bottom: 3rem;
+
+	padding: 2rem;
+
+	border-radius: 24px;
+
+	border:
+		1px solid
+		rgba(255, 97, 198, 0.45);
+
+	background:
+		linear-gradient(
+			145deg,
+			rgba(180, 20, 150, 0.18),
+			rgba(40, 10, 50, 0.25)
+		);
+
+	box-shadow:
+
+		0 0 20px
+		rgba(255, 97, 198, 0.12),
+
+		inset 0 0 20px
+		rgba(255,255,255,0.03);
+
+	text-align:
+		center;
+
+}
+
+
+.order-content h2 {
+
+	margin:
+		0 0 1rem;
+
+	font-size:
+		2rem;
+
+}
+
+
+.order-content p {
+
+	max-width:
+		650px;
+
+	margin:
+		0 auto 1.5rem;
+
+	color:
+		var(--text-muted);
+
+	line-height:
+		1.6;
+
+}
+
+
+.order-content ul {
+
+	list-style:
+		none;
+
+	padding:
+		0;
+
+	margin:
+		0 auto 2rem;
+
+	display:
+		grid;
+
+	gap:
+		0.5rem;
+
+	color:
+		rgba(255,255,255,0.8);
+
+}
+
+
+.order-content li::before {
+
+	content:
+		"✓";
+
+	color:
+		var(--pink-light);
+
+	margin-right:
+		0.5rem;
+
+}
+
+
+.order-button {
+
+	display:
+		inline-flex;
+
+	align-items:
+		center;
+
+	justify-content:
+		center;
+
+	padding:
+		0.9rem 2.5rem;
+
+	border-radius:
+		999px;
+
+	background:
+		linear-gradient(
+			135deg,
+			#ff61c6,
+			#a855f7
+		);
+
+	color:
+		white;
+
+	font-weight:
+		700;
+
+	text-decoration:
+		none;
+
+	box-shadow:
+
+		0 0 20px
+		rgba(255,97,198,0.4);
+
+	transition:
+		transform 0.2s ease,
+		box-shadow 0.2s ease;
+
+}
+
+.order-button:hover {
+
+	transform:
+		translateY(-3px);
+
+	box-shadow:
+
+		0 0 35px
+		rgba(255,97,198,0.6);
+
+}
 
 	/* =========================
 	   MOBILE
