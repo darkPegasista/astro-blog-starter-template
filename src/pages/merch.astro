@@ -48,72 +48,77 @@ import { products } from '../data/products';
 
 			<section class="category-grid">
 
-				{categories.map((category) => {
+				{categories
+					.filter(
+						(category) =>
+							category.slug !== 'print-on-demand'
+					)
+					.map((category) => {
 
-					const categoryProducts =
-						products.filter(
-							(product) =>
-								product.category === category.slug
-						);
+						const categoryProducts =
+							products.filter(
+								(product) =>
+									product.category === category.slug
+							);
 
-					return (
+						return (
 
-						<a
-							href={`/merch/${category.slug}`}
-							class="category-card"
-						>
-
-
-							<div class="category-image">
-
-								<img
-									src={category.image}
-									alt={category.name}
-								/>
-
-							</div>
+							<a
+								href={`/merch/${category.slug}`}
+								class="category-card"
+							>
 
 
-							<div class="category-info">
+								<div class="category-image">
 
-								<p class="category-label">
-									Merch
-								</p>
-
-
-								<h2>
-									{category.name}
-								</h2>
-
-
-								<p class="category-description">
-									{category.description}
-								</p>
-
-
-								<div class="category-bottom">
-
-									<span>
-										{categoryProducts.length}
-										{categoryProducts.length === 1
-											? ' product'
-											: ' products'}
-									</span>
-
-
-									<span class="category-arrow">
-										→
-									</span>
+									<img
+										src={category.image}
+										alt={category.name}
+									/>
 
 								</div>
 
-							</div>
 
-						</a>
+								<div class="category-info">
 
-					);
+									<p class="category-label">
+										Merch
+									</p>
 
-				})}
+
+									<h2>
+										{category.name}
+									</h2>
+
+
+									<p class="category-description">
+										{category.description}
+									</p>
+
+
+									<div class="category-bottom">
+
+										<span>
+											{categoryProducts.length}
+											{categoryProducts.length === 1
+												? ' product'
+												: ' products'}
+										</span>
+
+
+										<span class="category-arrow">
+											→
+										</span>
+
+									</div>
+
+								</div>
+
+							</a>
+
+						);
+
+					})}
 
 			</section>
 
