@@ -7,8 +7,8 @@ export const products = [
 		price: 12,
 		stock: 1, // KEEP YOUR EXISTING STOCK VALUE
 		images: [
-			'/images/Wine Pony Cheers_1.png',
-			'/images/Wine Pony Cheers_2.png',
+			'/Wine Pony Cheers_1.png',
+			'/Wine Pony Cheers_2.png',
 		],
 		description: 'A bottle opener featuring the Wine Pony Cheers design.',
 		material: 'Stainless steel',
@@ -22,8 +22,8 @@ export const products = [
 		price: 12,
 		stock: 1, // KEEP YOUR EXISTING STOCK VALUE
 		images: [
-			"/images/Don't Drink and Fly_1.png",
-			"/images/Don't Drink and Fly_2.png",
+			"/Don't Drink and Fly_1.png",
+			"/Don't Drink and Fly_2.png",
 		],
 	},
 
@@ -35,10 +35,10 @@ export const products = [
 		price: 35,
 		stock: 1, // KEEP YOUR EXISTING STOCK VALUE
 		images: [
-			'/images/Pony Princesses_1.png',
-			'/images/Pony Princesses_2.png',
-			'/images/Pony Princesses_3.png',
-			'/images/buckethat_label_4.png',
+			'/Pony Princesses_1.png',
+			'/Pony Princesses_2.png',
+			'/Pony Princesses_3.png',
+			'/buckethat_label_4.png',
 		],
 	},
 
@@ -50,10 +50,10 @@ export const products = [
 		price: 35,
 		stock: 1, // KEEP YOUR EXISTING STOCK VALUE
 		images: [
-			'/images/Six Best Friends_1.png',
-			'/images/Six Best Friends_2.png',
-			'/images/Six Best Friends_3.png',
-			'/images/buckethat_label_4.png',
+			'/Six Best Friends_1.png',
+			'/Six Best Friends_2.png',
+			'/Six Best Friends_3.png',
+			'/buckethat_label_4.png',
 		],
 	},
 
@@ -65,10 +65,10 @@ export const products = [
 		price: 35,
 		stock: 1, // KEEP YOUR EXISTING STOCK VALUE
 		images: [
-			'/images/Musician Ponies_1.png',
-			'/images/Musician Ponies_2.png',
-			'/images/Musician Ponies_3.png',
-			'/images/buckethat_label_4.png',
+			'/Musician Ponies_1.png',
+			'/Musician Ponies_2.png',
+			'/Musician Ponies_3.png',
+			'/buckethat_label_4.png',
 		],
 	},
 
@@ -80,10 +80,10 @@ export const products = [
 		price: 35,
 		stock: 1, // KEEP YOUR EXISTING STOCK VALUE
 		images: [
-			'/images/Villains of Harmony_1.png',
-			'/images/Villains of Harmony_2.png',
-			'/images/Villains of Harmony_3.png',
-			'/images/buckethat_label_4.png',
+			'/Villains of Harmony_1.png',
+			'/Villains of Harmony_2.png',
+			'/Villains of Harmony_3.png',
+			'/buckethat_label_4.png',
 		],
 	},
 
@@ -95,7 +95,7 @@ export const products = [
 		price: 15,
 		stock: 1, // KEEP YOUR EXISTING STOCK VALUE
 		images: [
-			'/images/Socialist Pony Propaganda.png',
+			'/Socialist Pony Propaganda.png',
 		],
 	},
 
@@ -107,8 +107,8 @@ export const products = [
 		price: 5,
 		stock: 1, // KEEP YOUR EXISTING STOCK VALUE
 		images: [
-			'/images/Drama Unicorn_1.png',
-			'/images/Drama Unicorn_2.png',
+			'/Drama Unicorn_1.png',
+			'/Drama Unicorn_2.png',
 		],
 	},
 
@@ -120,7 +120,7 @@ export const products = [
 		price: 5,
 		stock: 1, // KEEP YOUR EXISTING STOCK VALUE
 		images: [
-			'/images/Cider Dash.png',
+			'/Cider Dash.png',
 		],
 	},
 ];
