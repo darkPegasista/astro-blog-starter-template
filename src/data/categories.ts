@@ -1,30 +1,34 @@
 export const categories = [
+
 	{
 		slug: 'bottle-openers',
 		name: 'Bottle Openers',
-		description: 'Fun designs for your next drink.',
-		image: '/placeholder-product.svg',
+		description: 'Artwork-inspired bottle openers.',
+		image: '/Bottle Opener preview.png',
 	},
+
 
 	{
 		slug: 'bucket-hats',
 		name: 'Bucket Hats',
 		description: 'Wearable designs featuring my artwork.',
-		image: '/placeholder-product.svg',
+		image: '/bucket hat preview.png',
 	},
+
 
 	{
 		slug: 'posters',
-		name: 'Outdoor Posters',
-		description: 'Artwork made to be displayed outdoors.',
-		image: '/placeholder-product.svg',
+		name: 'Posters',
+		description: 'Printed artwork and designs.',
+		image: '/outdoor poster preview.png',
 	},
+
 
 	{
 		slug: 'stickers',
 		name: 'Stickers',
-		description: 'Small pieces of artwork for your stuff.',
-		image: '/placeholder-product.svg',
+		description: 'Small collectible artwork stickers.',
+		image: '/Stickers preview.png',
 	},
 	
 	{
