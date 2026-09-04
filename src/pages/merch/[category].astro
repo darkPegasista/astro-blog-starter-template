@@ -45,7 +45,9 @@ const categoryProducts = products.filter(
 		<main class="category-page">
 
 
-			<!-- BREADCRUMB -->
+			<!-- =========================
+			     BREADCRUMB
+			     ========================= -->
 
 			<nav class="breadcrumb">
 
@@ -63,7 +65,9 @@ const categoryProducts = products.filter(
 
 
 
-			<!-- PAGE HEADING -->
+			<!-- =========================
+			     PAGE HEADING
+			     ========================= -->
 
 			<section class="page-heading">
 
@@ -79,65 +83,142 @@ const categoryProducts = products.filter(
 
 
 
-			<!-- PRODUCTS -->
+			<!-- =========================
+			     PRODUCTS
+			     ========================= -->
 
 			<section class="product-grid">
 
 				{categoryProducts.map((product) => (
 
-					<a
-						href={`/merch/${category.slug}/${product.slug}`}
+					<article
 						class="product-card"
+						data-slug={product.slug}
+						data-name={product.name}
+						data-price={product.price}
+						data-stock={product.stock}
+						data-image={product.image}
 					>
 
-						<div class="product-image">
 
-							<img
-								src={product.image}
-								alt={product.name}
-							/>
+						<!-- =========================
+						     PRODUCT LINK
+						     ========================= -->
 
-						</div>
+						<a
+							href={`/merch/${category.slug}/${product.slug}`}
+							class="product-link"
+						>
 
+							<div class="product-image">
 
-						<div class="product-info">
-
-							<p class="product-category">
-								{product.category.replace('-', ' ')}
-							</p>
-
-
-							<h2>
-								{product.name}
-							</h2>
-
-
-							<div class="product-bottom">
-
-								<span class="price">
-									€{product.price.toFixed(2)}
-								</span>
-
-
-								{product.stock > 0 ? (
-
-									<span class="stock">
-										✓ In stock
-									</span>
-
-								) : (
-
-									<span class="sold-out">
-										Sold out
-									</span>
-
-								)}
+								<img
+									src={product.image}
+									alt={product.name}
+								/>
 
 							</div>
 
-						</div>
 
-					</a>
+							<div class="product-info">
+
+								<p class="product-category">
+									{product.category.replace('-', ' ')}
+								</p>
+
+
+								<h2>
+									{product.name}
+								</h2>
+
+
+								<div class="product-bottom">
+
+									<span class="price">
+										€{product.price.toFixed(2)}
+									</span>
+
+
+									{product.stock > 0 ? (
+
+										<span class="stock">
+											✓ In stock
+										</span>
+
+									) : (
+
+										<span class="sold-out">
+											Sold out
+										</span>
+
+									)}
+
+								</div>
+
+							</div>
+
+						</a>
+
+
+
+						<!-- =========================
+						     QUANTITY + CART
+						     ========================= -->
+
+						{product.stock > 0 && (
+
+							<div class="cart-controls">
+
+
+								<div class="quantity-section">
+
+									<span class="quantity-label">
+										Quantity
+									</span>
+
+
+									<div class="quantity-control">
+
+										<button
+											type="button"
+											class="quantity-minus"
+											aria-label={`Decrease quantity of ${product.name}`}
+										>
+											−
+										</button>
+
+
+										<span class="quantity-value">
+											1
+										</span>
+
+
+										<button
+											type="button"
+											class="quantity-plus"
+											aria-label={`Increase quantity of ${product.name}`}
+										>
+											+
+										</button>
+
+									</div>
+
+								</div>
+
+
+
+								<button
+									type="button"
+									class="add-to-cart"
+								>
+									Add to cart
+								</button>
+
+							</div>
+
+						)}
+
+					</article>
 
 				))}
 
@@ -148,6 +229,352 @@ const categoryProducts = products.filter(
 
 
 		<Footer />
+
+
+
+		<!-- =========================
+		     SCRIPTS
+		     ========================= -->
+
+		<script>
+
+			// =========================
+			// CART COUNT
+			// =========================
+
+			function updateCartCount() {
+
+				let cart = [];
+
+				try {
+
+					cart =
+						JSON.parse(
+							localStorage.getItem('cart') ||
+							'[]'
+						);
+
+				} catch {
+
+					cart = [];
+
+				}
+
+
+				const totalItems =
+					cart.reduce(
+						(total, item) =>
+							total + item.quantity,
+						0
+					);
+
+
+				const cartCount =
+					document.querySelector(
+						'#cart-count'
+					);
+
+
+				if (cartCount) {
+
+					cartCount.textContent =
+						String(totalItems);
+
+				}
+
+			}
+
+
+			updateCartCount();
+
+
+
+			// =========================
+			// PRODUCT CARDS
+			// =========================
+
+			document
+				.querySelectorAll('.product-card')
+				.forEach((card) => {
+
+					const stock =
+						Number(
+							card.getAttribute(
+								'data-stock'
+							)
+						);
+
+
+					const slug =
+						card.getAttribute(
+							'data-slug'
+						);
+
+
+					const name =
+						card.getAttribute(
+							'data-name'
+						);
+
+
+					const price =
+						Number(
+							card.getAttribute(
+								'data-price'
+							)
+						);
+
+
+					const image =
+						card.getAttribute(
+							'data-image'
+						);
+
+
+					const quantityValue =
+						card.querySelector(
+							'.quantity-value'
+						);
+
+
+					const minus =
+						card.querySelector(
+							'.quantity-minus'
+						);
+
+
+					const plus =
+						card.querySelector(
+							'.quantity-plus'
+						);
+
+
+					const addToCart =
+						card.querySelector(
+							'.add-to-cart'
+						);
+
+
+					let currentQuantity = 1;
+
+
+
+					// =========================
+					// UPDATE QUANTITY DISPLAY
+					// =========================
+
+					function updateQuantity() {
+
+						if (quantityValue) {
+
+							quantityValue.textContent =
+								String(currentQuantity);
+
+						}
+
+					}
+
+
+
+					// =========================
+					// DECREASE
+					// =========================
+
+					minus?.addEventListener(
+						'click',
+						(event) => {
+
+							event.preventDefault();
+							event.stopPropagation();
+
+
+							if (
+								currentQuantity > 1
+							) {
+
+								currentQuantity--;
+
+								updateQuantity();
+
+							}
+
+						}
+					);
+
+
+
+					// =========================
+					// INCREASE
+					// =========================
+
+					plus?.addEventListener(
+						'click',
+						(event) => {
+
+							event.preventDefault();
+							event.stopPropagation();
+
+
+							if (
+								currentQuantity < stock
+							) {
+
+								currentQuantity++;
+
+								updateQuantity();
+
+							}
+
+						}
+					);
+
+
+
+					// =========================
+					// ADD TO CART
+					// =========================
+
+					addToCart?.addEventListener(
+						'click',
+						(event) => {
+
+							event.preventDefault();
+							event.stopPropagation();
+
+
+							let cart = [];
+
+
+							try {
+
+								cart =
+									JSON.parse(
+										localStorage.getItem(
+											'cart'
+										) ||
+										'[]'
+									);
+
+							} catch {
+
+								cart = [];
+
+							}
+
+
+
+							// Find existing product
+
+							const existingItem =
+								cart.find(
+									(item) =>
+										item.slug ===
+										slug
+								);
+
+
+
+							// =========================
+							// EXISTING PRODUCT
+							// =========================
+
+							if (existingItem) {
+
+								existingItem.quantity =
+									Math.min(
+										existingItem.quantity +
+										currentQuantity,
+										stock
+									);
+
+							}
+
+
+
+							// =========================
+							// NEW PRODUCT
+							// =========================
+
+							else {
+
+								cart.push({
+
+									slug:
+										slug,
+
+									name:
+										name,
+
+									price:
+										price,
+
+									image:
+										image,
+
+									quantity:
+										Math.min(
+											currentQuantity,
+											stock
+										)
+
+								});
+
+							}
+
+
+
+							// =========================
+							// SAVE CART
+							// =========================
+
+							localStorage.setItem(
+								'cart',
+								JSON.stringify(cart)
+							);
+
+
+							updateCartCount();
+
+
+
+							// =========================
+							// BUTTON FEEDBACK
+							// =========================
+
+							const originalText =
+								addToCart.textContent;
+
+
+							addToCart.textContent =
+								'✓ Added to cart';
+
+
+							addToCart.classList.add(
+								'added'
+							);
+
+
+							setTimeout(
+								() => {
+
+									addToCart.textContent =
+										originalText;
+
+									addToCart.classList.remove(
+										'added'
+									);
+
+								},
+								1500
+							);
+
+						}
+
+					);
+
+				});
+
+		</script>
 
 	</body>
 
@@ -292,8 +719,6 @@ const categoryProducts = products.filter(
 
 	.product-card {
 
-		display: block;
-
 		overflow: hidden;
 
 		border-radius:
@@ -312,9 +737,6 @@ const categoryProducts = products.filter(
 
 		color:
 			white;
-
-		text-decoration:
-			none;
 
 		box-shadow:
 			0 0 15px
@@ -343,6 +765,25 @@ const categoryProducts = products.filter(
 
 			0 0 55px
 			rgba(255, 80, 200, 0.12);
+
+	}
+
+
+
+	/* =========================
+	   PRODUCT LINK
+	   ========================= */
+
+	.product-link {
+
+		display:
+			block;
+
+		color:
+			white;
+
+		text-decoration:
+			none;
 
 	}
 
@@ -405,7 +846,7 @@ const categoryProducts = products.filter(
 		padding:
 			1.2rem
 			1.3rem
-			1.4rem;
+			0.8rem;
 
 	}
 
@@ -505,6 +946,213 @@ const categoryProducts = products.filter(
 
 
 	/* =========================
+	   CART CONTROLS
+	   ========================= */
+
+	.cart-controls {
+
+		display:
+			flex;
+
+		align-items:
+			end;
+
+		gap:
+			0.8rem;
+
+		padding:
+			0.8rem 1.3rem 1.3rem;
+
+	}
+
+
+	.quantity-section {
+
+		flex:
+			0 0 auto;
+
+	}
+
+
+	.quantity-label {
+
+		display:
+			block;
+
+		margin-bottom:
+			0.35rem;
+
+		color:
+			var(--text-muted);
+
+		font-size:
+			0.7rem;
+
+		font-weight:
+			600;
+
+	}
+
+
+	.quantity-control {
+
+		display:
+			flex;
+
+		align-items:
+			center;
+
+		border:
+			1px solid
+			rgba(255, 130, 225, 0.4);
+
+		border-radius:
+			9px;
+
+		overflow:
+			hidden;
+
+	}
+
+
+	.quantity-control button {
+
+		width:
+			34px;
+
+		height:
+			36px;
+
+		padding:
+			0;
+
+		border:
+			none;
+
+		background:
+			rgba(255, 255, 255, 0.04);
+
+		color:
+			white;
+
+		font-family:
+			inherit;
+
+		font-size:
+			1rem;
+
+		cursor:
+			pointer;
+
+	}
+
+
+	.quantity-control button:hover {
+
+		background:
+			rgba(255, 80, 200, 0.15);
+
+	}
+
+
+	.quantity-value {
+
+		width:
+			32px;
+
+		text-align:
+			center;
+
+		font-size:
+			0.85rem;
+
+		font-weight:
+			600;
+
+	}
+
+
+
+	/* =========================
+	   ADD TO CART
+	   ========================= */
+
+	.add-to-cart {
+
+		flex:
+			1;
+
+		min-width:
+			0;
+
+		height:
+			36px;
+
+		padding:
+			0 0.7rem;
+
+		border:
+			1px solid
+			rgba(255, 130, 225, 0.6);
+
+		border-radius:
+			9px;
+
+		background:
+			rgba(255, 70, 200, 0.1);
+
+		color:
+			white;
+
+		font-family:
+			inherit;
+
+		font-size:
+			0.8rem;
+
+		font-weight:
+			700;
+
+		cursor:
+			pointer;
+
+		transition:
+			background 0.2s ease,
+			box-shadow 0.2s ease,
+			transform 0.2s ease;
+
+	}
+
+
+	.add-to-cart:hover {
+
+		transform:
+			translateY(-1px);
+
+		background:
+			rgba(255, 70, 200, 0.2);
+
+		box-shadow:
+			0 0 18px
+			rgba(255, 80, 200, 0.25);
+
+	}
+
+
+	.add-to-cart.added {
+
+		background:
+			rgba(255, 100, 220, 0.25);
+
+		box-shadow:
+			0 0 20px
+			rgba(255, 80, 200, 0.3);
+
+	}
+
+
+
+	/* =========================
 	   MOBILE
 	   ========================= */
 
@@ -533,7 +1181,9 @@ const categoryProducts = products.filter(
 		.product-info {
 
 			padding:
-				1rem;
+				1rem
+				1rem
+				0.6rem;
 
 		}
 
@@ -559,6 +1209,60 @@ const categoryProducts = products.filter(
 
 		}
 
+
+		.cart-controls {
+
+			flex-direction:
+				column;
+
+			align-items:
+				stretch;
+
+			padding:
+				0.7rem 1rem 1rem;
+
+		}
+
+
+		.quantity-section {
+
+			width:
+				100%;
+
+		}
+
+
+		.quantity-control {
+
+			width:
+				100%;
+
+		}
+
+
+		.quantity-control button {
+
+			flex:
+				1;
+
+		}
+
+
+		.quantity-value {
+
+			flex:
+				0 0 45px;
+
+		}
+
+
+		.add-to-cart {
+
+			width:
+				100%;
+
+		}
+
 	}
 
 
@@ -569,6 +1273,41 @@ const categoryProducts = products.filter(
 
 			grid-template-columns:
 				1fr;
+
+		}
+
+
+		.cart-controls {
+
+			flex-direction:
+				row;
+
+			align-items:
+				end;
+
+		}
+
+
+		.quantity-section {
+
+			width:
+				auto;
+
+		}
+
+
+		.quantity-control {
+
+			width:
+				auto;
+
+		}
+
+
+		.quantity-control button {
+
+			flex:
+				none;
 
 		}
 
