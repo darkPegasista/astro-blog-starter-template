@@ -137,32 +137,34 @@ export const products = [
 	},
 
 
-	/* ========================================
-	   PRINTIFY / PRINT-ON-DEMAND
-	   ======================================== */
+/* ========================================
+   PRINTIFY / PRINT-ON-DEMAND
+   ======================================== */
 
-	{
-		slug: 'test-printify-shirt',
-		name: 'Test Printify T-Shirt',
-		category: 'print-on-demand',
-		price: 29.90,
-		stock: 999,
+/*
+{
+	slug: 'test-printify-shirt',
+	name: 'Test Printify T-Shirt',
+	category: 'print-on-demand',
+	price: 29.90,
+	stock: 999,
 
-		images: [
-			'/placeholder-product.svg',
-			'/placeholder-product.svg',
-			'/placeholder-product.svg',
-			'/placeholder-product.svg',
-		],
+	images: [
+		'/placeholder-product.svg',
+		'/placeholder-product.svg',
+		'/placeholder-product.svg',
+		'/placeholder-product.svg',
+	],
 
-		description:
-			'A made-to-order T-shirt featuring my artwork.',
+	description:
+		'A made-to-order T-shirt featuring my artwork.',
 
-		material:
-			'100% cotton',
+	material:
+		'100% cotton',
 
-		fulfillment:
-			'printify',
-	},
+	fulfillment:
+		'printify',
+},
+*/
 
 ];
