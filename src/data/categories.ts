@@ -26,10 +26,12 @@ export const categories = [
 		description: 'Small pieces of artwork for your stuff.',
 		image: '/placeholder-product.svg',
 	},
+	/*
 	{
 	slug: 'print-on-demand',
 	name: 'Print-on-Demand',
 	description: 'Clothing and other goodies made to order and shipped by our production partner.',
 	image: '/images/placeholder.jpg',
 },
+*/
 ];
