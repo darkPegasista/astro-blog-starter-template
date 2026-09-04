@@ -5,12 +5,10 @@ export const products = [
 		name: 'Wine Pony Cheers',
 		category: 'bottle-openers',
 		price: 12,
-		stock: 1,
+		stock: 1, // KEEP YOUR EXISTING STOCK VALUE
 		images: [
-			'/placeholder-product.svg',
-			'/placeholder-product.svg',
-			'/placeholder-product.svg',
-			'/placeholder-product.svg',
+			'/images/Wine Pony Cheers_1.png',
+			'/images/Wine Pony Cheers_2.png',
 		],
 		description: 'A bottle opener featuring the Wine Pony Cheers design.',
 		material: 'Stainless steel',
@@ -22,12 +20,10 @@ export const products = [
 		name: "Don't Drink and Fly",
 		category: 'bottle-openers',
 		price: 12,
-		stock: 1,
+		stock: 1, // KEEP YOUR EXISTING STOCK VALUE
 		images: [
-			'/placeholder-product.svg',
-			'/placeholder-product.svg',
-			'/placeholder-product.svg',
-			'/placeholder-product.svg',
+			"/images/Don't Drink and Fly_1.png",
+			"/images/Don't Drink and Fly_2.png",
 		],
 	},
 
@@ -37,12 +33,12 @@ export const products = [
 		name: 'Pony Princesses',
 		category: 'bucket-hats',
 		price: 35,
-		stock: 1,
+		stock: 1, // KEEP YOUR EXISTING STOCK VALUE
 		images: [
-			'/placeholder-product.svg',
-			'/placeholder-product.svg',
-			'/placeholder-product.svg',
-			'/placeholder-product.svg',
+			'/images/Pony Princesses_1.png',
+			'/images/Pony Princesses_2.png',
+			'/images/Pony Princesses_3.png',
+			'/images/buckethat_label_4.png',
 		],
 	},
 
@@ -52,12 +48,12 @@ export const products = [
 		name: 'Six Best Friends',
 		category: 'bucket-hats',
 		price: 35,
-		stock: 1,
+		stock: 1, // KEEP YOUR EXISTING STOCK VALUE
 		images: [
-			'/placeholder-product.svg',
-			'/placeholder-product.svg',
-			'/placeholder-product.svg',
-			'/placeholder-product.svg',
+			'/images/Six Best Friends_1.png',
+			'/images/Six Best Friends_2.png',
+			'/images/Six Best Friends_3.png',
+			'/images/buckethat_label_4.png',
 		],
 	},
 
@@ -67,12 +63,12 @@ export const products = [
 		name: 'Musician Ponies',
 		category: 'bucket-hats',
 		price: 35,
-		stock: 1,
+		stock: 1, // KEEP YOUR EXISTING STOCK VALUE
 		images: [
-			'/placeholder-product.svg',
-			'/placeholder-product.svg',
-			'/placeholder-product.svg',
-			'/placeholder-product.svg',
+			'/images/Musician Ponies_1.png',
+			'/images/Musician Ponies_2.png',
+			'/images/Musician Ponies_3.png',
+			'/images/buckethat_label_4.png',
 		],
 	},
 
@@ -82,12 +78,12 @@ export const products = [
 		name: 'Villains of Harmony',
 		category: 'bucket-hats',
 		price: 35,
-		stock: 1,
+		stock: 1, // KEEP YOUR EXISTING STOCK VALUE
 		images: [
-			'/placeholder-product.svg',
-			'/placeholder-product.svg',
-			'/placeholder-product.svg',
-			'/placeholder-product.svg',
+			'/images/Villains of Harmony_1.png',
+			'/images/Villains of Harmony_2.png',
+			'/images/Villains of Harmony_3.png',
+			'/images/buckethat_label_4.png',
 		],
 	},
 
@@ -97,12 +93,9 @@ export const products = [
 		name: 'Socialist Pony Propaganda',
 		category: 'posters',
 		price: 15,
-		stock: 1,
+		stock: 1, // KEEP YOUR EXISTING STOCK VALUE
 		images: [
-			'/placeholder-product.svg',
-			'/placeholder-product.svg',
-			'/placeholder-product.svg',
-			'/placeholder-product.svg',
+			'/images/Socialist Pony Propaganda.png',
 		],
 	},
 
@@ -112,12 +105,10 @@ export const products = [
 		name: 'Drama Unicorn',
 		category: 'stickers',
 		price: 5,
-		stock: 1,
+		stock: 1, // KEEP YOUR EXISTING STOCK VALUE
 		images: [
-			'/placeholder-product.svg',
-			'/placeholder-product.svg',
-			'/placeholder-product.svg',
-			'/placeholder-product.svg',
+			'/images/Drama Unicorn_1.png',
+			'/images/Drama Unicorn_2.png',
 		],
 	},
 
@@ -127,14 +118,12 @@ export const products = [
 		name: 'Cider Dash',
 		category: 'stickers',
 		price: 5,
-		stock: 1,
+		stock: 1, // KEEP YOUR EXISTING STOCK VALUE
 		images: [
-			'/placeholder-product.svg',
-			'/placeholder-product.svg',
-			'/placeholder-product.svg',
-			'/placeholder-product.svg',
+			'/images/Cider Dash.png',
 		],
 	},
+];
 
 
 /* ========================================
